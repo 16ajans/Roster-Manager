@@ -1,17 +1,33 @@
-import { PrismaClient } from '@prisma/client'
+import 'dotenv/config'
+import express from 'express'
+import session from 'express-session';
+import compression from 'compression'
+import pug from 'pug'
 
-const prisma = new PrismaClient()
+import { prismaSession } from './drivers/db'
 
-async function main() {
-  // ... you will write your Prisma Client queries here
-}
+import { router as auth } from './middleware/auth'
 
-main()
-  .then(async () => {
-    await prisma.$disconnect()
+
+const app = express().disable("x-powered-by")
+
+app.use(compression())
+app.use(
+  session({
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000 // ms
+    },
+    secret: process.env.SESSION_SECRET as string,
+    resave: true,
+    saveUninitialized: false,
+    store: prismaSession,
   })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+)
+
+app.use('/auth', auth)
+
+app.get('/', (req, res) => {
+  res.send(req.session.user)
+})
+
+app.listen(process.env.PORT)
