@@ -12,3 +12,67 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Division {
+  id           String  @id @default(uuid()) @db.Uuid
+  open         Boolean
+  min_players  Int
+  max_players  Int
+  name         String
+  description  String
+  manager_role String
+  player_role  String
+  adminId      String  @db.Uuid
+  admin        User    @relation(fields: [adminId], references: [id])
+  Team         Team[]
+}
+
+model Team {
+  id         String       @id @default(uuid()) @db.Uuid
+  division   Division     @relation(fields: [divisionId], references: [id])
+  manager    User         @relation(fields: [managerId], references: [id])
+  name       String
+  locale     String
+  divisionId String       @db.Uuid
+  managerId  String       @db.Uuid
+  Assignment Assignment[]
+}
+
+model Assignment {
+  id         String @id @default(uuid()) @db.Uuid
+  player     Player @relation(fields: [playerId], references: [id])
+  team       Team   @relation(fields: [teamId], references: [id])
+  alt_tag    String
+  scoresaber String
+  status     State
+  playerId   String @db.Uuid
+  teamId     String @db.Uuid
+}
+
+model Player {
+  id         String       @id @default(uuid()) @db.Uuid
+  manager    User         @relation(fields: [managerId], references: [id])
+  name       String
+  school     String
+  discord    String
+  status     State
+  Assignment Assignment[]
+  managerId  String       @db.Uuid
+}
+
+model User {
+  id       String     @id @default(uuid()) @db.Uuid
+  discord  String
+  avatar   String
+  auth     String
+  Division Division[]
+  Team     Team[]
+  Player   Player[]
+}
+
+enum State {
+  REJECTED
+  AWAITING
+  REVIEW
+  ACCEPTED
+}
