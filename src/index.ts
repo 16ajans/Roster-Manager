@@ -2,7 +2,6 @@ import 'dotenv/config'
 import express from 'express'
 import session from 'express-session';
 import compression from 'compression'
-import pug from 'pug'
 
 import { prismaSession } from './drivers/db'
 

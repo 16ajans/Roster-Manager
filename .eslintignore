@@ -1,0 +1,4 @@
+node_modules
+.env
+# Don't lint compiled js
+dist
