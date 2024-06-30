@@ -4,6 +4,7 @@ const client_id = process.env.DISCORD_OAUTH_ID
 const client_secret = process.env.DISCORD_OAUTH_SECRET
 const redirect_uri = process.env.DISCORD_OAUTH_REDIRECT_URI
 const scopes = process.env.DISCORD_OAUTH_SCOPES
+const guild_id = process.env.GUILD_ID
 
 const instance = axios.create({
   baseURL: 'https://discord.com/api'
@@ -62,4 +63,16 @@ export async function getCurrentUser (token: string) {
     }
   )
   return res.data
+}
+
+export async function getGuildRoles (token: string) {
+  const res = await instance.get(
+    `/users/@me/guilds/${guild_id}/member`,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  )
+  return res.data.roles
 }
