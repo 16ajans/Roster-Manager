@@ -7,7 +7,7 @@ import { State } from '@prisma/client'
 
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {
-    await mkdir(`verifications/`)
+    await mkdir(`verifications/`, { recursive: true })
     cb(null, `verifications/`)
   },
   filename: function (req, file, cb) {
@@ -65,10 +65,6 @@ router
         })
     })
     .put('/', userAuth, upload.single('verification'), async (req, res) => {
-        let state: State = State.AWAITING
-        if (req.file) {
-            state = State.REVIEW
-        }
         const player = await prisma.player.update({
             where: {
                 discord: req.session.user?.discord as string,
@@ -76,7 +72,7 @@ router
             data: {
                 name: req.body.name as string,
                 school: req.body.school as string,
-                status: state
+                status: State.REVIEW
             }
         })
         res.render('components/self-player', {
