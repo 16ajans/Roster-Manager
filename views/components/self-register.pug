@@ -1,0 +1,20 @@
+-
+    let name = ""
+    let school = ""
+    
+    if (player) {
+        name = player.name 
+        school = player.school
+    }
+form
+    label(for="name") Name
+    input#name(type="text" name="name" value=name required)
+    label(for="school") School
+    input#school(type="text" name="school" value=school required)
+    label(for="verification") Verification
+    input#verification(type="file" name="verification")
+    if player
+        input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-put="/api/self" hx-target="#self")
+    else
+        input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-post="/api/self" hx-target="#self")
+    button(hx-get="/api/self" hx-target="#self") Cancel

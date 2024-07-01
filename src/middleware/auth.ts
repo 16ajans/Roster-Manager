@@ -50,7 +50,7 @@ router.get('/callback', async (req, res) => {
   })
 
   req.session.save(() => {
-    res.redirect('/')
+    res.redirect('/account')
   })
 })
 
