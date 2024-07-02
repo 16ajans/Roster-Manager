@@ -6,10 +6,14 @@ block content
     form(hx-get="/api/verify" hx-trigger="change, load" hx-target="#verify")
         input#REJECTED(type="checkbox" name="REJECTED")
         label(for="REJECTED") REJECTED
+        br
         input#AWAITING(type="checkbox" name="AWAITING")
         label(for="AWAITING") AWAITING
+        br
         input#REVIEW(type="checkbox" name="REVIEW" checked)
         label(for="REVIEW") REVIEW
+        br
         input#ACCEPTED(type="checkbox" name="ACCEPTED")
         label(for="ACCEPTED") ACCEPTED
+        br
     div#verify
