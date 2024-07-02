@@ -6,7 +6,7 @@ import compression from 'compression'
 
 import { prismaSession } from './drivers/db'
 
-import { router as auth, userAuth } from './middleware/auth'
+import { router as auth } from './middleware/auth'
 import { router as api } from './middleware/api'
 
 const app = express()
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     user: req.session.user
   })
 })
-app.get('/account', userAuth, (req, res) => {
+app.get('/account', (req, res) => {
   if (req.session.user?.auth) {
       res.render('account', {
       title: 'CVRE Roster Manager | Account',

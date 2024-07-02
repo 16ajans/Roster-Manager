@@ -32,6 +32,9 @@ router
         const player = await prisma.player.findUnique({
             where: {
                 discord: req.session.user?.discord
+            },
+            include: {
+                manager: true
             }
         })
         if (player === null) {
@@ -58,6 +61,9 @@ router
                     }
                 },
                 status: state
+            },
+            include: {
+                manager: true
             }
         })
         res.render('components/self-player', {
@@ -73,6 +79,9 @@ router
                 name: req.body.name as string,
                 school: req.body.school as string,
                 status: State.REVIEW
+            },
+            include: {
+                manager: true
             }
         })
         res.render('components/self-player', {
@@ -93,6 +102,9 @@ router
         const player = await prisma.player.findUnique({
             where: {
                 discord: req.session.user?.discord
+            },
+            include: {
+                manager: true
             }
         })
         if (player === null) {

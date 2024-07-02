@@ -2,6 +2,7 @@ mixin player-card(player)
     card
         p Name: #{player.name}
         p School: #{player.school}
-        p Discord: #{player.discord}
+        p(hx-get="/api/discord/member/" + player.discord hx-trigger="load" hx-swap="beforeend") Discord: 
         p Status: #{player.status}
-        p Manager: #{player.managerId}
+        if player.discord !== player.manager.discord
+            p(hx-get="/api/discord/member/" + player.manager.discord hx-trigger="load" hx-swap="beforeend") Manager: 
