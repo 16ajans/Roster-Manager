@@ -13,7 +13,9 @@ import { router as api } from './middleware/api'
 const app = express()
 
 app.disable("x-powered-by")
-app.use(morgan('dev'))
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'))  
+}
 app.use(compression())
 app.use(
   session({
