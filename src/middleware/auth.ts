@@ -8,6 +8,7 @@ import {
   revokeToken,
   getGuildRoles
 } from '../drivers/discord'
+import { fetchGuildMember } from '../drivers/bot';
 
 const adminRoleID = process.env.ADMIN_ROLE_ID
 
@@ -33,6 +34,12 @@ router.get('/login', (req, res) => {
 router.get('/callback', async (req, res) => {
   const tokenResponse = await getTokenResponse(req.query.code as string)
   const discordUser = await getCurrentUser(tokenResponse.access_token)
+
+  try {
+    await fetchGuildMember(discordUser.id)
+  } catch (err) {
+    res.redirect('/auth/not-joined')
+  }
 
   req.session.user = await prisma.user.upsert({
     where: {
@@ -70,4 +77,8 @@ router.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/')
   })
+})
+
+router.get('/not-joined', (req, res) => {
+  res.render('not-joined')
 })
