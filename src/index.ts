@@ -3,15 +3,17 @@ import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
 import compression from 'compression'
+import morgan from 'morgan'
 
 import { prismaSession } from './drivers/db'
 
-import { router as auth } from './middleware/auth'
+import { adminAuth, router as auth } from './middleware/auth'
 import { router as api } from './middleware/api'
 
 const app = express()
 
 app.disable("x-powered-by")
+app.use(morgan('dev'))
 app.use(compression())
 app.use(
   session({
