@@ -6,11 +6,11 @@ import {
   getTokenResponse,
   getCurrentUser,
   revokeToken,
-  getGuildRoles
+  getGuildRoles,
 } from '../drivers/discord'
 import { fetchGuildMember } from '../drivers/bot';
 
-const adminRoleID = process.env.ADMIN_ROLE_ID
+const adminRoleID = process.env.ADMIN_ROLE_ID as string
 
 export const userAuth: RequestHandler = (req, res, next) => {
   if (req.session.user?.auth) next()
@@ -19,8 +19,7 @@ export const userAuth: RequestHandler = (req, res, next) => {
 
 export const adminAuth: RequestHandler = async (req, res, next) => {
   if (req.session.user?.auth) {
-    const roles = await getGuildRoles(req.session.user.auth)
-    if (roles.includes(adminRoleID)) next()
+    if (req.session.user.roles.includes(adminRoleID)) next()
     else res.sendStatus(403)
   } else res.sendStatus(401)
 }
@@ -34,6 +33,7 @@ router.get('/login', (req, res) => {
 router.get('/callback', async (req, res) => {
   const tokenResponse = await getTokenResponse(req.query.code as string)
   const discordUser = await getCurrentUser(tokenResponse.access_token)
+  const roles = await getGuildRoles(tokenResponse.access_token)
 
   try {
     await fetchGuildMember(discordUser.id)
@@ -48,12 +48,14 @@ router.get('/callback', async (req, res) => {
     },
     update: {
       avatar: discordUser.avatar,
-      auth: tokenResponse.access_token
+      auth: tokenResponse.access_token,
+      roles
     },
     create: {
       discord: discordUser.id,
       avatar: discordUser.avatar,
-      auth: tokenResponse.access_token
+      auth: tokenResponse.access_token,
+      roles
     }
   })
 

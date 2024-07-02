@@ -65,6 +65,7 @@ model User {
   discord  String     @unique
   avatar   String?
   auth     String?
+  roles    String[]
   Division Division[]
   Team     Team[]
   Player   Player[]
