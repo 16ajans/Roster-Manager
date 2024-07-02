@@ -50,5 +50,11 @@ app.get('/account', (req, res) => {
     res.redirect('/auth/login')
   }
 })
+app.get('/admin', adminAuth, (req, res) => {
+    res.render('admin', {
+      title: 'CVRE Roster Manager | Admin',
+      user: req.session.user
+    })
+})
 
 app.listen(process.env.PORT)

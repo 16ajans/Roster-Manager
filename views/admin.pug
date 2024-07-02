@@ -1,0 +1,15 @@
+extends default
+
+block content
+    section
+    h2 Player Verification
+    form(hx-get="/api/verify" hx-trigger="change, load" hx-target="#verify")
+        input#REJECTED(type="checkbox" name="REJECTED")
+        label(for="REJECTED") REJECTED
+        input#AWAITING(type="checkbox" name="AWAITING")
+        label(for="AWAITING") AWAITING
+        input#REVIEW(type="checkbox" name="REVIEW" checked)
+        label(for="REVIEW") REVIEW
+        input#ACCEPTED(type="checkbox" name="ACCEPTED")
+        label(for="ACCEPTED") ACCEPTED
+    div#verify
