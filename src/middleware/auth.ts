@@ -38,7 +38,8 @@ router.get('/callback', async (req, res) => {
   try {
     await fetchGuildMember(discordUser.id)
   } catch (err) {
-    res.redirect('/auth/not-joined')
+    res.redirect('not-joined')
+    return
   }
 
   req.session.user = await prisma.user.upsert({
