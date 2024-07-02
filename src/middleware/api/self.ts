@@ -71,6 +71,10 @@ router
         })
     })
     .put('/', userAuth, upload.single('verification'), async (req, res) => {
+        let state: State = State.AWAITING
+        if (req.file) {
+            state = State.REVIEW
+        }
         const player = await prisma.player.update({
             where: {
                 discord: req.session.user?.discord as string,
@@ -78,7 +82,7 @@ router
             data: {
                 name: req.body.name as string,
                 school: req.body.school as string,
-                status: State.REVIEW
+                status: state
             },
             include: {
                 manager: true
