@@ -6,6 +6,7 @@ import compression from 'compression'
 import morgan from 'morgan'
 
 process.env['dirRoot'] = path.resolve(__dirname, '..')
+const adminRoleID = process.env.ADMIN_ROLE_ID as string
 
 import { prismaSession } from './drivers/db'
 
@@ -60,11 +61,20 @@ app.get('/account', async (req, res) => {
     res.redirect('/auth/login')
   }
 })
-app.get('/admin', adminAuth, async (req, res) => {
-    res.render('admin', {
-      title: 'CVRE Roster Manager | Admin',
-      user: req.session.user
-    })
+app.get('/admin', async (req, res) => {
+  if (req.session.user?.auth) {
+    if (req.session.user.roles.includes(adminRoleID)) {
+      res.render('admin', {
+        title: 'CVRE Roster Manager | Admin',
+        user: req.session.user
+      })
+    } else {
+      res.redirect('/account')
+    }
+  } else {
+    res.redirect('/auth/login')
+  }
+
 })
 
 app.listen(process.env.PORT)
