@@ -3,7 +3,8 @@ extends default
 block content
     section
     h2 Player Verification
-    form(hx-get="/api/verify" hx-trigger="change, load" hx-target="#verify")
+    form(hx-get="/api/verify" hx-trigger="change, load, submit" hx-target="#verify")
+        h4 Filter
         input#REJECTED(type="checkbox" name="REJECTED")
         label(for="REJECTED") REJECTED
         br
@@ -16,4 +17,5 @@ block content
         input#ACCEPTED(type="checkbox" name="ACCEPTED")
         label(for="ACCEPTED") ACCEPTED
         br
+        input(type="submit" value="Apply")
     div#verify

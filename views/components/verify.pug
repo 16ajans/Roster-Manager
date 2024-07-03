@@ -1,8 +1,3 @@
-include player-card
+include ../mixins/verify-card
 each player in players
-    +player-card(player)
-        if player.status !== 'AWAITING'
-            p
-                a(href="/verifications/" + player.doc target="_blank") Verification
-            button Accept 
-            button Reject
+    +verify-card(player)

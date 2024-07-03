@@ -34,3 +34,23 @@ router
             players
         })
     })
+    .put('/:playerID/:newState', adminAuth, async (req, res) => {
+        let param: State = State.REJECTED
+        if (req.params.newState === "ACCEPTED") {
+            param = State.ACCEPTED
+        }
+        const player = await prisma.player.update({
+            where: {
+                id: req.params.playerID
+            },
+            data: {
+                status: param
+            },
+            include: {
+                manager: true
+            }
+        })
+        res.render('components/verify-card', {
+            player
+        })
+    })
