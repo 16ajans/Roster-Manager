@@ -47,8 +47,10 @@ router
     })
     .post('/', userAuth, upload.single('verification'), async (req, res) => {
         let state: State = State.AWAITING
+        let doc: string | undefined = undefined
         if (req.file) {
             state = State.REVIEW
+            doc = req.file.filename
         }
         const player = await prisma.player.create({
             data: {
@@ -60,6 +62,7 @@ router
                         id: req.session.user?.id
                     }
                 },
+                doc,
                 status: state
             },
             include: {
@@ -72,8 +75,10 @@ router
     })
     .put('/', userAuth, upload.single('verification'), async (req, res) => {
         let state: State = State.AWAITING
+        let doc: string | undefined = undefined
         if (req.file) {
             state = State.REVIEW
+            doc = req.file.filename
         }
         const player = await prisma.player.update({
             where: {
@@ -82,6 +87,7 @@ router
             data: {
                 name: req.body.name as string,
                 school: req.body.school as string,
+                doc,
                 status: state
             },
             include: {

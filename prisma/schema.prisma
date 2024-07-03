@@ -55,6 +55,7 @@ model Player {
   name       String       @unique
   school     String
   discord    String       @unique
+  doc        String?
   status     State        @default(AWAITING)
   Assignment Assignment[]
   managerId  String       @db.Uuid
