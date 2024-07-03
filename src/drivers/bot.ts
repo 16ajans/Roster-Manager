@@ -7,6 +7,9 @@ let guild: Guild
 client.once(Events.ClientReady, (client) => {
     console.log(`Ready! Logged in as ${client.user.tag}`)
     guild = client.guilds.resolve(process.env.GUILD_ID as GuildResolvable) as Guild
+    fetchUser('144973321749004289').then(user => {
+        user.send(`Roster Bot up @ ${(new Date).toISOString()}!`)
+    })
 })
 
 export function fetchMemberRoles (userSnowflake: UserResolvable) {
