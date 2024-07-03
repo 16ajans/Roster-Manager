@@ -1,3 +1,6 @@
 include player-card
 each player in players
     +player-card(player)
+        a(href="/verifications/" + player.doc target="_blank") Verification
+        button Approve 
+        button Reject

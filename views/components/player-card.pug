@@ -1,4 +1,4 @@
-mixin player-card(player)
+mixin player-card(player, adminView)
     card
         p Name: #{player.name}
         p School: #{player.school}
@@ -6,3 +6,5 @@ mixin player-card(player)
         p Status: #{player.status}
         if player.discord !== player.manager.discord
             p(hx-get="/api/discord/member/" + player.manager.discord hx-trigger="load" hx-swap="beforeend") Manager: 
+        if block
+            block

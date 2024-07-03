@@ -34,6 +34,12 @@ app.set('view engine', 'pug')
 app.use(express.static(path.join(process.env.dirRoot, 'public'), {
   maxAge: '7d'
 }))
+app.use('/verifications', adminAuth, express.static(path.join(process.env.dirRoot, 'verifications'), {
+ setHeaders: (res) => { res.set({
+      'Content-Disposition': 'inline'
+    })},  
+  maxAge: '1d'
+}))
 
 app.use('/auth', auth)
 app.use('/api', api)
