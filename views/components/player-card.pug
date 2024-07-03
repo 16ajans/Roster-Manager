@@ -1,5 +1,5 @@
 mixin player-card(player, adminView)
-    card
+    card.player-card
         p Name: #{player.name}
         p School: #{player.school}
         p(hx-get="/api/discord/member/" + player.discord hx-trigger="intersect" hx-swap="beforeend") Discord: 
