@@ -5,12 +5,12 @@ import session from 'express-session'
 import compression from 'compression'
 import morgan from 'morgan'
 
+process.env['dirRoot'] = path.resolve(__dirname, '..')
+
 import { prismaSession } from './drivers/db'
 
 import { adminAuth, router as auth } from './middleware/auth'
 import { router as api } from './middleware/api'
-
-process.env.dirRoot = path.resolve(__dirname, '..')
 
 const app = express()
 
