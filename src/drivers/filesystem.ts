@@ -9,7 +9,7 @@ const verifStorage: StorageEngine = multer.diskStorage({
       cb(null, verifications)
     },
     filename: async function (req, file, cb) {
-      cb(null, `${req.session.user?.discord}.${path.extname(file.originalname)}`)
+      cb(null, `${req.session.user?.discord}${path.extname(file.originalname)}`)
     }
   })
 async function verifFileFilter (req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
