@@ -10,6 +10,8 @@ import { prismaSession } from './drivers/db'
 import { adminAuth, router as auth } from './middleware/auth'
 import { router as api } from './middleware/api'
 
+process.env.dirRoot = path.resolve(__dirname, '..')
+
 const app = express()
 
 app.disable("x-powered-by")
@@ -29,20 +31,20 @@ app.use(
   })
 )
 app.set('view engine', 'pug')
-app.use(express.static(path.join(path.resolve(__dirname, '..'), 'public'), {
+app.use(express.static(path.join(process.env.dirRoot, 'public'), {
   maxAge: '7d'
 }))
 
 app.use('/auth', auth)
 app.use('/api', api)
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   res.render('dashboard', {
     title: 'CVRE Roster Manager | Dashboard',
     user: req.session.user
   })
 })
-app.get('/account', (req, res) => {
+app.get('/account', async (req, res) => {
   if (req.session.user?.auth) {
       res.render('account', {
       title: 'CVRE Roster Manager | Account',
@@ -52,7 +54,7 @@ app.get('/account', (req, res) => {
     res.redirect('/auth/login')
   }
 })
-app.get('/admin', adminAuth, (req, res) => {
+app.get('/admin', adminAuth, async (req, res) => {
     res.render('admin', {
       title: 'CVRE Roster Manager | Admin',
       user: req.session.user

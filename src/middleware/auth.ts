@@ -26,7 +26,7 @@ export const adminAuth: RequestHandler = async (req, res, next) => {
 
 export const router = express.Router()
 
-router.get('/login', (req, res) => {
+router.get('/login', async (req, res) => {
   res.redirect(authorizationURL)
 })
 
@@ -64,7 +64,7 @@ router.get('/callback', async (req, res) => {
   })
 })
 
-router.get('/logout', (req, res) => {
+router.get('/logout', async (req, res) => {
   if (req.session.user?.auth) {
     revokeToken(req.session.user.auth)
     
@@ -82,6 +82,6 @@ router.get('/logout', (req, res) => {
   })
 })
 
-router.get('/not-joined', (req, res) => {
+router.get('/not-joined', async (req, res) => {
   res.render('not-joined')
 })

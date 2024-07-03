@@ -1,31 +1,10 @@
-import express, { Request } from 'express'
-import multer, { FileFilterCallback } from 'multer'
-import { mkdir } from 'node:fs/promises'
+import express from 'express'
 import { userAuth } from '../auth'
 import { prisma } from '../../drivers/db'
 import { State } from '@prisma/client'
-
-const storage = multer.diskStorage({
-  destination: async function (req, file, cb) {
-    await mkdir(`verifications/`, { recursive: true })
-    cb(null, `verifications/`)
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${req.session.user?.discord}.${file.mimetype.split('/')[1]}`)
-  }
-})
-function fileFilter (req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
-    if (req.get('content-length') as unknown as number > 9000000) {
-        cb(null, false)
-    } else if (!file.mimetype.startsWith('image') && file.mimetype !== 'application/pdf') {
-        cb(null, false)
-    } else {
-        cb(null, true)
-    }
-}
+import { verifUpload } from '../../drivers/filesystem'
 
 export const router = express.Router()
-const upload = multer({ storage, fileFilter })
 
 router
     .get('/', userAuth, async (req, res) => {
@@ -45,7 +24,7 @@ router
             })
         }
     })
-    .post('/', userAuth, upload.single('verification'), async (req, res) => {
+    .post('/', userAuth, verifUpload.single('verification'), async (req, res) => {
         let state: State = State.AWAITING
         let doc: string | undefined = undefined
         if (req.file) {
@@ -73,7 +52,7 @@ router
             player
         })
     })
-    .put('/', userAuth, upload.single('verification'), async (req, res) => {
+    .put('/', userAuth, verifUpload.single('verification'), async (req, res) => {
         let state: State = State.AWAITING
         let doc: string | undefined = undefined
         if (req.file) {
