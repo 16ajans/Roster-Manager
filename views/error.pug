@@ -1,0 +1,13 @@
+extends default
+
+block content
+    p The site encountered an error:
+    p(style="font-weight: bold;") #{error}
+    br
+    p Redirecting you to the dashboard . . . If you are not redirected in 5 seconds, click 
+        a(href='/') here
+        | .
+    script.
+        window.setTimeout(() => {
+            window.location.href = "/";
+        }, 5000);

@@ -31,6 +31,13 @@ router.get('/login', async (req, res) => {
 })
 
 router.get('/callback', async (req, res) => {
+  if (req.query.error) {
+    res.render('error', {
+      error: req.query.error_description
+    })
+    return
+  }
+
   const tokenResponse = await getTokenResponse(req.query.code as string)
   const discordUser = await getCurrentUser(tokenResponse.access_token)
   const roles = await getGuildRoles(tokenResponse.access_token)
