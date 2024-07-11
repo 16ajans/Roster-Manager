@@ -1,6 +1,5 @@
 @import url('/css/modern-normalize.min.css');
 @import url('/css/header.css');
-@import url('/css/player-card.css');
 
 body {
     max-width: 50rem;
@@ -10,15 +9,21 @@ button,
 input {
     margin: 0.5rem;
 }
+
 #filter,
 #filter > fieldset {
     margin: 0;
     padding: 0;
     border: none;
 }
-
 #filter > fieldset {
     display: flex;
     align-items: baseline;
     justify-content: flex-start;
+}
+
+.player-card {
+    display: block;
+    border: 1px solid black;
+    padding: 1rem;
 }
