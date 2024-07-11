@@ -1,2 +1,11 @@
 @import url('/css/header.css');
 @import url('/css/player-card.css');
+
+body {
+    max-width: 50rem;
+    margin: auto;
+}
+button,
+input {
+    margin: 0.5rem;
+}
