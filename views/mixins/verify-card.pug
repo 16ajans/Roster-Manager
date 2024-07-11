@@ -1,7 +1,7 @@
 mixin verify-card(player)
     include player-card
     +player-card(player)
-        if player.status !== 'AWAITING'
+        if player.doc != null
             p
                 a(href="/verifications/" + player.doc target="_blank") Verification
         button(hx-put="/api/verify/" + player.id + "/ACCEPTED" hx-target="closest .player-card" hx-swap="outerHTML") Accept 
