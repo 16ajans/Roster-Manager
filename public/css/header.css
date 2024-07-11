@@ -9,6 +9,10 @@ header a {
     text-decoration: none;
     color: black;
 }
+header a:hover {
+    animation: bounce 0.5s;
+}
+
 header h1 {
     margin: 0;
 }
@@ -46,3 +50,17 @@ header > .flexH {
     cursor: pointer;
     display: none;
 } */
+
+@keyframes bounce {
+    0%, 100% {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+    }
+  
+    50% {
+        -webkit-transform: scale(1.05);
+        -ms-transform: scale(1.05);
+        transform: scale(1.05);
+    }
+  }
