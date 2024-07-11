@@ -1,7 +1,7 @@
 import express from 'express'
 import { userAuth } from '../auth'
 import { prisma } from '../../drivers/db'
-import { State } from '@prisma/client'
+import { Player, State } from '@prisma/client'
 import { verifUpload } from '../../drivers/filesystem'
 
 export const router = express.Router()
@@ -53,22 +53,35 @@ router
         })
     })
     .put('/', userAuth, verifUpload.single('verification'), async (req, res) => {
-        let state: State = State.AWAITING
-        let doc: string | undefined = undefined
-        if (req.file) {
-            state = State.REVIEW
-            doc = req.file.filename
+        let player = await prisma.player.findUnique({
+            where: {
+                discord: req.session.user?.discord as string,
+            }
+        }) as Player
+        const data: {
+            name?: string;
+            school?: string;
+            doc?: string;
+            status?: State;
+        } = {}
+        if (player.name != req.body.name) {
+            data.name = req.body.name
         }
-        const player = await prisma.player.update({
+        if (player.school != req.body.school) {
+            data.school = req.body.school
+        }
+        if (Object.keys(data).length > 0) {
+            data.status = State.AWAITING
+        }
+        if (req.file) {
+            data.doc = req.file.filename
+            data.status = State.REVIEW
+        }
+        player = await prisma.player.update({
             where: {
                 discord: req.session.user?.discord as string,
             },
-            data: {
-                name: req.body.name as string,
-                school: req.body.school as string,
-                doc,
-                status: state
-            },
+            data,
             include: {
                 manager: true
             }
