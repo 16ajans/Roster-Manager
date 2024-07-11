@@ -1,23 +1,48 @@
 header {
-    padding-top: 1rem;
+    margin-top: 1rem;
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
     justify-content: space-between;
 }
 
-header > a,
+header a {
+    text-decoration: none;
+    color: black;
+}
+header h1 {
+    margin: 0;
+}
+
 header #logo {
     height: 5rem;
-}
-
-header > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    margin-right: 1rem;
 }
 header #avatar {
     height: 5rem;
     border-radius: 50%;
 }
+
+header > .flexV {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+header > .flexH {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+/* #authAction {
+    padding: 0.5rem;
+    height: 2.5rem;
+    line-height: 1.5rem;
+    border-radius: 1rem;
+    border: none;
+    color: white;
+    background-color: #703893;
+    cursor: pointer;
+    display: none;
+} */
