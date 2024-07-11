@@ -1,8 +1,8 @@
 mixin player-card(player)
     card.player-card
+        h4(hx-get="/api/discord/member/" + player.discord hx-trigger="intersect") 
         p Name: #{player.name}
         p School: #{player.school}
-        p(hx-get="/api/discord/member/" + player.discord hx-trigger="intersect" hx-swap="beforeend") Discord: 
         p Status: #{player.status}
         if player.discord !== player.manager.discord
             p(hx-get="/api/discord/member/" + player.manager.discord hx-trigger="intersect" hx-swap="beforeend") Manager: 

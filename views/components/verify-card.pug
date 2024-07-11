@@ -2,6 +2,6 @@ include ../mixins/player-card
 +player-card(player)
     if player.doc != null
         p
-            a(href="/verifications/" + player.doc target="_blank") Verification
+            a(href="/verifications/" + player.doc target="_blank") View Verification
     button(hx-put="/api/verify/" + player.id + "/ACCEPTED" hx-target="closest .player-card" hx-swap="outerHTML") Accept 
     button(hx-put="/api/verify/" + player.id + "/REJECTED" hx-target="closest .player-card" hx-swap="outerHTML") Reject 

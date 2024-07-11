@@ -1,7 +1,7 @@
 include ../mixins/player-card
++player-card(player)
 button(hx-get="/api/self/register" hx-target="#self") Update
 button(hx-delete="/api/self" hx-target="#self") Delete
-+player-card(player)
 script.
     document.body.addEventListener('htmx:confirm', function(evt) {
         if (evt.detail.verb === "delete") {
