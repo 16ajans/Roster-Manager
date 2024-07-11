@@ -2,13 +2,18 @@ extends default
 
 block content
     h2 My Registration 
-    div#self(hx-get="/api/self" hx-trigger="load")
-    //- h2 Manager Zone
-    //- h3 My Players
-    //- div#players
-    //-     p You're not a manager for other players yet.
-    //-     button Register a Player
-    //- div
-    //-     h3 My Teams
-    //-     p You're not a manager for any teams yet.
-    //-     button Create a New Team
+    #self(hx-get="/api/self" hx-trigger="load")
+    h2 Manager Zone
+    h3 My Players
+    #players
+        //- p You're not a manager for other players yet.
+        //- button Register a Player
+        | Coming soon!
+    h3 My Teams
+    #teams
+        //- p You're not a manager for any teams yet.
+        //- button Create a New Team
+        | Coming soon!
+    h2 My Account
+    div
+        button(onclick="location.href='/auth/logout'") Log Out
