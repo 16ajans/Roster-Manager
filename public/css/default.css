@@ -9,3 +9,9 @@ button,
 input {
     margin: 0.5rem;
 }
+#filter {
+    display: flex;
+    align-content: center;
+    align-items: baseline;
+    justify-content: center;
+}
