@@ -5,10 +5,6 @@ body {
     max-width: 50rem;
     margin: auto;
 }
-button,
-input {
-    margin: 0.5rem;
-}
 
 #filter,
 #filter > fieldset {
@@ -18,12 +14,17 @@ input {
 }
 #filter > fieldset {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: flex-start;
 }
 
 .player-card {
     display: block;
-    border: 1px solid black;
-    padding: 1rem;
+    /* border: 1px solid black;
+    border-radius: 1rem;
+    padding: 1rem; */
+}
+
+div {
+    margin-left: 2rem;
 }
