@@ -4,6 +4,7 @@
 body {
     max-width: 50rem;
     margin: auto;
+    padding: 1rem;
 }
 
 #filter,
