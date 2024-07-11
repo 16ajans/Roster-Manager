@@ -12,10 +12,14 @@ export const prismaSession = new PrismaSessionStore(
     }
 )
 
+interface SessionUser extends User {
+    admin?: boolean
+}
+
 // Augment express-session with a custom SessionData object
 declare module "express-session" {
     interface SessionData {
-        user: User
+        user: SessionUser
     }
 }
 

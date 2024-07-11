@@ -1,3 +1,5 @@
+@import url('https://css.gg/css?=|link');
+
 header {
     display: flex;
     flex-direction: row;
@@ -29,7 +31,7 @@ header > .flexV {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    height: 100%;
 }
 header > .flexH {
     display: flex;
@@ -37,18 +39,6 @@ header > .flexH {
     align-items: baseline;
     justify-content: space-between;
 }
-
-/* #authAction {
-    padding: 0.5rem;
-    height: 2.5rem;
-    line-height: 1.5rem;
-    border-radius: 1rem;
-    border: none;
-    color: white;
-    background-color: #703893;
-    cursor: pointer;
-    display: none;
-} */
 
 @keyframes bounce {
     0%, 100% {

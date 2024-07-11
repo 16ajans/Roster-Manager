@@ -19,7 +19,7 @@ export const userAuth: RequestHandler = (req, res, next) => {
 
 export const adminAuth: RequestHandler = async (req, res, next) => {
   if (req.session.user?.auth) {
-    if (req.session.user.roles.includes(adminRoleID)) next()
+    if (req.session.user.admin) next()
     else res.sendStatus(403)
   } else res.sendStatus(401)
 }
@@ -40,7 +40,6 @@ router.get('/callback', async (req, res) => {
 
   const tokenResponse = await getTokenResponse(req.query.code as string)
   const discordUser = await getCurrentUser(tokenResponse.access_token)
-  const roles = await getGuildRoles(tokenResponse.access_token)
 
   try {
     await fetchGuildMember(discordUser.id)
@@ -48,6 +47,8 @@ router.get('/callback', async (req, res) => {
     res.redirect('not-joined')
     return
   }
+
+  const roles = await getGuildRoles(tokenResponse.access_token)
 
   req.session.user = await prisma.user.upsert({
     where: {
@@ -65,6 +66,8 @@ router.get('/callback', async (req, res) => {
       roles
     }
   })
+
+  req.session.user.admin = req.session.user.roles.includes(adminRoleID)
 
   req.session.save(() => {
     res.redirect('/account')

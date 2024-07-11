@@ -1,7 +1,12 @@
-- avatar = typeof user !== 'undefined' ? `https://cdn.discordapp.com/avatars/${user.discord}/${user.avatar}.png` : '/images/avatar.png'
+- authed = typeof user !== 'undefined'
+- avatar = authed ? `https://cdn.discordapp.com/avatars/${user.discord}/${user.avatar}.png` : '/images/avatar.png'
 header
     a.flexH(href='/')
         img#logo(src='/images/CVRE.png' alt='CVRE Logo')
         h1 Roster Manager
-    a.flexV(href='/account')
-        img#avatar(src=avatar alt='Discord Avatar')
+    if authed && user.admin
+        a.flexV(href='/admin')
+            p Admin Portal
+            i.gg-link
+    a(href='/account')
+        img#avatar(src=avatar alt='Discord Avatar' onerror="this.src='/images/discordavatar.png';")
