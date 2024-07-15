@@ -1,0 +1,21 @@
+footer {
+    padding: 1rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+footer > span {
+    width: 100%;
+    text-align: center;
+}
+
+footer > a {
+    color: LinkText;
+    cursor: pointer;
+    text-decoration: underline;
+}
