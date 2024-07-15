@@ -76,5 +76,10 @@ app.get('/admin', async (req, res) => {
   }
 
 })
+app.get('/help', async (req, res) => {
+  res.render('help', {
+    title: 'CVRE Roster Manager | Help'
+    })
+})
 
 app.listen(process.env.PORT)
