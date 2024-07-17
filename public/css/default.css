@@ -18,6 +18,9 @@ body {
     border: none;
 }
 @media only screen and (max-width: 600px) {
+    #filter > fieldset {
+        line-height: 1.5rem;
+    }
     #filter > fieldset > h4 {
         margin: 0;
     }
@@ -28,7 +31,6 @@ body {
 }
 @media only screen and (min-width: 600px) {
     #filter > fieldset {
-        line-height: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: flex-start;
