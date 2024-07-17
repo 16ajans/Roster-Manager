@@ -60,5 +60,5 @@ router
                 id: req.params.playerID
             }
         })
-        res.sendStatus(200)
+        res.send("<p>Player Registration Deleted</p>")
     })
