@@ -5,3 +5,4 @@ include ../mixins/player-card
             a(href="/verifications/" + player.doc target="_blank") View Verification
     button(hx-put="/api/verify/" + player.id + "/ACCEPTED" hx-target="closest .player-card" hx-swap="outerHTML") Accept 
     button(hx-put="/api/verify/" + player.id + "/REJECTED" hx-target="closest .player-card" hx-swap="outerHTML") Reject 
+    button(hx-delete="/api/verify/" + player.id hx-target="closest .player-card" hx-swap="outerHTML") Delete
