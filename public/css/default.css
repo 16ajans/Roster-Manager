@@ -11,17 +11,29 @@ body {
     grid-template-rows: auto 1fr auto;
 }
 
+form {
+    line-height: 2rem;
+}
+form label {
+    margin: 0.5rem
+}
+
 #filter,
 #filter > fieldset {
     margin: 0;
     padding: 0;
     border: none;
 }
-#filter > fieldset {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
+#filter > fieldset > h4 {
+    margin: 0;
+    margin-right: 1rem;
+}
+@media only screen and (min-width: 600px) {
+    #filter > fieldset {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
 }
 
 .player-card {

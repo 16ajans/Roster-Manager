@@ -54,3 +54,11 @@ router
             player
         })
     })
+    .delete('/:playerID', adminAuth, async (req, res) => {
+        await prisma.player.delete({
+            where: {
+                id: req.params.playerID
+            }
+        })
+        res.send("<p>Player registration deleted.</p>")
+    })
