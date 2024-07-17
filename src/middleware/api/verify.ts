@@ -60,5 +60,5 @@ router
                 id: req.params.playerID
             }
         })
-        res.sendStatus(410)
+        res.sendStatus(200)
     })
