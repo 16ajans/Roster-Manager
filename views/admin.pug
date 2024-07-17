@@ -5,12 +5,16 @@ block content
     form#filter(hx-get="/api/verify" hx-trigger="change, load, submit" hx-target="#verify")
         fieldset
             h4 Filter
+            br
             input#REJECTED(type="checkbox" name="REJECTED")
             label(for="REJECTED") REJECTED
+            br
             input#AWAITING(type="checkbox" name="AWAITING")
             label(for="AWAITING") AWAITING
+            br
             input#REVIEW(type="checkbox" name="REVIEW" checked)
             label(for="REVIEW") REVIEW
+            br
             input#ACCEPTED(type="checkbox" name="ACCEPTED")
             label(for="ACCEPTED") ACCEPTED
         input(type="submit" value="Reapply Filter")

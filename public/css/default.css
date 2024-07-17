@@ -17,11 +17,13 @@ body {
     padding: 0;
     border: none;
 }
-#filter > fieldset {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
+@media only screen and (min-width: 600px) {
+    #filter > fieldset {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
 }
 
 .player-card {
