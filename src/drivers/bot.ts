@@ -26,4 +26,8 @@ export function fetchUser (userSnowflake: UserResolvable) {
     return client.users.fetch(userSnowflake)
 }
 
+export function sendDM (userSnowflake: UserResolvable, message: string) {
+    return client.users.send(userSnowflake, message)
+}
+
 client.login(process.env.DISCORD_BOT_TOKEN)

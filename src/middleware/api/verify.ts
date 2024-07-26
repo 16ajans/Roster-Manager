@@ -2,6 +2,7 @@ import express from 'express'
 import { adminAuth } from '../auth'
 import { State } from '@prisma/client'
 import { prisma } from '../../drivers/db'
+import { sendDM } from '../../drivers/bot'
 
 export const router = express.Router()
 
@@ -50,6 +51,11 @@ router
                 manager: true
             }
         })
+        if (param == State.ACCEPTED) {
+            sendDM(player.discord, "Your student verification was accepted!")
+        } else {
+            sendDM(player.discord, "Your student verification was rejected . Please reach out to a CVRE Admin for further information.")
+        }
         res.render('mixins/verify-card', {
             player
         })
