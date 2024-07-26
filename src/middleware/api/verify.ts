@@ -50,7 +50,7 @@ router
                 manager: true
             }
         })
-        res.render('components/verify-card', {
+        res.render('mixins/verify-card', {
             player
         })
     })
