@@ -26,22 +26,22 @@ export function fetchUser (userSnowflake: UserResolvable) {
     return client.users.fetch(userSnowflake)
 }
 
-export async function sendDM (userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake: UserResolvable, reason?: string) {
+export async function sendDM (userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
     return client.users.send(userSnowflake, { embeds: [await buildVerifNotifEmbed(playerSnowflake, accepted, adminSnowflake, reason)] })
 }
 
 client.login(process.env.DISCORD_BOT_TOKEN)
 
-async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake: UserResolvable, reason?: string) {
+async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
     const embed = new EmbedBuilder()
         .setColor(0x703893)
         .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
         .setFooter({ text: "This is an automated message. Do not reply."})
-    const admin = await fetchGuildMember(adminSnowflake)
     const player = await fetchGuildMember(playerSnowflake)
     if (accepted) {
         embed.setTitle(`${player.displayName}'s verification has been approved!`)
     } else {
+        const admin = await fetchGuildMember(adminSnowflake)
         embed
             .setTitle(`${player.displayName}'s verification has been rejected.`)
             .setDescription(`Please contact ${admin.displayName} (<@${adminSnowflake}>) or another CVRE admin for further information.`)
