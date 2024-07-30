@@ -44,7 +44,7 @@ async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: b
         const admin = await fetchGuildMember(adminSnowflake ? adminSnowflake : "144973321749004289")
         embed
             .setTitle(`${player.displayName}'s verification has been rejected.`)
-            .setDescription(`Please contact ${admin.displayName} (<@${adminSnowflake}>) or another CVRE admin for further information.`)
+            .setDescription(`Please contact ${admin.displayName} (<@${adminSnowflake}>) or another CVRE Admin for further information.`)
         if (reason) {
             embed.addFields({ name: "Reason:", value: reason })
         }
