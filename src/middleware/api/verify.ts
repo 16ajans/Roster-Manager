@@ -51,14 +51,14 @@ router
                 manager: true
             }
         })
-        if (param == State.ACCEPTED) {
-            sendDM(player.discord, "Your student verification was accepted!")
-        } else {
-            sendDM(player.discord, "Your student verification was rejected . Please reach out to a CVRE Admin for further information.")
-        }
         res.render('mixins/verify-card', {
             player
         })
+        if (param == State.ACCEPTED) {
+            sendDM(player.manager.discord, player.discord, true)
+        } else {
+            sendDM(player.manager.discord, player.discord, false, req.session.user?.discord)
+        }
     })
     .delete('/:playerID', adminAuth, async (req, res) => {
         await prisma.player.delete({
