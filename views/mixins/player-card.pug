@@ -1,5 +1,5 @@
 mixin player-card(player)
-    card.player-card
+    card.player-card(id=player.id)
         h4(hx-get="/api/discord/member/" + player.discord hx-trigger="intersect once") 
         p Name: #{player.name}
         p School: #{player.school}

@@ -18,3 +18,29 @@ block content
             label(for="ACCEPTED") ACCEPTED
         input(type="submit" value="Reapply Filter")
     section#verify
+
+    #rejModal.modal
+        form#rejReason.modal-content(hx-on::after-request="closeModal()" hx-swap="outerHTML")
+            label(for="reason") Rejection Reason:
+            input#reason(type="text" name="reason" placeholder="Recommended")
+            br
+            input(type="button" value="Cancel" onclick="event.preventDefault();closeModal()")
+            input(type="submit" value="Submit")
+    script.
+        const rejModal = document.getElementById("rejModal")
+        const rejReason = document.getElementById("rejReason")
+
+        function revealModal(playerID) {
+            rejModal.style.display = "block"
+            rejReason.setAttribute('hx-put',"/api/verify/" + playerID + "/REJECTED")
+            rejReason.setAttribute('hx-target',"#" + playerID)
+            htmx.process(rejReason)
+        }
+        function closeModal() {
+            rejModal.style.display = "none"
+        }
+        window.onclick = function(event) {
+            if (event.target == rejModal) {
+                rejModal.style.display = "none";
+            }
+        }
