@@ -29,11 +29,14 @@ block content
     script.
         const rejModal = document.getElementById("rejModal")
         const rejReason = document.getElementById("rejReason")
+        const reason = document.getElementById("reason")
 
         function revealModal(playerID) {
-            rejModal.style.display = "block"
+            rejReason.reset()
             rejReason.setAttribute('hx-put',"/api/verify/" + playerID + "/REJECTED")
             rejReason.setAttribute('hx-target',"#" + playerID)
+            rejModal.style.display = "block"
+            reason.focus()
             htmx.process(rejReason)
         }
         function closeModal() {
