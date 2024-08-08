@@ -2,6 +2,7 @@ import express from 'express'
 import { adminAuth } from '../auth'
 import { State } from '@prisma/client'
 import { prisma } from '../../drivers/db'
+import { sendDM } from '../../drivers/bot'
 
 export const router = express.Router()
 
@@ -34,7 +35,7 @@ router
             players
         })
     })
-    .put('/:playerID/:newState', adminAuth, async (req, res) => {
+    .put('/:playerID/:newState', adminAuth, express.urlencoded({ extended: true }), async (req, res) => {
         let param: State = State.REJECTED
         if (req.params.newState === "ACCEPTED") {
             param = State.ACCEPTED
@@ -53,6 +54,11 @@ router
         res.render('components/verify-card', {
             player
         })
+        if (param == State.ACCEPTED) {
+            sendDM(player.manager.discord, player.discord, true)
+        } else {
+            sendDM(player.manager.discord, player.discord, false, req.session.user?.discord, req.body.reason)
+        }
     })
     .delete('/:playerID', adminAuth, async (req, res) => {
         await prisma.player.delete({
