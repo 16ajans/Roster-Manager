@@ -24,3 +24,17 @@ router
             })
         }
     })
+    .get('/teams', userAuth, async (req, res) => {
+        const teams = await prisma.team.findMany({
+            where: {
+                    managerId: req.session.user?.id
+                }
+        })
+        if (teams.length === 0) {
+            res.render('components/manage/teams-empty')
+        } else {
+            res.render('components/manage/teams-list', {
+                teams
+            })
+        }
+    })
