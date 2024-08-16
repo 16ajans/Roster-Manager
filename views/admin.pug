@@ -32,9 +32,10 @@ block content
         const reason = document.getElementById("reason")
 
         function revealModal(playerID) {
+            playerID = playerID.slice(3)
             rejReason.reset()
             rejReason.setAttribute('hx-put',"/api/verify/" + playerID + "/REJECTED")
-            rejReason.setAttribute('hx-target',"#" + playerID)
+            rejReason.setAttribute('hx-target',"#pid" + playerID)
             rejModal.style.display = "block"
             reason.focus()
             htmx.process(rejReason)
