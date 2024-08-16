@@ -71,7 +71,11 @@ router
             data.school = req.body.school
         }
         if (Object.keys(data).length > 0) {
-            data.status = State.AWAITING
+            if (player.doc) {
+                data.status = State.REVIEW
+            } else {
+                data.status = State.AWAITING
+            }
         }
         if (req.file) {
             data.doc = req.file.filename
