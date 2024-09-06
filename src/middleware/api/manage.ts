@@ -85,6 +85,14 @@ router
         })
         next()
     }, getPlayers)
+    .delete('/players/:playerID', userAuth, async (req, res) => {
+        await prisma.player.delete({
+            where: {
+                id: req.params.playerID
+            }
+        })
+        res.send("<p>Player registration deleted.</p>")
+    })
 
     .get('/players/register', userAuth, async (req, res) => {
         res.render('components/manage/players-register')
