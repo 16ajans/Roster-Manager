@@ -16,8 +16,8 @@ form
     label(for="verification") Verification:
     input#verification(type="file" name="verification")
     br
-    button(hx-get="/api/self" hx-target="#self") Cancel
     if player
         input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-put="/api/self" hx-target="#self")
     else
         input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-post="/api/self" hx-target="#self")
+    button(hx-get="/api/self" hx-target="#self") Cancel

@@ -21,8 +21,8 @@ form
     label(for="verification") Verification:
     input#verification(type="file" name="verification")
     br
-    button(hx-get="/api/manage/players" hx-target="#players") Cancel
     if player
         input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-put="/api/manage/players/" + player.id hx-target="#players")
     else
         input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-post="/api/manage/players" hx-target="#players")
+    button(hx-get="/api/manage/players" hx-target="#players") Cancel

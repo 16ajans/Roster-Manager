@@ -24,8 +24,8 @@ block content
             label(for="reason") Rejection Reason:
             input#reason(type="text" name="reason" placeholder="Recommended")
             br
+            input(type="submit" value="Submit")Z
             input(type="button" value="Cancel" onclick="event.preventDefault();closeModal()")
-            input(type="submit" value="Submit")
     script.
         const rejModal = document.getElementById("rejModal")
         const rejReason = document.getElementById("rejReason")
