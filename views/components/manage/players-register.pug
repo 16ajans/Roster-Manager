@@ -10,7 +10,7 @@
     }
 form
     label(for="discord") Discord:
-    input#discord(type="text" name="discord" value=discord required)
+    input#discord(type="text" name="discord" value=discord disabled=(player ? true : false) required=(player ? false : true))
     br
     label(for="name") Name:
     input#name(type="text" name="name" value=name required)

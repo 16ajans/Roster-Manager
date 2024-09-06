@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import { userAuth } from '../auth'
 import { prisma } from '../../drivers/db'
 import { verifUpload } from '../../drivers/filesystem'
-import { State } from '@prisma/client'
+import { Player, State } from '@prisma/client'
 
 export const router = express.Router()
 
@@ -52,6 +52,43 @@ router
             })
             next()
         }, getPlayers)
+    .put('/players/:playerID', userAuth, verifUpload.single('verification'), async (req, res, next) => {
+        let player = await prisma.player.findUnique({
+            where: {
+                id: req.params.playerID
+            }
+        }) as Player
+        const data: {
+            name?: string;
+            school?: string;
+            doc?: string;
+            status?: State;
+        } = {}
+        if (player.name != req.body.name) {
+            data.name = req.body.name
+        }
+        if (player.school != req.body.school) {
+            data.school = req.body.school
+        }
+        if (Object.keys(data).length > 0) {
+            data.status = State.AWAITING
+        }
+        if (req.file) {
+            data.doc = req.file.filename
+            data.status = State.REVIEW
+        }
+        player = await prisma.player.update({
+            where: {
+                id: req.params.playerID
+            },
+            data
+        })
+        next()
+    }, getPlayers)
+
+    .get('/players/register', userAuth, async (req, res) => {
+        res.render('components/manage/players-register')
+    })
     .get('/players/:playerID', userAuth, async (req, res) => {
         const player = await prisma.player.findUnique({
             where: {
@@ -62,13 +99,11 @@ router
             player
         })
     })
-    .put('/players/:playerID', userAuth, async (req, res) => {
-        res.send("urgh")
-    })
-    .get('/players/register', userAuth, async (req, res) => {
-        res.render('components/manage/players-register')
-    })
-    .get('/teams', userAuth, async (req, res) => {
+
+
+
+
+router.get('/teams', userAuth, async (req, res) => {
         const teams = await prisma.team.findMany({
             where: {
                     managerId: req.session.user?.id
