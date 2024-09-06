@@ -1,8 +1,5 @@
 mixin manager-card(player)
     include player-card
     +player-card(player)
-        if player.doc != null
-            p
-                a(href="/verifications/" + player.doc target="_blank") View Verification
         button(hx-get="/api/manage/players/" + player.id hx-target="closest .player-card" hx-swap="outerHTML") Update
         button(hx-delete="/api/manage/players/" + player.id hx-target="closest .player-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this player's registration?") Delete
