@@ -1,6 +1,8 @@
 mixin verify-card(player)
     include player-card
     +player-card(player)
+        if player.discord !== player.manager.discord
+            p(hx-get="/api/discord/member/" + player.manager.discord hx-trigger="intersect once" hx-swap="beforeend") Manager: 
         if player.doc != null
             p
                 a(href="/verifications/" + player.doc target="_blank") View Verification

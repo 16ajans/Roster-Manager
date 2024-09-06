@@ -4,7 +4,5 @@ mixin player-card(player)
         p Name: #{player.name}
         p School: #{player.school}
         p Status: #{player.status}
-        if player.discord !== player.manager.discord
-            p(hx-get="/api/discord/member/" + player.manager.discord hx-trigger="intersect once" hx-swap="beforeend") Manager: 
         if block
             block
