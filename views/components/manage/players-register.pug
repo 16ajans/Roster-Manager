@@ -1,0 +1,28 @@
+-
+    let discord = ""
+    let name = ""
+    let school = ""
+    
+    if (player) {
+        discord = player.discord
+        name = player.name 
+        school = player.school
+    }
+form
+    label(for="discord") Discord:
+    input#discord(type="text" name="discord" value=discord required)
+    br
+    label(for="name") Name:
+    input#name(type="text" name="name" value=name required)
+    br
+    label(for="school") School:
+    input#school(type="text" name="school" value=school required)
+    br
+    label(for="verification") Verification:
+    input#verification(type="file" name="verification")
+    br
+    button(hx-get="/api/manage/players" hx-target="#players") Cancel
+    if player
+        input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-put="/api/manage/players/" + player.id hx-target="#players")
+    else
+        input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-post="/api/manage/players" hx-target="#players")
