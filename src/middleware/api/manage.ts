@@ -53,7 +53,7 @@ router
             next()
         }, getPlayers)
     .put('/players/:playerID', userAuth, verifUpload.single('verification'), async (req, res, next) => {
-        let player = await prisma.player.findUnique({
+        const player = await prisma.player.findUnique({
             where: {
                 id: req.params.playerID
             }
@@ -77,7 +77,7 @@ router
             data.doc = req.file.filename
             data.status = State.REVIEW
         }
-        player = await prisma.player.update({
+        await prisma.player.update({
             where: {
                 id: req.params.playerID
             },
