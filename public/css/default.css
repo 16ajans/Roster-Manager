@@ -13,6 +13,7 @@ body {
 
 form {
     line-height: 2rem;
+    margin-bottom: 1rem;
 }
 form label {
     margin: 0.5rem
@@ -41,6 +42,7 @@ form label {
     /* border: 1px solid black;
     border-radius: 1rem;
     padding: 1rem; */
+    margin-bottom: 1rem;
 }
 
 div {
