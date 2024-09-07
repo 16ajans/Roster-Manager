@@ -3,6 +3,7 @@ import { userAuth } from '../auth'
 import { prisma } from '../../drivers/db'
 import { verifUpload } from '../../drivers/filesystem'
 import { Player, State } from '@prisma/client'
+import { fetchGuildMember, fetchUser } from '../../drivers/bot'
 
 export const router = express.Router()
 
@@ -102,9 +103,15 @@ router
             where: {
                 id: req.params.playerID
             }
-        })
-        res.render('components/manage/players-register', {
-            player
+        }) as Player
+        const user = fetchUser(player.discord)
+        const member = fetchGuildMember(player.discord)
+        Promise.all([user, member]).then(results => {
+            res.render('components/manage/players-register', {
+                player,
+                user: results[0],
+                member: results[1]
+            })
         })
     })
 

@@ -30,6 +30,10 @@ export async function sendDM (userSnowflake: UserResolvable, playerSnowflake: Us
     return client.users.send(userSnowflake, { embeds: [await buildVerifNotifEmbed(playerSnowflake, accepted, adminSnowflake, reason)] })
 }
 
+export async function searchUniqueGuildMember(query: string) {
+    return (await guild.members.search({ query, limit: 1 })).first()
+}
+
 client.login(process.env.DISCORD_BOT_TOKEN)
 
 async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {

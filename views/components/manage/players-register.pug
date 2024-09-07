@@ -1,17 +1,17 @@
 -
-    let discord = ""
+    let discordDisplay = ""
     let name = ""
     let school = ""
     
     if (player) {
-        discord = player.discord
+        discordDisplay = member.nickname + ' (' + user.username + ')'
         name = player.name 
         school = player.school
     }
 form
-    label(for="discord") Discord:
-    input#discord(type="text" name="discord" value=discord disabled=(player ? true : false) required=(player ? false : true))
-    br
+    label(for="discordDisplay") Discord:
+    input#discordDisplay(type="text" name="discordDisplay" value=discordDisplay disabled=(player ? true : false) required=(player ? false : true))
+    p(hx-encoding="multipart/form-data" hx-post="/api/discord/member/search" hx-trigger="keyup from:#discordDisplay delay:500ms" style="margin:0;margin-left:1rem;font-weight:bold;")
     label(for="name") Name:
     input#name(type="text" name="name" value=name required)
     br

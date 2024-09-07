@@ -1,1 +1,3 @@
-span #{member.nickname} (#{user.username})
+span(id="discord" + user.id) #{member.nickname} (#{user.username})
+if (input)
+    input#discord(type="hidden" name="discord" value=user.id)

@@ -1,6 +1,9 @@
 import express from "express";
 import { userAuth } from "../auth";
-import { fetchGuildMember, fetchUser } from "../../drivers/bot"
+import { fetchGuildMember, fetchUser, searchUniqueGuildMember } from "../../drivers/bot"
+import multer from "multer";
+
+const upload = multer()
 
 export const router = express.Router()
 
@@ -13,4 +16,22 @@ router.get('/member/:snowflake', userAuth, async (req, res) => {
             member: results[1]
         })
     })
+})
+
+router.post('/member/search', userAuth, upload.none(), async (req, res) => {
+    if (!req.body.discordDisplay || (req.body.discordDisplay as string).length < 1) {
+        res.send()
+        return
+    }
+    const member = await searchUniqueGuildMember(req.body.discordDisplay)
+    if (member) {
+        const user = member.user
+        res.render('components/discord-member', {
+            user,
+            member,
+            input: true
+        })
+    } else {
+        res.send('<span>Not Found.</span>')
+    }
 })
