@@ -3,7 +3,10 @@
 header
     a.flexH(href='/')
         img#logo(src='/images/CVRE.png' alt='CVRE Logo')
-        h1 Roster Manager
+        if (production)
+            h1 Roster Manager
+        else
+            h1(style="text-align: center;color: red;font-weight: bold;") DEVELOPMENT
     .space
     if authed && user.admin
         a.flexV(href='/admin')

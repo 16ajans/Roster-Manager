@@ -7,6 +7,7 @@ import morgan from 'morgan'
 
 process.env['dirRoot'] = path.resolve(__dirname, '..')
 const adminRoleID = process.env.ADMIN_ROLE_ID as string
+const production = process.env.NODE_ENV as string == 'production'
 
 import { prismaSession } from './drivers/db'
 
@@ -18,7 +19,7 @@ import { Events } from 'discord.js';
 const app = express()
 
 app.disable("x-powered-by")
-if (process.env.NODE_ENV !== 'production') {
+if (!production) {
   app.use(morgan('dev'))  
 }
 app.use(compression())
@@ -50,14 +51,16 @@ app.use('/api', api)
 app.get('/', async (req, res) => {
   res.render('dashboard', {
     title: 'CVRE Roster Manager | Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    production
   })
 })
 app.get('/account', async (req, res) => {
   if (req.session.user?.auth) {
       res.render('account', {
       title: 'CVRE Roster Manager | Account',
-      user: req.session.user
+      user: req.session.user,
+      production
     })
   } else {
     res.redirect('/auth/login')
@@ -68,7 +71,8 @@ app.get('/admin', async (req, res) => {
     if (req.session.user.roles.includes(adminRoleID)) {
       res.render('admin', {
         title: 'CVRE Roster Manager | Admin',
-        user: req.session.user
+        user: req.session.user,
+        production
       })
     } else {
       res.redirect('/account')
