@@ -12,6 +12,8 @@ import { prismaSession } from './drivers/db'
 
 import { adminAuth, router as auth } from './middleware/auth'
 import { router as api } from './middleware/api'
+import { client } from './drivers/bot';
+import { Events } from 'discord.js';
 
 const app = express()
 
@@ -82,4 +84,6 @@ app.get('/help', async (req, res) => {
     })
 })
 
-app.listen(process.env.PORT)
+client.once(Events.ClientReady, () => {
+  app.listen(process.env.PORT)
+})

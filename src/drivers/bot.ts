@@ -1,7 +1,7 @@
 import { Client, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
 import 'dotenv/config'
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+export const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 let guild: Guild
 
 client.once(Events.ClientReady, (client) => {
