@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { userAuth } from '../auth'
 import { prisma } from '../../drivers/db'
-import { verifUpload } from '../../drivers/filesystem'
-import { Player, State } from '@prisma/client'
+import { noUpload, verifUpload } from '../../drivers/filesystem'
+import { Player, State, Team } from '@prisma/client'
 import { fetchGuildMember, fetchUser } from '../../drivers/bot'
 
 export const router = express.Router()

@@ -23,3 +23,5 @@ async function verifFileFilter (req: Request, file: Express.Multer.File, cb: Fil
   }
 
 export const verifUpload = multer({ storage: verifStorage, fileFilter: verifFileFilter })
+
+export const noUpload = multer().none()
