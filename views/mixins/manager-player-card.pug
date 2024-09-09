@@ -1,4 +1,4 @@
-mixin manager-card(player)
+mixin manager-player-card(player)
     include player-card
     +player-card(player)
         button(hx-get="/api/manage/players/" + player.id hx-target="closest .player-card" hx-swap="outerHTML") Update

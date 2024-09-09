@@ -1,4 +1,4 @@
-include ../../mixins/manager-card
+include ../../mixins/manager-player-card
 each player in players
-    +manager-card(player)
+    +manager-player-card(player)
 button(hx-get="/api/manage/players/register" hx-swap="outerHTML") Register a New Player
