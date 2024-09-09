@@ -216,3 +216,20 @@ router
             })
         })
     })
+
+router
+    .get('/teams/:teamID/assign', userAuth, async (req, res) => {
+        const players = await prisma.player.findMany({
+            where: {
+                managerId: req.session.user?.id,
+                Assignment: {
+                    none: {
+                        teamId: req.params.teamID
+                    }
+                }
+            }
+        })
+        res.render('components/manage/teams-assign', {
+            players
+        })
+    })

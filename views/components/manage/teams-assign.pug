@@ -1,0 +1,8 @@
+select
+    each player in players
+        option(value=player.id)= player.discord
+    else
+        option No managed players available.
+button Assign
+button(hx-get="/api/manage/teams" hx-target="#teams") Cancel
+br

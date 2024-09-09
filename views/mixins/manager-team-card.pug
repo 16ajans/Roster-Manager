@@ -1,5 +1,6 @@
 mixin manager-team-card(team)
     include team-card
     +team-card(team)
+        button(hx-get="/api/manage/teams/" + team.id + "/assign" hx-swap="outerHTML") Assign Player
         button(hx-get="/api/manage/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML") Update
         button(hx-delete="/api/manage/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this team?") Delete
