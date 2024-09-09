@@ -1,0 +1,6 @@
+mixin team-card(team)
+    card.team-card(id=team.id)
+        h4 #{team.name}
+        p School/Region: #{team.locale}
+        if block
+            block

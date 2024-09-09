@@ -116,19 +116,103 @@ router
     })
 
 
-
-
-router.get('/teams', userAuth, async (req, res) => {
-        const teams = await prisma.team.findMany({
-            where: {
-                    managerId: req.session.user?.id
-                }
+const getTeams = async function (req: Request, res: Response, next: NextFunction) {
+    const teams = await prisma.team.findMany({
+        where: {
+                managerId: req.session.user?.id
+            }
+    })
+    if (teams.length === 0) {
+        res.render('components/manage/teams-empty')
+    } else {
+        res.render('components/manage/teams-list', {
+            teams
         })
-        if (teams.length === 0) {
-            res.render('components/manage/teams-empty')
-        } else {
-            res.render('components/manage/teams-list', {
-                teams
-            })
+    }
+    next()
+}
+
+router
+    .get('/teams', userAuth, getTeams)
+    .post('/teams', userAuth, noUpload, async (req, res, next) => {
+        console.log(req.body)
+        await prisma.team.create({
+            data : {
+                name: req.body.name as string,
+                locale: req.body.locale as string,
+                division: {
+                    connect: {
+                        id: req.body.divisionId
+                    }
+                },
+                manager: {
+                    connect: {
+                        id: req.session.user?.id
+                    }
+                }
+            }
+        })
+        next()
+    }, getTeams)
+    .put('/teams/:teamID', userAuth, noUpload, async (req, res, next) => {
+        const team = await prisma.team.findUnique({
+            where: {
+                id: req.params.teamID
+            }
+        }) as Team
+        const data: {
+            name?: string;
+            locale?: string;
+            division?: { connect: { id: string; }; };
+        } = {}
+        if (team.name != req.body.name) {
+            data.name = req.body.name
         }
+        if (team.locale != req.body.locale) {
+            data.locale = req.body.locale
+        }
+        if (team.divisionId != req.body.divisionId) {
+            data.division = {
+                connect: {
+                    id: req.body.divisionId
+                }
+            }
+        }
+        await prisma.team.update({
+            where: {
+                id: req.params.teamID
+            },
+            data
+        })
+        next()
+    }, getTeams)
+    .delete('/teams/:teamID', userAuth, async (req, res) => {
+        await prisma.team.delete({
+            where: {
+                id: req.params.teamID
+            }
+        })
+        res.send("<p>Team deleted.</p>")
+    })
+
+
+    .get('/teams/register', userAuth, async (req, res) => {
+        const divisions = await prisma.division.findMany()
+        res.render('components/manage/teams-register', {
+            divisions
+        })
+    })
+    .get('/teams/:teamID', userAuth, async (req, res) => {
+        const divisions = prisma.division.findMany()
+        const team = prisma.team.findUnique({
+            where: {
+                id: req.params.teamID
+            }
+        })
+        Promise.all([divisions, team]).then(results => {
+            res.render('components/manage/teams-register', {
+                divisions: results[0],
+                team: results[1]
+            })
+        })
     })

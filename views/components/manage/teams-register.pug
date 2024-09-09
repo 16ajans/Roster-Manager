@@ -1,0 +1,29 @@
+-
+    let name = ""
+    let locale = ""
+    let divisionId = ""
+    
+    if (team) {
+        name = team.name 
+        locale = team.locale
+        divisionId = team.divisionId
+    }
+form
+    label(for="name") Name:
+    input#name(type="text" name="name" value=name required)
+    br
+    label(for="locale") School/Region:
+    input#locale(type="text" name="locale" value=locale required)
+    br
+    label(for="divisionId") Division: 
+    select#divisionID(name="divisionId" value=divisionId required)
+        each div in divisions
+            option(value=div.id)= div.name
+        else
+            option No divisions available.
+    br
+    if team
+        input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-put="/api/manage/teams/" + team.id hx-target="#teams")
+    else
+        input(type="submit" value="Submit" hx-encoding="multipart/form-data" hx-post="/api/manage/teams" hx-target="#teams")
+    button(hx-get="/api/manage/teams" hx-target="#teams") Cancel

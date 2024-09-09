@@ -37,7 +37,8 @@ form label {
     }
 }
 
-.player-card {
+.player-card,
+.team-card {
     display: block;
     /* border: 1px solid black;
     border-radius: 1rem;

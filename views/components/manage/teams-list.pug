@@ -1,0 +1,4 @@
+include ../../mixins/manager-team-card
+each team in teams
+    +manager-team-card(team)
+button(hx-get="/api/manage/teams/register" hx-swap="outerHTML") Register a New Team
