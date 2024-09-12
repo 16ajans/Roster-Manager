@@ -117,7 +117,7 @@ router
 
 
 const getTeams = async function (req: Request, res: Response, next: NextFunction) {
-    const teams = await prisma.team.findMany({
+    const teams = await prisma.team.findMany({ // TODO: include assignment & player info
         where: {
                 managerId: req.session.user?.id
             }
@@ -230,6 +230,54 @@ router
             }
         })
         res.render('components/manage/teams-assign', {
+            teamID: req.params.teamID,
             players
         })
     })
+    .post('/teams/:teamID/assignments', userAuth, noUpload, async (req, res, next) => {
+        const data: {
+            player: {
+                connect: {
+                    id: string
+                }
+            },
+            team: {
+                connect: {
+                    id: string
+                }
+            },
+            alt_tag?: string,
+            scoresaber?: string,
+            status: State
+        } = {
+            player: {
+                connect: {
+                    id: req.body.playerID as string
+                }
+            },
+            team: {
+                connect: {
+                    id: req.params.teamID as string
+                }
+            },
+            status: State.ACCEPTED // short circuit for manager-only assignments. implement later for join requests
+        }
+        if (req.body.alt_tag) {
+            data.alt_tag = req.body.alt_tag
+        }
+        if (req.body.scoresaber) {
+            data.scoresaber = req.body.scoresaber
+        }
+        await prisma.assignment.create({
+            data
+        })
+        next()
+    }, getTeams)
+    .delete('/teams/:teamID/assignments/:assignmentID', userAuth, async (req, res, next) => {
+        await prisma.assignment.delete({
+            where: {
+                id: req.params.assignmentID
+            }
+        })
+        next()
+    }, getTeams)
