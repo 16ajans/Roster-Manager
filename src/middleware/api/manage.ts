@@ -9,14 +9,12 @@ export const router = express.Router()
 
 const getPlayers = async function (req: Request, res: Response, next: NextFunction) {
     const players = await prisma.player.findMany({
-        where: { AND: [
-            {
-                managerId: req.session.user?.id
-            },
-            { NOT: {
+        where: {
+            managerId: req.session.user?.id,
+            NOT: {
                 discord: req.session.user?.discord
-            }}
-        ]}
+            }
+        }
     })
     if (players.length === 0) {
         res.render('components/manage/players-empty')
@@ -56,7 +54,8 @@ router
     .put('/players/:playerID', userAuth, verifUpload.single('verification'), async (req, res, next) => {
         const player = await prisma.player.findUnique({
             where: {
-                id: req.params.playerID
+                id: req.params.playerID,
+                managerId: req.session.user?.id
             }
         }) as Player
         const data: {
@@ -80,7 +79,8 @@ router
         }
         await prisma.player.update({
             where: {
-                id: req.params.playerID
+                id: req.params.playerID,
+                managerId: req.session.user?.id
             },
             data
         })
@@ -89,7 +89,8 @@ router
     .delete('/players/:playerID', userAuth, async (req, res) => {
         await prisma.player.delete({
             where: {
-                id: req.params.playerID
+                id: req.params.playerID,
+                managerId: req.session.user?.id
             }
         })
         res.send("<p>Player registration deleted.</p>")
@@ -101,7 +102,8 @@ router
     .get('/players/:playerID', userAuth, async (req, res) => {
         const player = await prisma.player.findUnique({
             where: {
-                id: req.params.playerID
+                id: req.params.playerID,
+                managerId: req.session.user?.id
             }
         }) as Player
         const user = fetchUser(player.discord)
@@ -157,7 +159,8 @@ router
     .put('/teams/:teamID', userAuth, noUpload, async (req, res, next) => {
         const team = await prisma.team.findUnique({
             where: {
-                id: req.params.teamID
+                id: req.params.teamID,
+                managerId: req.session.user?.id
             }
         }) as Team
         const data: {
@@ -180,7 +183,8 @@ router
         }
         await prisma.team.update({
             where: {
-                id: req.params.teamID
+                id: req.params.teamID,
+                managerId: req.session.user?.id
             },
             data
         })
@@ -189,7 +193,8 @@ router
     .delete('/teams/:teamID', userAuth, async (req, res) => {
         await prisma.team.delete({
             where: {
-                id: req.params.teamID
+                id: req.params.teamID,
+                managerId: req.session.user?.id
             }
         })
         res.send("<p>Team deleted.</p>")
@@ -206,7 +211,8 @@ router
         const divisions = prisma.division.findMany()
         const team = prisma.team.findUnique({
             where: {
-                id: req.params.teamID
+                id: req.params.teamID,
+                managerId: req.session.user?.id
             }
         })
         Promise.all([divisions, team]).then(results => {
@@ -235,6 +241,23 @@ router
         })
     })
     .post('/teams/:teamID/assignments', userAuth, noUpload, async (req, res, next) => {
+        const player = await prisma.player.findUnique({
+            where: {
+                id: req.body.playerID,
+                managerId: req.session.user?.id
+            }
+        })
+        const team = await prisma.team.findUnique({
+            where: {
+                id: req.params.teamID,
+                managerId: req.session.user?.id
+            }
+        })
+        if (!player || !team) {
+            res.sendStatus(403)
+            return
+        }
+
         const data: {
             player: {
                 connect: {
@@ -274,6 +297,17 @@ router
         next()
     }, getTeams)
     .delete('/teams/:teamID/assignments/:assignmentID', userAuth, async (req, res, next) => {
+        const team = await prisma.team.findUnique({
+            where: {
+                id: req.params.teamID,
+                managerId: req.session.user?.id
+            }
+        })
+        if (!team) {
+            res.sendStatus(403)
+            return
+        }
+
         await prisma.assignment.delete({
             where: {
                 id: req.params.assignmentID
