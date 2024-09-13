@@ -14,7 +14,7 @@ const adminRoleID = process.env.ADMIN_ROLE_ID as string
 
 export const userAuth: RequestHandler = (req, res, next) => {
   if (req.session.user?.auth) next()
-  else res.sendStatus(401)
+  else res.redirect('/auth/login')
 }
 
 export const adminAuth: RequestHandler = async (req, res, next) => {
@@ -44,7 +44,7 @@ router.get('/callback', async (req, res) => {
   try {
     await fetchGuildMember(discordUser.id)
   } catch (err) {
-    res.redirect('not-joined')
+    res.redirect('/auth/not-joined')
     return
   }
 
@@ -70,7 +70,7 @@ router.get('/callback', async (req, res) => {
   req.session.user.admin = req.session.user.roles.includes(adminRoleID)
 
   req.session.save(() => {
-    res.redirect('/account')
+    res.redirect('/')
   })
 })
 

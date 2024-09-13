@@ -1,0 +1,9 @@
+include discord-member
+mixin player-card(player)
+    card.player-card(id=player.id)
+        +discord-member(player.discord)
+        p Name: #{player.name}
+        p School: #{player.school}
+        p Status: #{player.status}
+        if block
+            block

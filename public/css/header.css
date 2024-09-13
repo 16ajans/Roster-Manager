@@ -1,12 +1,12 @@
 @import url('/css/gg-link-icon.css');
 
 header {
-    /* display: flex;
-    flex-direction: row;
-    justify-content: space-between; */
-    gap: 1rem;
-    display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    display: flex;
+    justify-content: space-between;
+}
+nav {
+    display: flex;
+    justify-content: space-evenly;
 }
 
 header a {
