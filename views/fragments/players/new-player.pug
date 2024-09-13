@@ -1,5 +1,5 @@
 include ../mixins/player-card
-button(hx-get='/players/create' hx-swap='outerHTML') Create New Player
+button(hx-get='/players/create' hx-swap='outerHTML') Register New Player
 +player-card(player)
     button(hx-get="/players/" + player.id + "/edit" hx-target="closest .player-card" hx-swap="outerHTML") Update
     button(hx-delete="/players/" + player.id hx-target="closest .player-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this player's registration?") Delete

@@ -12,4 +12,4 @@ form#createPlayer(hx-post="/players/create" hx-encoding="multipart/form-data" hx
     input#verification(type="file" name="verification")
     br
     input(type="submit" value="Submit")
-    input(type="button" value="Cancel" onclick="document.getElementById(\'createPlayer\').outerHTML = \'<button hx-get=\"/players/create\" hx-swap=\"outerHTML\">Create New Player</button>\'; htmx.process(document.body)")
+    input(type="button" value="Cancel" onclick="document.getElementById(\'createPlayer\').outerHTML = \'<button hx-get=\"/players/create\" hx-swap=\"outerHTML\">Register New Player</button>\'; htmx.process(document.body)")
