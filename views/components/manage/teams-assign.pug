@@ -1,9 +1,10 @@
 form
     select(name="playerID")
         each player in players
-            option(value=player.id)= player.discord
+            option(value=player.id hx-get="/api/discord/member/" + player.discord hx-trigger="load" hx-swap="innerHTML")= player.discord
         else
             option No managed players available.
+    br
     label(for="alt_tag") In-game tag:
     input#alt_tag(type="text" name="alt_tag" required)
     br

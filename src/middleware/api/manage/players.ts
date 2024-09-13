@@ -1,128 +1,23 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { userAuth } from '../auth'
-import { prisma } from '../../drivers/db'
-import { noUpload, verifUpload } from '../../drivers/filesystem'
-import { Player, State, Team } from '@prisma/client'
-import { fetchGuildMember, fetchUser } from '../../drivers/bot'
+import { userAuth } from '../../auth'
+import { prisma } from '../../../drivers/db'
+import { noUpload } from '../../../drivers/filesystem'
+import { State, Team } from '@prisma/client'
 
 export const router = express.Router()
-
-const getPlayers = async function (req: Request, res: Response, next: NextFunction) {
-    const players = await prisma.player.findMany({
-        where: {
-            managerId: req.session.user?.id,
-            NOT: {
-                discord: req.session.user?.discord
-            }
-        }
-    })
-    if (players.length === 0) {
-        res.render('components/manage/players-empty')
-    } else {
-        res.render('components/manage/players-list', {
-            players
-        })
-    }
-    next()
-}
-
-router
-    .get('/players', userAuth, getPlayers)
-    .post('/players', userAuth, verifUpload.single('verification'), async (req, res, next) => {
-            let state: State = State.AWAITING
-            let doc: string | undefined = undefined
-            if (req.file) {
-                state = State.REVIEW
-                doc = req.file.filename
-            }
-            await prisma.player.create({
-                data: {
-                    name: req.body.name as string,
-                    school: req.body.school as string,
-                    discord: req.body.discord as string,
-                    manager: {
-                        connect: {
-                            id: req.session.user?.id
-                        }
-                    },
-                    doc,
-                    status: state
-                }
-            })
-            next()
-        }, getPlayers)
-    .put('/players/:playerID', userAuth, verifUpload.single('verification'), async (req, res, next) => {
-        const player = await prisma.player.findUnique({
-            where: {
-                id: req.params.playerID,
-                managerId: req.session.user?.id
-            }
-        }) as Player
-        const data: {
-            name?: string;
-            school?: string;
-            doc?: string;
-            status?: State;
-        } = {}
-        if (player.name != req.body.name) {
-            data.name = req.body.name
-        }
-        if (player.school != req.body.school) {
-            data.school = req.body.school
-        }
-        if (Object.keys(data).length > 0) {
-            data.status = State.AWAITING
-        }
-        if (req.file) {
-            data.doc = req.file.filename
-            data.status = State.REVIEW
-        }
-        await prisma.player.update({
-            where: {
-                id: req.params.playerID,
-                managerId: req.session.user?.id
-            },
-            data
-        })
-        next()
-    }, getPlayers)
-    .delete('/players/:playerID', userAuth, async (req, res) => {
-        await prisma.player.delete({
-            where: {
-                id: req.params.playerID,
-                managerId: req.session.user?.id
-            }
-        })
-        res.send("<p>Player registration deleted.</p>")
-    })
-
-    .get('/players/register', userAuth, async (req, res) => {
-        res.render('components/manage/players-register')
-    })
-    .get('/players/:playerID', userAuth, async (req, res) => {
-        const player = await prisma.player.findUnique({
-            where: {
-                id: req.params.playerID,
-                managerId: req.session.user?.id
-            }
-        }) as Player
-        const user = fetchUser(player.discord)
-        const member = fetchGuildMember(player.discord)
-        Promise.all([user, member]).then(results => {
-            res.render('components/manage/players-register', {
-                player,
-                user: results[0],
-                member: results[1]
-            })
-        })
-    })
-
 
 const getTeams = async function (req: Request, res: Response, next: NextFunction) {
     const teams = await prisma.team.findMany({ // TODO: include assignment & player info
         where: {
                 managerId: req.session.user?.id
+        },
+        include: {
+            Assignment: {
+                include: {
+                    player: true
+                }
             }
+        }
     })
     if (teams.length === 0) {
         res.render('components/manage/teams-empty')
@@ -135,9 +30,8 @@ const getTeams = async function (req: Request, res: Response, next: NextFunction
 }
 
 router
-    .get('/teams', userAuth, getTeams)
-    .post('/teams', userAuth, noUpload, async (req, res, next) => {
-        console.log(req.body)
+    .get('/', userAuth, getTeams)
+    .post('/', userAuth, noUpload, async (req, res, next) => {
         await prisma.team.create({
             data : {
                 name: req.body.name as string,
@@ -156,7 +50,7 @@ router
         })
         next()
     }, getTeams)
-    .put('/teams/:teamID', userAuth, noUpload, async (req, res, next) => {
+    .put('/:teamID', userAuth, noUpload, async (req, res, next) => {
         const team = await prisma.team.findUnique({
             where: {
                 id: req.params.teamID,
@@ -190,7 +84,7 @@ router
         })
         next()
     }, getTeams)
-    .delete('/teams/:teamID', userAuth, async (req, res) => {
+    .delete('/:teamID', userAuth, async (req, res) => {
         await prisma.team.delete({
             where: {
                 id: req.params.teamID,
@@ -201,13 +95,13 @@ router
     })
 
 
-    .get('/teams/register', userAuth, async (req, res) => {
+    .get('/register', userAuth, async (req, res) => {
         const divisions = await prisma.division.findMany()
         res.render('components/manage/teams-register', {
             divisions
         })
     })
-    .get('/teams/:teamID', userAuth, async (req, res) => {
+    .get('/:teamID', userAuth, async (req, res) => {
         const divisions = prisma.division.findMany()
         const team = prisma.team.findUnique({
             where: {
@@ -224,7 +118,7 @@ router
     })
 
 router
-    .get('/teams/:teamID/assignments', userAuth, async (req, res) => {
+    .get('/:teamID/assignments', userAuth, async (req, res) => {
         const players = await prisma.player.findMany({
             where: {
                 managerId: req.session.user?.id,
@@ -240,7 +134,7 @@ router
             players
         })
     })
-    .post('/teams/:teamID/assignments', userAuth, noUpload, async (req, res, next) => {
+    .post('/:teamID/assignments', userAuth, noUpload, async (req, res, next) => {
         const player = await prisma.player.findUnique({
             where: {
                 id: req.body.playerID,
@@ -296,7 +190,7 @@ router
         })
         next()
     }, getTeams)
-    .delete('/teams/:teamID/assignments/:assignmentID', userAuth, async (req, res, next) => {
+    .delete('/:teamID/assignments/:assignmentID', userAuth, async (req, res, next) => {
         const team = await prisma.team.findUnique({
             where: {
                 id: req.params.teamID,
