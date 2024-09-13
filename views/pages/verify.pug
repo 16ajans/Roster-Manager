@@ -1,7 +1,7 @@
-extends default
+extends ../default
 
 block content
-    h2 Player Verification
+    h2 Verify
     form#filter(hx-get="/api/verify" hx-trigger="change, load, submit" hx-target="#verify")
         fieldset
             h4 Filter

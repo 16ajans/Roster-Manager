@@ -1,7 +1,7 @@
 import { Client, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
 import 'dotenv/config'
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+export const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 let guild: Guild
 
 client.once(Events.ClientReady, (client) => {
@@ -28,6 +28,10 @@ export function fetchUser (userSnowflake: UserResolvable) {
 
 export async function sendDM (userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
     return client.users.send(userSnowflake, { embeds: [await buildVerifNotifEmbed(playerSnowflake, accepted, adminSnowflake, reason)] })
+}
+
+export async function searchUniqueGuildMember(query: string) {
+    return (await guild.members.search({ query, limit: 1 })).first()
 }
 
 client.login(process.env.DISCORD_BOT_TOKEN)

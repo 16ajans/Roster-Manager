@@ -8,7 +8,7 @@ body {
     padding: 1rem;
     min-height: 100vh;
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto auto 1fr auto;
 }
 
 form {
@@ -41,10 +41,6 @@ form label {
     /* border: 1px solid black;
     border-radius: 1rem;
     padding: 1rem; */
-}
-
-div {
-    margin-left: 2rem;
 }
 
 .modal {

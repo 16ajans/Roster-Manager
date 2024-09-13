@@ -2,7 +2,9 @@ import path from 'path'
 import multer, { FileFilterCallback, StorageEngine } from 'multer'
 import { Request } from 'express'
 
-const verifications = path.join(process.env.dirRoot as string, 'verifications')
+export const dirRoot = path.resolve(__dirname, '../..')
+
+const verifications = path.join(dirRoot as string, 'verifications')
 
 const verifStorage: StorageEngine = multer.diskStorage({
     destination: async function (req, file, cb) {
@@ -23,3 +25,5 @@ async function verifFileFilter (req: Request, file: Express.Multer.File, cb: Fil
   }
 
 export const verifUpload = multer({ storage: verifStorage, fileFilter: verifFileFilter })
+
+export const noUpload = multer().none()
