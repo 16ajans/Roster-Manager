@@ -1,6 +1,11 @@
 mixin manager-team-card(team)
     include team-card
     +team-card(team)
-        button(hx-get="/api/manage/teams/" + team.id + "/assign" hx-swap="outerHTML") Assign Player
+        h5 Players
+        each assignment in team.Assignment
+            p(hx-get="/api/discord/member/" + assignment.player.discord hx-trigger="load" hx-swap="innerHTML")= assignment.player.discord
+        else
+            p No players assigned.
+        button(hx-get="/api/manage/teams/" + team.id + "/assignments" hx-swap="outerHTML") Assign Player
         button(hx-get="/api/manage/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML") Update
         button(hx-delete="/api/manage/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this team?") Delete
