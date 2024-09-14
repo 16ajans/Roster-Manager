@@ -18,7 +18,7 @@ model Division {
   open         Boolean
   min_players  Int?
   max_players  Int?
-  name         String  @unique
+  name         String
   description  String?
   manager_role String?
   player_role  String?
@@ -31,7 +31,7 @@ model Team {
   id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   division   Division     @relation(fields: [divisionId], references: [id])
   manager    User         @relation(fields: [managerId], references: [id])
-  name       String       @unique
+  name       String
   locale     String?
   divisionId String       @db.Uuid
   managerId  String       @db.Uuid
@@ -52,7 +52,7 @@ model Assignment {
 model Player {
   id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   manager    User         @relation(fields: [managerId], references: [id])
-  name       String       @unique
+  name       String
   school     String
   discord    String       @unique
   doc        String?
