@@ -1,0 +1,27 @@
+form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
+    label(for="name") Name:
+    input#name(type="text" name="name" required)
+    br
+    label(for="description") Description:
+    input#description(type="text" name="description")
+    br
+    label(for="open") Open Registration:
+    input#open(type="checkbox" name="open")
+    br
+    label(for="min_players") Minimum Players per Team:
+    input#min_players(type="number" name="min_players")
+    br
+    label(for="max_players") Maximum Players per Team:
+    input#max_players(type="number" name="max_players")
+    br
+    label(for="admin_discord") Division Admin Discord ID:
+    input#admin_discord(type="text" name="admin_discord" required)
+    br
+    label(for="manager_role") Manager Role Discord ID:
+    input#manager_role(type="text" name="manager_role")
+    br
+    label(for="player_role") Player Role Discord ID:
+    input#player_role(type="text" name="player_role")
+    br
+    input(type="submit" value="Submit")
+    input(type="button" value="Cancel" onclick="document.getElementById(\'createDivision\').outerHTML = \'<button hx-get=\"/divisions/create\" hx-swap=\"outerHTML\">Create New Division</button>'; htmx.process(document.body)")

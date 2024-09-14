@@ -1,0 +1,12 @@
+mixin division-card(division)
+    card.division-card(id=division.id)
+        p Name: #{division.name}
+        p Description: #{division.description}
+        p Open Registration: #{division.open}
+        p Minimum Players per Team: #{division.min_players}
+        p Maximum Players per Team: #{division.max_players}
+        p Division Admin Discord ID: #{division.admin.discord} 
+        p Manager Role Discord ID: #{division.manager_role}
+        p Player Role Discord ID: #{division.player_role}
+        if block
+            block
