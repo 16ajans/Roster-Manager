@@ -1,6 +1,6 @@
 form#createPlayer(hx-post="/players/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
     label(for="discordSearch") Discord:
-    input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createPlayer\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid CVRE member.');htmx.find('#createPlayer').reportValidity();}")
+    input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createPlayer\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid, unregistered CVRE member.');htmx.find('#createPlayer').reportValidity();}")
     p(hx-post="/discord/member/search" hx-trigger="keyup from:#discordSearch delay:500ms" hx-target='this' hx-swap="innerHTML")
     label(for="name") Name:
     input#name(type="text" name="name" required)

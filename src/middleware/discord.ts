@@ -3,6 +3,7 @@ import { fetchGuildMember, searchUniqueGuildMember } from "../drivers/bot";
 import { noUpload } from "../drivers/fs";
 import { Player } from "@prisma/client";
 import { GuildMember } from "discord.js";
+import { prisma } from "../drivers/db";
 
 export const router = express.Router()
 
@@ -13,9 +14,18 @@ router.post('/member/search', noUpload, async (req, res) => {
     }
     const member = await searchUniqueGuildMember(req.body.discordSearch)
     if (member) {
+        const player = await prisma.player.findUnique({
+            where: {
+                discord: member?.id
+            }
+        })
+        let registered = false
+        if (player) {
+            registered = true
+        }
         res.render('fragments/discord-member', {
             member,
-            input: true
+            registered
         })
     } else {
         res.send('<p>Not Found.</p>')

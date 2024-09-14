@@ -1,3 +1,7 @@
-mixin discord-member(member)
+mixin discord-member(member, registered)
     span= member.displayName
-    input(type='hidden' name='discord' value=member.id)
+    if registered
+        br
+        span This CVRE member is already registered!
+    else
+        input(type='hidden' name='discord' value=member.id)
