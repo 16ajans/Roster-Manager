@@ -1,0 +1,9 @@
+include discord-member
+mixin team-card(team)
+    card.team-card(id=team.id)
+        p Manager: 
+            +discord-member(team.manager.discord)
+        p Name: #{team.name}
+        p School/Region: #{team.locale}
+        if block
+            block
