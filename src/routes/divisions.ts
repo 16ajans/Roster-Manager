@@ -33,6 +33,12 @@ router
     } else {
       req.body.open = false
     }
+    if (req.body.min_players === "") {
+      req.body.min_players = null
+    }
+    if (req.body.max_players === "") {
+      req.body.max_players = null
+    }
     const division = await prisma.division.create({
         data: {
           name: req.body.name as string,
