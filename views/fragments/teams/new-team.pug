@@ -1,0 +1,5 @@
+include ../mixins/team-card
+button(hx-get='/teams/create' hx-swap='outerHTML') Create New Team
++team-card(team)
+    button(hx-get="/teams/" + team.id + "/edit" hx-target="closest .team-card" hx-swap="outerHTML") Update
+    button(hx-delete="/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this team?") Delete

@@ -37,7 +37,11 @@ router
     })
   })
   .get('/create', async (req, res) => {
-    res.render('fragments/teams/create')
+    const divisions = await prisma.division.findMany({})
+    res.render('fragments/teams/create', {
+        divisions
+      }
+    )
   })
   .post('/create', noUpload, async (req, res) => {
     const team = await prisma.team.create({
@@ -56,7 +60,7 @@ router
           }
         }
     })
-    res.render('fragments/players/new-team', {
+    res.render('fragments/teams/new-team', {
       team
     })
   })
