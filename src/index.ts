@@ -23,7 +23,7 @@ import { router as verify } from './routes/verify'
 const app = express()
 
 if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'))  
+  app.use(morgan('dev'))
 }
 app.use(
   session({
@@ -57,7 +57,7 @@ app.use('/verify', adminAuth, verify)
 app.get('/help', async (req, res) => {
   res.render('help', {
     title: 'CVRE Roster Manager | Help'
-    })
+  })
 })
 
 app.use('/', async (req, res, next) => {

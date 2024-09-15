@@ -9,21 +9,21 @@ export const router = express.Router()
 
 router.get('/', async (req, res) => {
     res.render('pages/verify', {
-      title: 'CVRE Roster Manager | Verify',
-      user: req.session.user
+        title: 'CVRE Roster Manager | Verify',
+        user: req.session.user
     })
-  })
+})
 
 router.use('/docs', express.static(path.join(dirRoot, 'verifications'), {
-  setHeaders: (res) => {
-    res.set({
-        'Content-Disposition': 'inline'
-      })
-    },  
+    setHeaders: (res) => {
+        res.set({
+            'Content-Disposition': 'inline'
+        })
+    },
     maxAge: '1d'
-  }))
+}))
 
-  router
+router
     .get('/list', async (req, res) => {
         const query: State[] = []
         if (req.query.REJECTED === "on") {
@@ -74,7 +74,7 @@ router.use('/docs', express.static(path.join(dirRoot, 'verifications'), {
         if (param == State.ACCEPTED) {
             sendVerifDM(player.manager.discord, player.discord, true)
         } else {
-          sendVerifDM(player.manager.discord, player.discord, false, req.session.user?.discord, req.body.reason)
+            sendVerifDM(player.manager.discord, player.discord, false, req.session.user?.discord, req.body.reason)
         }
     })
     .delete('/:playerID', async (req, res) => {

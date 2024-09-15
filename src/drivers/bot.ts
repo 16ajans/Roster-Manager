@@ -17,29 +17,29 @@ client.once(Events.ClientReady, (client) => {
     })
 })
 
-export function fetchMemberRoles (userSnowflake: UserResolvable) {
+export function fetchMemberRoles(userSnowflake: UserResolvable) {
     fetchGuildMember(userSnowflake).then((member) => {
         return member.roles
     })
 }
 
-export function fetchGuildMember (userSnowflake: UserResolvable) {
+export function fetchGuildMember(userSnowflake: UserResolvable) {
     return guild.members.fetch(userSnowflake)
 }
 
-export function fetchUser (userSnowflake: UserResolvable) {
+export function fetchUser(userSnowflake: UserResolvable) {
     return client.users.fetch(userSnowflake)
 }
 
-export async function sendVerifDM (userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
+export async function sendVerifDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
     return client.users.send(userSnowflake, { embeds: [await buildVerifNotifEmbed(playerSnowflake, accepted, adminSnowflake, reason)] })
 }
 
-export async function sendPlayerChangeDM (userSnowflake: UserResolvable, playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, change: ChangeAction) {
+export async function sendPlayerChangeDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, change: ChangeAction) {
     return client.users.send(userSnowflake, { embeds: [await buildPlayerChangeNotifEmbed(playerSnowflake, actorSnowflake, change)] })
 }
 
-export async function sendAssignmentChangeDM (userSnowflake: UserResolvable, playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, teamId: string, change: ChangeAction) {
+export async function sendAssignmentChangeDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, teamId: string, change: ChangeAction) {
     return client.users.send(userSnowflake, { embeds: [await buildAssignmentChangeNotifEmbed(playerSnowflake, actorSnowflake, teamId, change)] })
 }
 
@@ -51,9 +51,9 @@ client.login(process.env.DISCORD_BOT_TOKEN)
 
 async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
     const embed = new EmbedBuilder()
-    .setColor(0x703893)
-    .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
-    .setFooter({ text: "This is an automated message. Do not reply."})
+        .setColor(0x703893)
+        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setFooter({ text: "This is an automated message. Do not reply." })
     const player = await fetchGuildMember(playerSnowflake)
     if (accepted) {
         embed.setTitle(`${player.displayName}'s verification has been approved!`)
@@ -71,9 +71,9 @@ async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: b
 
 async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, change: ChangeAction) {
     const embed = new EmbedBuilder()
-    .setColor(0x703893)
-    .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
-    .setFooter({ text: "This is an automated message. Do not reply."})
+        .setColor(0x703893)
+        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setFooter({ text: "This is an automated message. Do not reply." })
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
     if (change === ChangeAction.CREATE) {
@@ -88,9 +88,9 @@ async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, acto
 
 async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, teamId: string, change: ChangeAction) {
     const embed = new EmbedBuilder()
-    .setColor(0x703893)
-    .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
-    .setFooter({ text: "This is an automated message. Do not reply."})
+        .setColor(0x703893)
+        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setFooter({ text: "This is an automated message. Do not reply." })
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
     const team = await prisma.team.findUnique({
@@ -103,12 +103,12 @@ async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, 
     })
     if (change === ChangeAction.CREATE) {
         embed.setTitle(`${player.displayName} has been assigned to ${team?.name}!`)
-            .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>`})
+            .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>` })
     } else {
         embed.setTitle(`${player.displayName} has been removed from ${team?.name}.`)
-            .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>`})
+            .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>` })
         if (team?.manager.discord != actorSnowflake) {
-            embed.addFields({ name: 'Removed by:', value: `<@${actorSnowflake}>`})
+            embed.addFields({ name: 'Removed by:', value: `<@${actorSnowflake}>` })
         }
     }
 

@@ -12,14 +12,14 @@ const instance = axios.create({
 
 export const authorizationURL = encodeURI(
   'https://discord.com/api/oauth2/authorize' +
-    '?response_type=code' +
-    `&client_id=${client_id}` +
-    `&scope=${scopes}` +
-    `&redirect_uri=${redirect_uri}` +
-    '&prompt=none'
+  '?response_type=code' +
+  `&client_id=${client_id}` +
+  `&scope=${scopes}` +
+  `&redirect_uri=${redirect_uri}` +
+  '&prompt=none'
 )
 
-export async function getTokenResponse (code: string) {
+export async function getTokenResponse(code: string) {
   const res = await instance.post(
     '/oauth2/token',
     {
@@ -29,15 +29,15 @@ export async function getTokenResponse (code: string) {
       code,
       redirect_uri: redirect_uri
     }, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
+  }
   )
   return res.data
 }
 
-export async function revokeToken (token: string) {
+export async function revokeToken(token: string) {
   const res = await instance.post(
     '/oauth2/token/revoke',
     {
@@ -45,16 +45,16 @@ export async function revokeToken (token: string) {
       client_secret: client_secret,
       token
     }, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
+  }
   )
   return res.data
 }
 
-export async function getCurrentUser (token: string) {
+export async function getCurrentUser(token: string) {
   const res = await instance.get('/users/@me',
     {
       headers: {
@@ -65,7 +65,7 @@ export async function getCurrentUser (token: string) {
   return res.data
 }
 
-export async function getGuildRoles (token: string) {
+export async function getGuildRoles(token: string) {
   const res = await instance.get(
     `/users/@me/guilds/${guild_id}/member`,
     {

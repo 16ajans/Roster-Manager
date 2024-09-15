@@ -77,15 +77,15 @@ router.get('/callback', async (req, res) => {
 router.get('/logout', async (req, res) => {
   if (req.session.user?.auth) {
     revokeToken(req.session.user.auth)
-    
+
     prisma.user.update({
       where: {
         id: req.session.user.id
-      }, 
+      },
       data: {
         auth: null
       }
-    })   
+    })
   }
   req.session.destroy(() => {
     res.redirect('/')

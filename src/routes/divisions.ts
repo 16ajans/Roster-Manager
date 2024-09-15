@@ -11,7 +11,7 @@ router
       user: req.session.user
     })
   })
-  
+
 const renderDivision: RequestHandler = async (req, res) => {
   const division = await prisma.division.findUnique({
     where: {
@@ -33,10 +33,10 @@ const renderDivision: RequestHandler = async (req, res) => {
 router
   .get('/list', async (req, res) => {
     const divisions = await prisma.division.findMany({
-        include: {
-          admin: true
-        }
+      include: {
+        admin: true
       }
+    }
     )
     res.render('fragments/divisions/list', {
       divisions
@@ -52,23 +52,23 @@ router
       req.body.open = false
     }
     const division = await prisma.division.create({
-        data: {
-          name: req.body.name as string,
-          description: req.body.description as string,
-          open: req.body.open as boolean,
-          min_players: parseInt(req.body.min_players),
-          max_players: parseInt(req.body.max_players),
-          manager_role: req.body.manager_role as string,
-          player_role: req.body.player_role as string,
-          admin: {
-            connect: {
-                discord: req.body.admin_discord
-            }
+      data: {
+        name: req.body.name as string,
+        description: req.body.description as string,
+        open: req.body.open as boolean,
+        min_players: parseInt(req.body.min_players),
+        max_players: parseInt(req.body.max_players),
+        manager_role: req.body.manager_role as string,
+        player_role: req.body.player_role as string,
+        admin: {
+          connect: {
+            discord: req.body.admin_discord
           }
-        },
-        include: {
-          admin: true
         }
+      },
+      include: {
+        admin: true
+      }
     })
     res.render('fragments/divisions/new-division', {
       division
@@ -95,7 +95,7 @@ router
   .put('/:divisionID', noUpload, async (req, res, next) => {
     const division = await prisma.division.findUnique({
       where: {
-          id: req.params.divisionID
+        id: req.params.divisionID
       },
       include: {
         admin: true
@@ -132,7 +132,7 @@ router
       data.player_role = req.body.player_role
     }
     if (division.min_players != req.body.min_players) {
-        data.min_players = parseInt(req.body.min_players)
+      data.min_players = parseInt(req.body.min_players)
     }
     if (division.max_players != req.body.max_players) {
       data.max_players = parseInt(req.body.max_players)
@@ -150,17 +150,17 @@ router
       }
     }
     await prisma.division.update({
-        where: {
-            id: req.params.divisionID
-        },
-        data
+      where: {
+        id: req.params.divisionID
+      },
+      data
     })
     next()
   }, renderDivision)
   .delete('/:divisionID', async (req, res) => {
     prisma.division.delete({
       where: {
-          id: req.params.divisionID
+        id: req.params.divisionID
       }
     }).then(() => {
       res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Division deleted.</p>")
