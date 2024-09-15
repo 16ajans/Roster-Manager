@@ -6,11 +6,15 @@ header
         h1 Roster Manager
     a(href='/account')
         img#avatar(src=avatar alt='Discord Avatar' onerror="this.src='/images/discordavatar.png';")
-nav
-    a(href='/') Dashboard
-    a(href='/players') Players
-    a(href='/teams') Teams
-    if authed && user.admin
-        a(href='/divisions') Divisions
-        a(href='/verify') Verify
-    a(href='/account') Account
+if authed
+    nav
+        a(href='/') Dashboard
+        a(href='/players') Players
+        a(href='/teams') Teams
+        if user.admin
+            a(href='/divisions') Divisions
+            a(href='/verify') Verify
+        a(href='/account') Account
+else 
+    nav 
+        a(href="/auth/login") Log In
