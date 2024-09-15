@@ -51,19 +51,13 @@ router
     } else {
       req.body.open = false
     }
-    if (req.body.min_players === "") {
-      req.body.min_players = undefined
-    }
-    if (req.body.max_players === "") {
-      req.body.max_players = undefined
-    }
     const division = await prisma.division.create({
         data: {
           name: req.body.name as string,
           description: req.body.description as string,
           open: req.body.open as boolean,
-          min_players: req.body.min_players as number,
-          max_players: req.body.max_players as number,
+          min_players: parseInt(req.body.min_players),
+          max_players: parseInt(req.body.max_players),
           manager_role: req.body.manager_role as string,
           player_role: req.body.player_role as string,
           admin: {
@@ -138,18 +132,10 @@ router
       data.player_role = req.body.player_role
     }
     if (division.min_players != req.body.min_players) {
-      if (req.body.min_players === "") {
-        data.min_players = undefined
-      } else {
-        data.min_players = req.body.min_players
-      }
+        data.min_players = parseInt(req.body.min_players)
     }
     if (division.max_players != req.body.max_players) {
-      if (req.body.max_players === "") {
-        data.max_players = undefined
-      } else {
-        data.max_players = req.body.max_players
-      }
+      data.max_players = parseInt(req.body.max_players)
     }
     if (req.body.open) {
       data.open = true
