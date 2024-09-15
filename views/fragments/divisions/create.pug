@@ -1,5 +1,5 @@
 form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
-    label(for="name") Name:
+    label(for="name") Name: *
     input#name(type="text" name="name" required)
     br
     label(for="description") Description:
@@ -14,7 +14,7 @@ form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data
     label(for="max_players") Maximum Players per Team:
     input#max_players(type="number" name="max_players")
     br
-    label(for="admin_discord") Division Admin Discord ID:
+    label(for="admin_discord") Division Admin Discord ID: *
     input#admin_discord(type="text" name="admin_discord" required)
     br
     label(for="manager_role") Manager Role Discord ID:

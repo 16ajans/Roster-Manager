@@ -1,11 +1,11 @@
 form#createTeam(hx-post="/teams/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
-    label(for="name") Name:
+    label(for="name") Name: *
     input#name(type="text" name="name" required)
     br
-    label(for="locale") School/Region:
+    label(for="locale") School/Region: *
     input#locale(type="text" name="locale" required)
     br
-    label(for="divisionId") Division: 
+    label(for="divisionId") Division: *
     select#divisionID(name="divisionId" value=divisionId required)
         each div in divisions
             option(value=div.id disabled=!div.open)= div.name

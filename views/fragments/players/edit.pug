@@ -2,10 +2,10 @@ form(hx-put="/players/" + player.id hx-encoding="multipart/form-data" hx-swap="o
     label Discord:
     input(type="text" value=player.discord.displayName disabled)
     br
-    label(for="name") Name:
+    label(for="name") Name: *
     input#name(type="text" name="name" value=player.name required)
     br
-    label(for="school") School:
+    label(for="school") School: *
     input#school(type="text" name="school" value=player.school required)
     br
     label(for="verification") Verification:
