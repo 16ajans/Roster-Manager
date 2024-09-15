@@ -49,7 +49,6 @@ app.use('/auth', auth)
 app.use('/discord', userAuth, discord)
 
 app.use('/account', userAuth, account)
-app.use('/', dashboard)
 app.use('/divisions', adminAuth, divisions)
 app.use('/players', userAuth, players)
 app.use('/teams', userAuth, teams)
@@ -60,6 +59,14 @@ app.get('/help', async (req, res) => {
     title: 'CVRE Roster Manager | Help'
     })
 })
+
+app.use('/', async (req, res, next) => {
+  if (!req.session.user?.auth) {
+    res.render("pages/public")
+  } else {
+    next()
+  }
+}, userAuth, dashboard)
 
 bot.once(Events.ClientReady, () => {
   app.listen(process.env.PORT)
