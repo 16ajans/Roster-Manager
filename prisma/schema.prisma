@@ -42,7 +42,7 @@ model Assignment {
   id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   player     Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
   team       Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  alt_tag    String?
+  alt_tag    String
   scoresaber String?
   status     State   @default(REVIEW)
   playerId   String  @db.Uuid
