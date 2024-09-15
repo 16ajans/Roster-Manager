@@ -1,4 +1,4 @@
-form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-swap="outerHTML")
+form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-target="#selfTeam")
     label(for="divisionId") Division: 
     select#divisionId(name="divisionId" required)
         each div in divisions
@@ -10,11 +10,11 @@ form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-swap="outerH
     select#teamId(name="teamId" required hx-post="/self/team/options" hx-trigger="load, change from:#divisionId throttle:500ms" hx-target="this" hx-swap="innerHTML")
         option(value="") Select a division. 
     br
-    label In-Game Name/Gamertag:
-    input(type="text" required)
+    label(for="alt_tag") In-Game Name/Gamertag:
+    input#alt_tag(type="text" name="alt_tag" required)
     br
-    label Scoresaber: (if applicable)
-    input(type="text")
+    label(for="scoresaber") ScoreSaber: (if applicable)
+    input#scoresaber(type="text" name="scoresaber")
     br
     input(type="submit")
-    input(type="button" value="Cancel")
+    input(type="button" value="Cancel" hx-get="/self/team")

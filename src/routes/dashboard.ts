@@ -112,26 +112,71 @@ next()
   res.send("<p hx-get='/self' hx-trigger='load delay:5s'>Registration deleted.</p>")
 })
 
-router.get('/self/team', async (req, res) => {
+const renderSelfTeams: RequestHandler = async (req, res) => {
   const player = await prisma.player.findUnique({
     where: {
       discord: req.session.user?.discord
     },
     include: {
-      Assignment: true
+      Assignment: {
+        include: {
+          team: {
+            include: {
+              division: true
+            }
+          }
+        }
+      }
     }
   })
   if (!player) {
     res.send("<p hx-get='/self/team' hx-trigger='htmx:afterRequest from:#selfReg' hx-target='#selfTeam'>Not yet registered.<br>Please use the above button to register yourself before trying to join a team.</p>")
   } else {
-    res.send("<button hx-get=\"/self/team/join\" hx-swap=\"outerHTML\">Join a Team</button>")
-  }
-}).get('/self/team/join', async (req, res) => {
+    const assignments = player.Assignment
+    res.render("fragments/dashboard/team-list", {
+      assignments
+    })
+}
+}
+
+router.get('/self/team', renderSelfTeams)
+.get('/self/team/join', async (req, res) => {
   const divisions = await prisma.division.findMany()
   res.render('fragments/dashboard/join', {
     divisions
   })
-}).post('/self/team/options', noUpload, async (req, res) => {
+})
+.post('/self/team/join', noUpload, async (req, res, next) => {
+  await prisma.assignment.create({
+    data: {
+      alt_tag: req.body.alt_tag,
+      scoresaber: req.body.scoresaber,
+      team: {
+        connect: {
+          id: req.body.teamId
+        }
+      },
+      player: {
+        connect: {
+          discord: req.session.user?.discord
+        }
+      },
+      status: State.REVIEW
+    }
+  })
+  next()
+}, renderSelfTeams)
+.delete('/self/team/:assignmentID', async (req, res) => {
+  await prisma.assignment.delete({
+    where: {
+      id: req.params.assignmentID
+    }
+  })
+  res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Left team.</p>")
+})
+
+
+.post('/self/team/options', noUpload, async (req, res) => {
   if (!req.body.divisionId || (req.body.divisionId as string).length < 1) {
     res.render('fragments/dashboard/team-options', {
       teams: []
@@ -144,7 +189,7 @@ router.get('/self/team', async (req, res) => {
       Assignment: {
         none: {
           player: {
-            isNot: {
+            is: {
               discord: req.session.user?.discord
             }
           }

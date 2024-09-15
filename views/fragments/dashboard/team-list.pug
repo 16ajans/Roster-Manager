@@ -1,0 +1,9 @@
+include ../mixins/team-card
+button(hx-get="/self/team/join" hx-swap="outerHTML") Join a Team
+each assignment in assignments
+    +team-card(assignment.team)
+        p In-Game Name/Gamertag: #{assignment.alt_tag}
+        if (assignment.scoresaber)
+            p ScoreSaber: #{assignment.scoresaber}
+        p Status: #{assignment.status}
+        button(hx-delete="/self/team/" + assignment.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to leave this team?") Leave

@@ -1,10 +1,10 @@
 include discord-member
 mixin team-card(team)
     card.team-card(id="t" + team.id)
+        p Division: #{team.division.name}
         p Name: #{team.name}
         p School/Region: #{team.locale}
         p Manager: 
             //- +discord-member(team.manager.discord)
-        p Divison: #{team.division.name}
         if block
             block
