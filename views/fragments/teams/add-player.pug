@@ -1,0 +1,15 @@
+form#addPlayer(hx-post="/teams/" + team.id + "/add-player" hx-encoding="multipart/form-data" hx-target="closest .team-card" hx-swap="outerHTML")
+    select(name="playerId" required)
+        each player in players 
+            option(value=player.id)= player.discord.displayName
+        else 
+            option(value="") No players available.
+    br
+    label(for="alt_tag") In-Game Name/Gamertag: *
+    input#alt_tag(type="text" name="alt_tag" required)
+    br
+    label(for="scoresaber") ScoreSaber: (if applicable)
+    input#scoresaber(type="text" name="scoresaber")
+    br
+    input(type="submit")
+    input(type="button" value="Cancel" hx-get="/teams/" + team.id)

@@ -1,4 +1,8 @@
 include ../mixins/team-card
 +team-card(team)
+    ul
+        for assignment in team.Assignment
+            li #{assignment.alt_tag} #{assignment.player.discord.displayName}
+    button(hx-get="/teams/" + team.id + "/add-player" hx-swap="outerHTML") Add Player
     button(hx-get="/teams/" + team.id + "/edit" hx-target="closest .team-card" hx-swap="outerHTML") Update
     button(hx-delete="/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this team?") Delete
