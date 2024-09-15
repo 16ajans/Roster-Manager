@@ -132,6 +132,12 @@ router.get('/self/team', async (req, res) => {
     divisions
   })
 }).post('/self/team/options', noUpload, async (req, res) => {
+  if (!req.body.divisionId || (req.body.divisionId as string).length < 1) {
+    res.render('fragments/dashboard/team-options', {
+      teams: []
+    })
+    return
+  }
   const teams = await prisma.team.findMany({
     where: {
       divisionId: req.body.divisionId,
