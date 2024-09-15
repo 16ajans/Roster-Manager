@@ -1,7 +1,8 @@
 extends ../default
 
 block content
-    h2 Dashboard
-    h3 My Players
-    h3 My Teams
-    // individual reg status, my team, public team listing?
+    h2 Player Dashboard
+    h3 My Registration
+    #selfReg(hx-get='/self' hx-trigger='load')
+    h3 My Team
+    #selfTeam(hx-get='/self/team' hx-trigger='load')

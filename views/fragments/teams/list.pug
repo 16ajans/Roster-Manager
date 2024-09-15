@@ -1,5 +1,4 @@
 include ../mixins/team-card
-button(hx-get='/teams/join' hx-swap='outerHTML') Join a Team
 button(hx-get='/teams/create' hx-swap='outerHTML') Create New Team
 each team in teams
     +team-card(team)

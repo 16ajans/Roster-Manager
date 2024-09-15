@@ -1,0 +1,20 @@
+form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-swap="outerHTML")
+    label(for="divisionId") Division: 
+    select#divisionId(name="divisionId" required)
+        each div in divisions
+            option(value=div.id)= div.name
+        else
+            option(value="") No divisions available. 
+    br
+    label(for="teamId") Team: 
+    select#teamId(name="teamId" required hx-post="/self/team/options" hx-trigger="load, change from:#divisionId throttle:500ms" hx-target="this" hx-swap="innerHTML")
+        option(value="") Select a division. 
+    br
+    label In-Game Name/Gamertag:
+    input(type="text" required)
+    br
+    label Scoresaber: (if applicable)
+    input(type="text")
+    br
+    input(type="submit")
+    input(type="button" value="Cancel")

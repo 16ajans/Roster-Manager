@@ -10,7 +10,7 @@ form(hx-put="/teams/" + team.id hx-encoding="multipart/form-data" hx-swap="outer
         each div in divisions
             option(value=div.id disabled=!div.open selected=(div.id === team.divisionId))= div.name
         else
-            option No divisions available.
+            option(value="") No divisions available.
     br
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" hx-get="/teams/" + team.id hx-target="closest form" hx-swap="outerHTML")
