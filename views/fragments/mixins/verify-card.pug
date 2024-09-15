@@ -5,7 +5,7 @@ mixin verify-card(player)
         //-     p(hx-get="/api/discord/member/" + player.manager.discord hx-trigger="intersect once" hx-swap="beforeend") Manager: 
         if player.doc != null
             p
-                a(href="/verifications/" + player.doc target="_blank") View Verification
+                a(href="/verify/docs/" + player.doc target="_blank") View Verification
         button(hx-put="/verify/" + player.id + "/ACCEPTED" hx-target="closest .player-card" hx-swap="outerHTML") Accept 
         button(onclick="revealModal(\"" + player.id + "\")") Reject
         button(hx-delete="/verify/" + player.id hx-target="closest .player-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this player's registration?") Delete
