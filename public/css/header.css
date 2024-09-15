@@ -7,6 +7,13 @@ header {
 nav {
     display: flex;
     justify-content: space-evenly;
+    margin-top: 1rem;
+}
+nav a {
+    flex: 1;
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid black;
 }
 
 header a {

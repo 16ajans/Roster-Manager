@@ -36,11 +36,11 @@ form label {
     }
 }
 
-.player-card {
+card {
     display: block;
-    /* border: 1px solid black;
-    border-radius: 1rem;
-    padding: 1rem; */
+    margin: 1rem;
+    padding: 0 0.5rem 0.5rem;
+    border: 1px solid black;
 }
 
 .modal {

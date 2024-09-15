@@ -18,6 +18,9 @@ const renderTeam: RequestHandler = async (req, res) => {
     where: {
       id: req.params.teamID,
       managerId: req.session.user?.id
+    },
+    include: {
+      division: true
     }
   }) as Team
   res.render('fragments/teams/team', {
@@ -30,6 +33,9 @@ router
     const teams = await prisma.team.findMany({
         where: {
           managerId: req.session.user?.id
+        },
+        include: {
+          division: true
         }
       })
     res.render('fragments/teams/list', {
@@ -58,6 +64,9 @@ router
                   id: req.body.divisionId
               }
           }
+        },
+        include: {
+          division: true
         }
     })
     res.render('fragments/teams/new-team', {
@@ -70,6 +79,9 @@ router
       where: {
         id: req.params.teamID,
         managerId: req.session.user?.id
+      },
+      include: {
+        division: true
       }
     }) as Team
     res.render('fragments/teams/edit', {
