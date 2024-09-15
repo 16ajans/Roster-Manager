@@ -7,7 +7,7 @@ form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-target="#sel
             option(value="") No divisions available. 
     br
     label(for="teamId") Team: *
-    select#teamId(name="teamId" required hx-post="/self/team/options" hx-trigger="load, change from:#divisionId throttle:500ms" hx-target="this" hx-swap="innerHTML")
+    select#teamId(name="teamId" required hx-post="/self/team/options" hx-trigger="load, change from:#divisionId delay:250ms" hx-target="this" hx-swap="innerHTML")
         option(value="") Select a division. 
     br
     label(for="alt_tag") In-Game Name/Gamertag: *
