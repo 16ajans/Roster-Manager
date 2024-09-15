@@ -8,7 +8,7 @@ form#createTeam(hx-post="/teams/create" hx-encoding="multipart/form-data" hx-swa
     label(for="divisionId") Division: 
     select#divisionID(name="divisionId" value=divisionId required)
         each div in divisions
-            option(value=div.id disabled=div.open)= div.name
+            option(value=div.id disabled=!div.open)= div.name
         else
             option No divisions available.
     br

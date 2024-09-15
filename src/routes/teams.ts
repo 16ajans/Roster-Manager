@@ -78,6 +78,7 @@ router
   })
   .get('/:teamID', renderTeam)
   .get('/:teamID/edit', async (req, res) => {
+    const divisions = await prisma.division.findMany()
     const team = await prisma.team.findUnique({
       where: {
         id: req.params.teamID,
@@ -92,13 +93,14 @@ router
       return
     }
     res.render('fragments/teams/edit', {
-      team
+      team,
+      divisions
     })
   })
   .put('/:teamID', noUpload, async (req, res, next) => {
     const team = await prisma.team.findUnique({
       where: {
-          id: req.params.playerID,
+          id: req.params.teamID,
           managerId: req.session.user?.id
       }
   }) 
@@ -109,6 +111,11 @@ router
   const data: {
       name?: string;
       locale?: string;
+      division?: {
+        connect: {
+            id: string
+        }
+      }
   } = {}
   if (team.name != req.body.name) {
       data.name = req.body.name
@@ -116,9 +123,16 @@ router
   if (team.locale != req.body.locale) {
       data.locale = req.body.locale
   }
-  await prisma.player.update({
+  if (team.divisionId != req.body.divisionId) {
+      data.division = {
+        connect: {
+          id: req.body.divisionId
+      }
+    }
+  }
+  await prisma.team.update({
       where: {
-          id: req.params.playerID,
+          id: req.params.teamID,
           managerId: req.session.user?.id
       },
       data

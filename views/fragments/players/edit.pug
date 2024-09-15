@@ -12,4 +12,4 @@ form(hx-put="/players/" + player.id hx-encoding="multipart/form-data" hx-swap="o
     input#verification(type="file" name="verification")
     br
     input(type="submit" value="Submit")
-    input(type="button" value="Cancel" hx-get="/players/" + player.id)
+    input(type="button" value="Cancel" hx-get="/players/" + player.id hx-target="closest form" hx-swap="outerHTML")
