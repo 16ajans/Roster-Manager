@@ -2,9 +2,9 @@ form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swa
     label(for="name") Name: *
     input#name(type="text" name="name" value=division.name required)
     br
-    label(for="description") Description:
-    input#description(type="text" value=division.description name="description")
-    br
+    //- label(for="description") Description:
+    //- input#description(type="text" value=division.description name="description")
+    //- br
     label(for="open") Open Registration:
     input#open(type="checkbox" checked=division.open name="open")
     br
