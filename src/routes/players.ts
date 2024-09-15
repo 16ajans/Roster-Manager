@@ -2,7 +2,7 @@ import express, { RequestHandler } from 'express'
 import { verifUpload } from '../drivers/fs'
 import { prisma } from '../drivers/db'
 import { hydratePlayer, hydratePlayers } from '../middleware/discord'
-import { Player, State } from '@prisma/client'
+import { State } from '@prisma/client'
 
 export const router = express.Router()
 
@@ -23,7 +23,11 @@ const renderPlayer: RequestHandler = async (req, res) => {
         { discord: req.session.user?.discord }
       ]
     }
-  }) as Player
+  })
+  if (!player) {
+    res.sendStatus(404)
+    return
+  }
   await hydratePlayer(player)
   res.render('fragments/players/player', {
     player
@@ -84,7 +88,11 @@ router
           { discord: req.session.user?.discord }
         ]
       }
-    }) as Player
+    }) 
+    if (!player) {
+      res.sendStatus(404)
+      return
+    }
     await hydratePlayer(player)
     res.render('fragments/players/edit', {
       player
@@ -99,7 +107,11 @@ router
             { discord: req.session.user?.discord }
           ]
       }
-  }) as Player
+  }) 
+  if (!player) {
+    res.sendStatus(404)
+    return
+  }
   const data: {
       name?: string;
       school?: string;

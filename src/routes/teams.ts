@@ -1,4 +1,3 @@
-import { Team } from '@prisma/client'
 import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
 import { noUpload } from '../drivers/fs'
@@ -22,7 +21,11 @@ const renderTeam: RequestHandler = async (req, res) => {
     include: {
       division: true
     }
-  }) as Team
+  }) 
+  if (!team) {
+    res.sendStatus(404)
+    return
+  }
   res.render('fragments/teams/team', {
     team
   })
@@ -83,7 +86,11 @@ router
       include: {
         division: true
       }
-    }) as Team
+    }) 
+    if (!team) {
+      res.sendStatus(404)
+      return
+    }
     res.render('fragments/teams/edit', {
       team
     })
@@ -94,7 +101,11 @@ router
           id: req.params.playerID,
           managerId: req.session.user?.id
       }
-  }) as Team
+  }) 
+  if (!team) {
+    res.sendStatus(404)
+    return
+  }
   const data: {
       name?: string;
       locale?: string;
