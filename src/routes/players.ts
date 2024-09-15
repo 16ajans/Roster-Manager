@@ -1,7 +1,7 @@
 import express, { RequestHandler } from 'express'
 import { verifUpload } from '../drivers/fs'
 import { prisma } from '../drivers/db'
-import { hydratePlayer, hydratePlayers } from '../middleware/discord'
+import { hydrateOne, hydrateMany } from '../middleware/discord'
 import { State } from '@prisma/client'
 
 export const router = express.Router()
@@ -28,7 +28,7 @@ const renderPlayer: RequestHandler = async (req, res) => {
     res.sendStatus(404)
     return
   }
-  await hydratePlayer(player)
+  await hydrateOne(player)
   res.render('fragments/players/player', {
     player
   })
@@ -44,7 +44,7 @@ router
         ]
       }
     })
-    await hydratePlayers(players)
+    await hydrateMany(players)
     res.render('fragments/players/list', {
       players
     })
@@ -73,7 +73,7 @@ router
         status: state
       }
     })
-    await hydratePlayer(player)
+    await hydrateOne(player)
     res.render('fragments/players/new-player', {
       player
     })
@@ -93,7 +93,7 @@ router
       res.sendStatus(404)
       return
     }
-    await hydratePlayer(player)
+    await hydrateOne(player)
     res.render('fragments/players/edit', {
       player
     })

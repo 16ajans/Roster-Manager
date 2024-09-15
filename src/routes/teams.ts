@@ -1,6 +1,8 @@
 import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
 import { noUpload } from '../drivers/fs'
+import { State } from '@prisma/client'
+import { hydrateMany, hydrateOne } from '../middleware/discord'
 
 export const router = express.Router()
 
@@ -19,12 +21,22 @@ const renderTeam: RequestHandler = async (req, res) => {
       managerId: req.session.user?.id
     },
     include: {
-      division: true
+      division: true,
+      manager: true,
+      Assignment: {
+        include: {
+          player: true
+        }
+      }
     }
   })
   if (!team) {
     res.sendStatus(404)
     return
+  }
+  await hydrateOne(team.manager)
+  for (const assignment of team.Assignment) {
+    await hydrateOne(assignment.player)
   }
   res.render('fragments/teams/team', {
     team
@@ -38,9 +50,21 @@ router
         managerId: req.session.user?.id
       },
       include: {
-        division: true
+        division: true,
+        manager: true,
+        Assignment: {
+          include: {
+            player: true
+          }
+        }
       }
     })
+    for (const team of teams) {
+      await hydrateOne(team.manager)
+      for (const assignment of team.Assignment) {
+        await hydrateOne(assignment.player)
+      }
+    }
     res.render('fragments/teams/list', {
       teams
     })
@@ -69,9 +93,19 @@ router
         }
       },
       include: {
-        division: true
+        division: true,
+        manager: true,
+        Assignment: {
+          include: {
+            player: true
+          }
+        }
       }
     })
+    await hydrateOne(team.manager)
+    for (const assignment of team.Assignment) {
+      await hydrateOne(assignment.player)
+    }
     res.render('fragments/teams/new-team', {
       team
     })
@@ -85,12 +119,22 @@ router
         managerId: req.session.user?.id
       },
       include: {
-        division: true
+        division: true,
+        manager: true,
+        Assignment: {
+          include: {
+            player: true
+          }
+        }
       }
     })
     if (!team) {
       res.sendStatus(404)
       return
+    }
+    await hydrateOne(team.manager)
+    for (const assignment of team.Assignment) {
+      await hydrateOne(assignment.player)
     }
     res.render('fragments/teams/edit', {
       team,
@@ -148,3 +192,48 @@ router
     })
     res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Team deleted.</p>")
   })
+
+router.get("/:teamID/add-player", async (req, res) => {
+  const team = await prisma.team.findUnique({
+    where: {
+      id: req.params.teamID
+    }
+  })
+  const players = await prisma.player.findMany({
+    where: {
+      managerId: req.session.user?.id,
+      Assignment: {
+        none: {
+          team: {
+            id: req.params.teamID
+          }
+        }
+      }
+    }
+  })
+  await hydrateMany(players)
+  res.render("fragments/teams/add-player", {
+    team,
+    players
+  })
+})
+  .post("/:teamID/add-player", noUpload, async (req, res, next) => {
+    await prisma.assignment.create({
+      data: {
+        team: {
+          connect: {
+            id: req.params.teamID
+          }
+        },
+        player: {
+          connect: {
+            id: req.body.playerId
+          }
+        },
+        alt_tag: req.body.alt_tag,
+        scoresaber: req.body.scoresaber,
+        status: State.ACCEPTED
+      }
+    })
+    next()
+  }, renderTeam)
