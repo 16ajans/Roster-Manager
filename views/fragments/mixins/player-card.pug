@@ -1,6 +1,6 @@
 include discord-member
 mixin player-card(player)
-    card.player-card(id=player.id)
+    card.player-card(id="p" + player.id)
         p 
             +discord-member(player.discord)
         p Name: #{player.name}

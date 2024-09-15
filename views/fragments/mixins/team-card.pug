@@ -1,6 +1,6 @@
 include discord-member
 mixin team-card(team)
-    card.team-card(id=team.id)
+    card.team-card(id="t" + team.id)
         p Name: #{team.name}
         p School/Region: #{team.locale}
         p Manager: 
