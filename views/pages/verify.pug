@@ -2,7 +2,7 @@ extends ../default
 
 block content
     h2 Verify
-    form#filter(hx-get="/api/verify" hx-trigger="change, load, submit" hx-target="#verify")
+    form#filter(hx-get="/verify/list" hx-trigger="change, load, submit" hx-target="#verify")
         fieldset
             h4 Filter
             input#REJECTED(type="checkbox" name="REJECTED")
@@ -24,18 +24,17 @@ block content
             label(for="reason") Rejection Reason:
             input#reason(type="text" name="reason" placeholder="Recommended")
             br
-            input(type="button" value="Cancel" onclick="event.preventDefault();closeModal()")
             input(type="submit" value="Submit")
+            input(type="button" value="Cancel" onclick="event.preventDefault();closeModal()")
     script.
         const rejModal = document.getElementById("rejModal")
         const rejReason = document.getElementById("rejReason")
         const reason = document.getElementById("reason")
 
         function revealModal(playerID) {
-            playerID = playerID.slice(3)
             rejReason.reset()
-            rejReason.setAttribute('hx-put',"/api/verify/" + playerID + "/REJECTED")
-            rejReason.setAttribute('hx-target',"#pid" + playerID)
+            rejReason.setAttribute('hx-put',"/verify/" + playerID + "/REJECTED")
+            rejReason.setAttribute('hx-target',"#p" + playerID)
             rejModal.style.display = "block"
             reason.focus()
             htmx.process(rejReason)
