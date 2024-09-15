@@ -49,13 +49,11 @@ export async function searchUniqueGuildMember(query: string) {
 
 client.login(process.env.DISCORD_BOT_TOKEN)
 
-const embedBase = new EmbedBuilder()
-        .setColor(0x703893)
-        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
-        .setFooter({ text: "This is an automated message. Do not reply."})
-
 async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
-    const embed = structuredClone(embedBase)
+    const embed = new EmbedBuilder()
+    .setColor(0x703893)
+    .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
+    .setFooter({ text: "This is an automated message. Do not reply."})
     const player = await fetchGuildMember(playerSnowflake)
     if (accepted) {
         embed.setTitle(`${player.displayName}'s verification has been approved!`)
@@ -72,7 +70,10 @@ async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: b
 }
 
 async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, change: ChangeAction) {
-    const embed = structuredClone(embedBase)
+    const embed = new EmbedBuilder()
+    .setColor(0x703893)
+    .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
+    .setFooter({ text: "This is an automated message. Do not reply."})
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
     if (change === ChangeAction.CREATE) {
@@ -86,7 +87,10 @@ async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, acto
 }
 
 async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, teamId: string, change: ChangeAction) {
-    const embed = structuredClone(embedBase)
+    const embed = new EmbedBuilder()
+    .setColor(0x703893)
+    .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png"})
+    .setFooter({ text: "This is an automated message. Do not reply."})
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
     const team = await prisma.team.findUnique({
