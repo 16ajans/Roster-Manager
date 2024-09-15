@@ -15,7 +15,7 @@ form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swa
     input#max_players(type="number" value=division.max_players name="max_players")
     br
     label(for="admin_discord") Division Admin Discord ID:
-    input#admin_discord(type="text" value=division.adminId name="admin_discord" required)
+    input#admin_discord(type="text" value=division.admin.discord name="admin_discord" required)
     br
     label(for="manager_role") Manager Role Discord ID:
     input#manager_role(type="text" value=division.manager_role name="manager_role")
