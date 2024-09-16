@@ -3,7 +3,8 @@ import { prisma } from './db'
 
 export enum ChangeAction {
     CREATE,
-    DELETE
+    DELETE,
+    REJECT
 }
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] })
@@ -102,7 +103,10 @@ async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, 
         }
     })
     if (change === ChangeAction.CREATE) {
-        embed.setTitle(`${player.displayName} has been assigned to ${team?.name}!`)
+        embed.setTitle(`${player.displayName} is now a member of ${team?.name}!`)
+            .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>` })
+    } else if (change == ChangeAction.REJECT) {
+        embed.setTitle(`${player.displayName}, your request to join ${team?.name} was not accepted.`)
             .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>` })
     } else {
         embed.setTitle(`${player.displayName} has been removed from ${team?.name}.`)
