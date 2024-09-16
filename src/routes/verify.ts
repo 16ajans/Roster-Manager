@@ -4,6 +4,7 @@ import { dirRoot } from '../drivers/fs'
 import { prisma } from '../drivers/db'
 import { sendVerifDM } from '../drivers/bot'
 import { State } from '@prisma/client'
+import { hydrateMany, hydrateOne } from '../middleware/discord'
 
 export const router = express.Router()
 
@@ -48,6 +49,7 @@ router
                 manager: true
             }
         })
+        await hydrateMany(players)
         res.render('fragments/verify/list', {
             players
         })
@@ -68,6 +70,7 @@ router
                 manager: true
             }
         })
+        await hydrateOne(player)
         res.render('fragments/verify/changed', {
             player
         })
