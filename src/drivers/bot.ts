@@ -78,7 +78,7 @@ async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, acto
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
     if (change === ChangeAction.CREATE) {
-        embed.setTitle(`${player.displayName} has been registered!`)
+        embed.setTitle(`${player.displayName} is now registered!`)
             .addFields({ name: "Registered by:", value: `<@${actorSnowflake}>` })
     } else {
         embed.setTitle(`${player.displayName}'s registration has been deleted.`)
