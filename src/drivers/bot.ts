@@ -44,6 +44,10 @@ export async function sendAssignmentChangeDM(userSnowflake: UserResolvable, play
     return client.users.send(userSnowflake, { embeds: [await buildAssignmentChangeNotifEmbed(playerSnowflake, actorSnowflake, teamId, change)] })
 }
 
+export async function sendJoinRequestDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, teamId: string) {
+    return client.users.send(userSnowflake, { embeds: [await buildJoinRequestEmbed(playerSnowflake, teamId)] })
+}
+
 export async function searchUniqueGuildMember(query: string) {
     return (await guild.members.search({ query, limit: 1 })).first()
 }
@@ -116,5 +120,24 @@ async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, 
         }
     }
 
+    return embed.setTimestamp()
+}
+
+async function buildJoinRequestEmbed(playerSnowflake: UserResolvable, teamId: string) {
+    const embed = new EmbedBuilder()
+        .setColor(0x703893)
+        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setFooter({ text: "This is an automated message. Do not reply." })
+    const player = await fetchGuildMember(playerSnowflake)
+    const team = await prisma.team.findUnique({
+        where: {
+            id: teamId
+        },
+        include: {
+            manager: true
+        }
+    })
+    embed.setTitle(`${player.displayName} has requested to join ${team?.name}!`)
+        .setDescription("Please visit https://cvre.app to approve or reject their request.")
     return embed.setTimestamp()
 }

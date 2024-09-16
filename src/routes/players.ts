@@ -3,6 +3,7 @@ import { verifUpload } from '../drivers/fs'
 import { prisma } from '../drivers/db'
 import { hydrateOne, hydrateMany } from '../middleware/discord'
 import { State } from '@prisma/client'
+import { ChangeAction, sendPlayerChangeDM } from '../drivers/bot'
 
 export const router = express.Router()
 
@@ -77,6 +78,7 @@ router
     res.render('fragments/players/new-player', {
       player
     })
+    sendPlayerChangeDM(player.discord, player.discord, req.session.user?.discord as string, ChangeAction.CREATE)
   })
   .get('/:playerID', renderPlayer)
   .get('/:playerID/edit', async (req, res) => {
@@ -144,7 +146,7 @@ router
     next()
   }, renderPlayer)
   .delete('/:playerID', async (req, res) => {
-    await prisma.player.delete({
+    const player = await prisma.player.delete({
       where: {
         id: req.params.playerID,
         OR: [
@@ -154,4 +156,5 @@ router
       }
     })
     res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Player registration deleted.</p>")
+    sendPlayerChangeDM(player.discord, player.discord, req.session.user?.discord as string, ChangeAction.DELETE)
   })

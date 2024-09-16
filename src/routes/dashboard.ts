@@ -3,6 +3,7 @@ import { prisma } from '../drivers/db'
 import { noUpload, verifUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
 import { hydrateOne } from '../middleware/discord'
+import { ChangeAction, sendAssignmentChangeDM, sendJoinRequestDM, sendPlayerChangeDM } from '../drivers/bot'
 
 export const router = express.Router()
 
@@ -105,12 +106,29 @@ router.get('/self', renderSelf)
     next()
   }, renderSelf)
   .delete('/self', async (req, res) => {
-    await prisma.player.delete({
+    const player = await prisma.player.delete({
       where: {
         discord: req.session.user?.discord
+      },
+      include: {
+        manager: true,
+        Assignment: {
+          include: {
+            team: {
+              include: {
+                manager: true
+              }
+            }
+          }
+        }
       }
     })
     res.send("<p hx-get='/self' hx-trigger='load delay:5s'>Registration deleted.</p>")
+    for (const assignment of player.Assignment) {
+      if (assignment.team.manager.discord != player.discord) {
+        sendPlayerChangeDM(assignment.team.manager.discord, player.discord, player.discord, ChangeAction.DELETE)
+      }
+    }
   })
 
 const renderSelfTeams: RequestHandler = async (req, res) => {
@@ -132,7 +150,7 @@ const renderSelfTeams: RequestHandler = async (req, res) => {
     }
   })
   if (!player) {
-    res.send("<p hx-get='/self/team' hx-trigger='htmx:afterRequest from:#selfReg' hx-target='#selfTeam'>Not yet registered.<br>Please use the above button to register yourself before trying to join a team.</p>")
+    res.send("<p hx-get='/self/team' hx-trigger='htmx:afterRequest from:#selfReg' hx-target='#selfTeam'>Not registered.<br>Please use the above button to register yourself before trying to join a team.</p>")
   } else {
     const assignments = player.Assignment
     for (const assignment of assignments) {
@@ -152,7 +170,7 @@ router.get('/self/team', renderSelfTeams)
     })
   })
   .post('/self/team/join', noUpload, async (req, res, next) => {
-    await prisma.assignment.create({
+    const assignment = await prisma.assignment.create({
       data: {
         alt_tag: req.body.alt_tag,
         scoresaber: req.body.scoresaber,
@@ -167,17 +185,37 @@ router.get('/self/team', renderSelfTeams)
           }
         },
         status: State.REVIEW
+      },
+      include: {
+        player: true,
+        team: {
+          include: {
+            manager: true
+          }
+        }
       }
     })
     next()
+    sendJoinRequestDM(assignment.team.manager.discord, assignment.player.discord, assignment.team.id)
   }, renderSelfTeams)
   .delete('/self/team/:assignmentID', async (req, res) => {
-    await prisma.assignment.delete({
+    const assignment = await prisma.assignment.delete({
       where: {
         id: req.params.assignmentID
+      },
+      include: {
+        player: true,
+        team: {
+          include: {
+            manager: true
+          }
+        }
       }
     })
     res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Left team.</p>")
+    if (assignment.team.manager.discord != assignment.player.discord && assignment.status === State.ACCEPTED) {
+      sendAssignmentChangeDM(assignment.team.manager.discord, assignment.player.discord, assignment.player.discord, assignment.team.id, ChangeAction.DELETE)
+    }
   })
 
 
