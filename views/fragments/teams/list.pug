@@ -4,7 +4,12 @@ each team in teams
     +team-card(team)
         ul
             for assignment in team.Assignment
-                li #{assignment.alt_tag} #{assignment.player.discord.displayName}
+                li #{assignment.alt_tag} (#{assignment.player.discord.displayName})
+                    if assignment.status === "REVIEW"
+                        button(hx-put="/teams/" + team.id + "/player/" + assignment.id + "/ACCEPTED" hx-target="closest .team-card" hx-swap="outerHTML") Approve
+                        button(hx-put="/teams/" + team.id + "/player/" + assignment.id + "/REJECTED" hx-target="closest .team-card" hx-swap="outerHTML") Reject
+                    else
+                        button(hx-delete="/teams/" + team.id + "/player/" + assignment.id hx-target="closest .team-card" hx-swap="outerHTML") Remove
         button(hx-get="/teams/" + team.id + "/add-player" hx-swap="outerHTML") Add Player
         button(hx-get="/teams/" + team.id + "/edit" hx-target="closest .team-card" hx-swap="outerHTML") Update
         button(hx-delete="/teams/" + team.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this team?") Delete

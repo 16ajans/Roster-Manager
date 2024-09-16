@@ -3,6 +3,7 @@ import { prisma } from '../drivers/db'
 import { noUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
 import { hydrateMany, hydrateOne } from '../middleware/discord'
+import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
 
 export const router = express.Router()
 
@@ -218,7 +219,7 @@ router.get("/:teamID/add-player", async (req, res) => {
   })
 })
   .post("/:teamID/add-player", noUpload, async (req, res, next) => {
-    await prisma.assignment.create({
+    const assignment = await prisma.assignment.create({
       data: {
         team: {
           connect: {
@@ -233,7 +234,50 @@ router.get("/:teamID/add-player", async (req, res) => {
         alt_tag: req.body.alt_tag,
         scoresaber: req.body.scoresaber,
         status: State.ACCEPTED
+      },
+      include: {
+        player: true
       }
     })
+    next()
+    sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.CREATE)
+  }, renderTeam)
+  .delete("/:teamID/player/:assignmentID", async (req, res, next) => {
+    const assignment = await prisma.assignment.delete({
+      where: {
+        id: req.params.assignmentID
+      },
+      include: {
+        player: true
+      }
+    })
+    next()
+    sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.DELETE)
+  }, renderTeam)
+  .put('/:teamID/player/:assignmentID/:newState', async (req, res, next) => {
+    if (req.params.newState === "ACCEPTED") {
+      const assignment = await prisma.assignment.update({
+        where: {
+          id: req.params.assignmentID
+        },
+        data: {
+          status: State.ACCEPTED
+        },
+        include: {
+          player: true
+        }
+      })
+      sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.CREATE)
+    } else {
+      const assignment = await prisma.assignment.delete({
+        where: {
+          id: req.params.assignmentID
+        },
+        include: {
+          player: true
+        }
+      })
+      sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.REJECT)
+    }
     next()
   }, renderTeam)
