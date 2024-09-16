@@ -126,7 +126,10 @@ router.get('/self', renderSelf)
     res.send("<p hx-get='/self' hx-trigger='load delay:5s'>Registration deleted.</p>")
     for (const assignment of player.Assignment) {
       if (assignment.team.manager.discord != player.discord) {
-        sendPlayerChangeDM(assignment.team.manager.discord, player.discord, player.discord, ChangeAction.DELETE)
+        sendPlayerChangeDM(assignment.team.manager.discord, player.discord, req.session.user?.discord as string, ChangeAction.DELETE)
+      }
+      if (player.manager.discord != player.discord) {
+        sendPlayerChangeDM(player.manager.discord, player.discord, req.session.user?.discord as string, ChangeAction.DELETE)
       }
     }
   })
