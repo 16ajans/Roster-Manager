@@ -6,7 +6,7 @@ form(hx-put="/self" hx-encoding="multipart/form-data" hx-swap="outerHTML")
     input#school(type="text" name="school" value=player.school required)
     br
     label(for="verification") Verification:
-    input#verification(type="file" name="verification")
+    input#verification(type="file" name="verification" accept="image/*,application/pdf")
     br
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" hx-get='/self' hx-target="#selfReg" hx-swap="innerHTML")

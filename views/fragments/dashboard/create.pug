@@ -7,7 +7,7 @@ form#registerSelf(hx-post="/self/create" hx-encoding="multipart/form-data" hx-sw
     input#school(type="text" name="school" required)
     br
     label(for="verification") Verification:
-    input#verification(type="file" name="verification")
+    input#verification(type="file" name="verification" accept="image/*,application/pdf")
     br
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" onclick="document.getElementById(\'registerSelf\').outerHTML = \'<button hx-get=\"/self/create\" hx-swap=\"outerHTML\">Register</button>\'; htmx.process(document.body)")
