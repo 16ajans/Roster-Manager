@@ -1,6 +1,6 @@
 import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
-import { noUpload } from '../drivers/fs'
+import { logoUpload, noUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
 import { hydrateMany, hydrateOne } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
@@ -77,7 +77,11 @@ router
     }
     )
   })
-  .post('/create', noUpload, async (req, res) => {
+  .post('/create', logoUpload.single('logo'), async (req, res) => {
+    let logo: string | undefined = undefined
+    if (req.file) {
+      logo = req.file.filename
+    }
     const team = await prisma.team.create({
       data: {
         name: req.body.name as string,
@@ -91,7 +95,8 @@ router
           connect: {
             id: req.body.divisionId
           }
-        }
+        },
+        logo
       },
       include: {
         division: true,
@@ -142,7 +147,7 @@ router
       divisions
     })
   })
-  .put('/:teamID', noUpload, async (req, res, next) => {
+  .put('/:teamID', logoUpload.single('logo'), async (req, res, next) => {
     const team = await prisma.team.findUnique({
       where: {
         id: req.params.teamID,
@@ -160,7 +165,8 @@ router
         connect: {
           id: string
         }
-      }
+      },
+      logo?: string
     } = {}
     if (team.name != req.body.name) {
       data.name = req.body.name
@@ -174,6 +180,9 @@ router
           id: req.body.divisionId
         }
       }
+    }
+    if (req.file) {
+      data.logo = req.file.filename
     }
     await prisma.team.update({
       where: {
