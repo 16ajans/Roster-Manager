@@ -50,6 +50,9 @@ router
             }
         })
         await hydrateMany(players)
+        for (const player of players) {
+            await hydrateOne(player.manager)
+        }
         res.render('fragments/verify/list', {
             players
         })
