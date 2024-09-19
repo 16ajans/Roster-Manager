@@ -35,6 +35,7 @@ model Team {
   locale     String?
   divisionId String       @db.Uuid
   managerId  String       @db.Uuid
+  logo       String?
   Assignment Assignment[]
 }
 
