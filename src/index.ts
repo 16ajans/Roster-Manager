@@ -51,7 +51,7 @@ app.use('/discord', userAuth, discord)
 app.use('/account', userAuth, account)
 app.use('/divisions', adminAuth, divisions)
 app.use('/players', userAuth, players)
-app.use('/teams', userAuth, teams)
+app.use('/teams', teams)
 app.use('/verify', adminAuth, verify)
 
 app.get('/help', async (req, res) => {

@@ -1,11 +1,24 @@
 import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
-import { logoUpload, noUpload } from '../drivers/fs'
+import { dirRoot, logoUpload, noUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
 import { hydrateMany, hydrateOne } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
+import path from 'path'
+import { userAuth } from '../middleware/auth'
 
 export const router = express.Router()
+
+router.use('/logos', express.static(path.join(dirRoot, 'logos'), {
+  setHeaders: (res) => {
+    res.set({
+      'Content-Disposition': 'inline'
+    })
+  },
+  maxAge: '1d'
+}))
+
+router.use(userAuth)
 
 router
   .get('/', async (req, res) => {

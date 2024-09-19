@@ -4,5 +4,7 @@ mixin team-card(team)
         p Name: #{team.name}
         p School/Region: #{team.locale}
         p Manager: #{team.manager.discord.displayName}
+        if team.logo 
+            img(src="/teams/logos/" + team.logo alt=team.name + " Logo")
         if block
             block
