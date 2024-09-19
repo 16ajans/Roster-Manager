@@ -51,7 +51,8 @@ card {
     float: right;
     border: 1px solid black;
     max-width: 10rem;
-    max-height: 10rem;
+    max-height: 8rem;
+    margin: 1rem;
 }
 
 .modal {
