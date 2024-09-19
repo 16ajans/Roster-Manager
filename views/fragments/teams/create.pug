@@ -12,5 +12,8 @@ form#createTeam(hx-post="/teams/create" hx-encoding="multipart/form-data" hx-swa
         else
             option(value="") No divisions available.
     br
+    label(for="logo") Team Logo:
+    input#logo(type="file" name="logo")
+    br
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" onclick="document.getElementById(\'createTeam\').outerHTML = \'<button hx-get=\"/teams/create\" hx-swap=\"outerHTML\">Create New Team</button>\'; htmx.process(document.body)")

@@ -12,5 +12,8 @@ form(hx-put="/teams/" + team.id hx-encoding="multipart/form-data" hx-swap="outer
         else
             option(value="") No divisions available.
     br
+    label(for="logo") Team Logo:
+    input#logo(type="file" name="logo")
+    br
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" hx-get="/teams/" + team.id hx-target="closest form" hx-swap="outerHTML")
