@@ -74,6 +74,7 @@ router
             }
         })
         await hydrateOne(player)
+        await hydrateOne(player.manager)
         res.render('fragments/verify/changed', {
             player
         })
