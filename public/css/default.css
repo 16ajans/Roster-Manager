@@ -50,6 +50,8 @@ card {
 .team-logo {
     float: right;
     border: 1px solid black;
+    max-width: 10rem;
+    max-height: 10rem;
 }
 
 .modal {
