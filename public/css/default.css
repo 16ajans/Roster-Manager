@@ -47,6 +47,11 @@ card {
     border: 1px solid black;
 }
 
+.team-logo {
+    float: right;
+    border: 1px solid black;
+}
+
 .modal {
     display: none;
     /* Hidden by default */
