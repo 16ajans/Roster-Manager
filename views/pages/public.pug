@@ -8,14 +8,23 @@ block content
         section 
             h3= division.name
             each team in division.Team 
-                card.team-card(id="t" + team.id)
+                div.teamWrapper
+                    - const solo = team.Assignment.length === 1
+                    - const multi = team.Assignment.length > 1
                     if team.logo 
-                        img.team-logo(src="/teams/logos/" + team.logo alt=team.name + " Logo")
-                    h4= team.name
-                    p School/Region: #{team.locale}
-                    figure 
-                        figcaption Players
-                        ul
-                            each assignment in team.Assignment
-                                li #{assignment.alt_tag} (#{assignment.player.discord.displayName})
-                    p Manager: #{team.manager.discord.displayName}
+                        .logoWrapper
+                            img.team-logo(src="/teams/logos/" + team.logo alt=team.name + " Logo" class=solo ? "solo" : "")
+                    card.team-card(id="t" + team.id)
+                        h4= team.name
+                        p.locale(style="font-style:italic;")= team.locale
+                        if multi
+                            ul
+                                each assignment in team.Assignment
+                                    li #{assignment.alt_tag} (#{assignment.player.discord.displayName})
+                            p
+                                span(style="font-size:small;") Manager:
+                                |  #{team.manager.discord.displayName}
+                        else if solo
+                            p #{team.Assignment[0].alt_tag} (#{team.Assignment[0].player.discord.displayName})
+    else
+        h3 No divisions exist. Check back soon!

@@ -85,9 +85,9 @@ app.use('/', async (req, res, next) => {
         }
       }
     }
-    console.log(divisions[0].Team[0].Assignment)
     res.render("pages/public", {
-      divisions
+      divisions,
+      title: 'CVRE Roster Manager'
     })
   } else {
     next()
