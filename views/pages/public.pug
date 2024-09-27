@@ -11,9 +11,9 @@ block content
                 div.teamWrapper
                     - const solo = team.Assignment.length === 1
                     - const multi = team.Assignment.length > 1
-                    if team.logo 
-                        .logoWrapper
-                            img.team-logo(src="/teams/logos/" + team.logo alt=team.name + " Logo" class=solo ? "solo" : "")
+                    .logoWrapper
+                        if team.logo 
+                            img.team-logo(src="/teams/logos/" + team.logo alt=team.name + " Logo" class=multi ? "" : "solo")
                     card.team-card(id="t" + team.id)
                         h4= team.name
                         p.locale(style="font-style:italic;")= team.locale
