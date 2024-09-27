@@ -1,7 +1,21 @@
 extends ../default
 
+include ../fragments/mixins/team-card
 block content
     p Log in above to assemble your team for the upcoming season!
-        br
-        br
-        | This public listing of league divisions, teams, and players is still under construction (as is the site's visual design).
+    
+    each division in divisions
+        section 
+            h3= division.name
+            each team in division.Team 
+                card.team-card(id="t" + team.id)
+                    if team.logo 
+                        img.team-logo(src="/teams/logos/" + team.logo alt=team.name + " Logo")
+                    h4= team.name
+                    p School/Region: #{team.locale}
+                    figure 
+                        figcaption Players
+                        ul
+                            each assignment in team.Assignment
+                                li #{assignment.alt_tag} (#{assignment.player.discord.displayName})
+                    p Manager: #{team.manager.discord.displayName}

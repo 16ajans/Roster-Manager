@@ -6,12 +6,12 @@ import compression from 'compression'
 import morgan from 'morgan'
 import { Events } from 'discord.js';
 
-import { prismaSession } from './drivers/db'
+import { prisma, prismaSession } from './drivers/db'
 import { dirRoot } from './drivers/fs';
 import { client as bot } from './drivers/bot';
 
 import { adminAuth, router as auth, userAuth } from './middleware/auth'
-import { router as discord } from './middleware/discord'
+import { router as discord, hydrateOne } from './middleware/discord'
 
 import { router as account } from './routes/account'
 import { router as dashboard } from './routes/dashboard'
@@ -62,7 +62,33 @@ app.get('/help', async (req, res) => {
 
 app.use('/', async (req, res, next) => {
   if (!req.session.user?.auth) {
-    res.render("pages/public")
+    const divisions = await prisma.division.findMany({
+      include: {
+        Team: {
+          include: {
+            division: true,
+            manager: true,
+            Assignment: {
+              include: {
+                player: true
+              }
+            }
+          }
+        }
+      }
+    })
+    for (const division of divisions) {
+      for (const team of division.Team) {
+        await hydrateOne(team.manager)
+        for (const assignment of team.Assignment) {
+          await hydrateOne(assignment.player)
+        }
+      }
+    }
+    console.log(divisions[0].Team[0].Assignment)
+    res.render("pages/public", {
+      divisions
+    })
   } else {
     next()
   }
