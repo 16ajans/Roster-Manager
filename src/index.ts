@@ -28,7 +28,8 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(
   session({
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 1 week, ms
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week, ms
+      secure: true
     },
     secret: process.env.SESSION_SECRET as string,
     resave: true,
