@@ -1,4 +1,4 @@
-import { Client, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
+import { Client, DiscordAPIError, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
 import { prisma } from './db'
 
 export enum ChangeAction {
@@ -14,22 +14,38 @@ client.once(Events.ClientReady, (client) => {
     console.log(`Ready! Logged in as ${client.user.tag}`)
     guild = client.guilds.resolve(process.env.GUILD_ID as GuildResolvable) as Guild
     fetchUser('144973321749004289').then(user => {
-        user.send(`Roster Bot up @ ${(new Date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}!`)
+        if (user) {
+            user.send(`Roster Bot up @ ${(new Date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}!`)
+        }
     })
 })
 
 export function fetchMemberRoles(userSnowflake: UserResolvable) {
     fetchGuildMember(userSnowflake).then((member) => {
-        return member.roles
+        return member ? member.roles : null
     })
 }
 
-export function fetchGuildMember(userSnowflake: UserResolvable) {
-    return guild.members.fetch(userSnowflake)
+export async function fetchGuildMember(userSnowflake: UserResolvable) {
+    try {
+        return await guild.members.fetch(userSnowflake);
+    } catch (error) {
+        if ((error as DiscordAPIError).code === 10007) { // Unknown Member
+            return null;
+        }
+        throw error; // Re-throw unexpected errors
+    }
 }
 
-export function fetchUser(userSnowflake: UserResolvable) {
-    return client.users.fetch(userSnowflake)
+export async function fetchUser(userSnowflake: UserResolvable) {
+    try {
+        return await client.users.fetch(userSnowflake);
+    } catch (error) {
+        if ((error as DiscordAPIError).code === 10013) { // Unknown User
+            return null;
+        }
+        throw error;
+    }
 }
 
 export async function sendVerifDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
@@ -60,10 +76,16 @@ async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: b
         .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
         .setFooter({ text: "This is an automated message. Do not reply." })
     const player = await fetchGuildMember(playerSnowflake)
+    if (!player) {
+        throw new Error('Player not found');
+    }
     if (accepted) {
         embed.setTitle(`${player.displayName}'s verification has been approved!`)
     } else {
         const admin = await fetchGuildMember(adminSnowflake ? adminSnowflake : "144973321749004289")
+        if (!admin) {
+            throw new Error('Admin not found');
+        }
         embed
             .setTitle(`${player.displayName}'s verification has been rejected.`)
             .setDescription(`Please contact ${admin.displayName} (<@${adminSnowflake}>) or another CVRE Admin for further information.`)
@@ -81,6 +103,9 @@ async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, acto
         .setFooter({ text: "This is an automated message. Do not reply." })
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
+    if (!player) {
+        throw new Error('Player not found');
+    }
     if (change === ChangeAction.CREATE) {
         embed.setTitle(`${player.displayName} is now registered!`)
             .addFields({ name: "Registered by:", value: `<@${actorSnowflake}>` })
@@ -106,6 +131,9 @@ async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, 
             manager: true
         }
     })
+    if (!player) {
+        throw new Error('Player not found');
+    }
     if (change === ChangeAction.CREATE) {
         embed.setTitle(`${player.displayName} is now a member of ${team?.name}!`)
             .addFields({ name: 'Team Manager:', value: `<@${team?.manager.discord}>` })
@@ -137,6 +165,9 @@ async function buildJoinRequestEmbed(playerSnowflake: UserResolvable, teamId: st
             manager: true
         }
     })
+    if (!player) {
+        throw new Error('Player not found');
+    }
     embed.setTitle(`${player.displayName} has requested to join ${team?.name}!`)
         .setDescription("Please visit https://cvre.app to approve or reject their request.")
     return embed.setTimestamp()
