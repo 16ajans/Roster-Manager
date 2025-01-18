@@ -2,8 +2,10 @@ import path from 'path';
 import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
+import csrf from 'lusca'
 import compression from 'compression'
 import morgan from 'morgan'
+
 import { Events } from 'discord.js';
 
 import { prisma, prismaSession } from './drivers/db'
@@ -38,6 +40,7 @@ app.use(
     proxy: true
   })
 )
+app.use(csrf())
 app.use(compression())
 app.disable("x-powered-by")
 

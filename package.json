@@ -17,6 +17,7 @@
     "@types/compression": "^1.7.5",
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.0",
+    "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.14.9",
@@ -37,6 +38,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "lusca": "^1.7.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "pug": "^3.0.3"
