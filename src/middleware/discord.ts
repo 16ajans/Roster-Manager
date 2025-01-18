@@ -42,7 +42,7 @@ interface HydratedPlayer extends Omit<Player, 'discord'> {
 
 
 export const hydrateOne = async function (one: HydratedPlayer | HydratedUser) {
-    one.discord = await fetchGuildMember(one.discord)
+    one.discord = await fetchGuildMember(one.discord) ?? one.discord
     return one
 }
 
