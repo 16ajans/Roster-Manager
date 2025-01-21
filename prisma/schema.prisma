@@ -37,6 +37,7 @@ model Team {
   managerId  String       @db.Uuid
   logo       String?
   Assignment Assignment[]
+  paid       Boolean      @default(false)
 }
 
 model Assignment {
