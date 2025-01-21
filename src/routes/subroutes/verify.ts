@@ -1,16 +1,16 @@
 import express from 'express'
 import path from 'path'
-import { dirRoot } from '../drivers/fs'
-import { prisma } from '../drivers/db'
-import { sendVerifDM } from '../drivers/bot'
+import { dirRoot } from '../../drivers/fs'
+import { prisma } from '../../drivers/db'
+import { sendVerifDM } from '../../drivers/bot'
 import { State } from '@prisma/client'
-import { hydrateMany, hydrateOne } from '../middleware/discord'
+import { hydrateMany, hydrateOne } from '../../middleware/discord'
 
 export const router = express.Router()
 
 router.get('/', async (req, res) => {
-    res.render('pages/verify', {
-        title: 'CVRE Roster Manager | Verify',
+    res.render('subpages/verify', {
+        title: 'CVRE Roster Manager | Admin | Verify',
         user: req.session.user
     })
 })

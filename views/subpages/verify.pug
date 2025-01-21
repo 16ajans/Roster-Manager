@@ -1,8 +1,8 @@
-extends ../default
+extends ../pages/admin
 
-block content
+block subcontent
     h2 Verify Players
-    form#filter(hx-get="/verify/list" hx-trigger="change, load, submit" hx-target="#verify")
+    form#filter(hx-get="/admin/verify/list" hx-trigger="change, load, submit" hx-target="#verify")
         fieldset
             h4 Filter
             input#REJECTED(type="checkbox" name="REJECTED")
@@ -33,7 +33,7 @@ block content
 
         function revealModal(playerID) {
             rejReason.reset()
-            rejReason.setAttribute('hx-put',"/verify/" + playerID + "/REJECTED")
+            rejReason.setAttribute('hx-put',"/admin/verify/" + playerID + "/REJECTED")
             rejReason.setAttribute('hx-target',"#p" + playerID)
             rejModal.style.display = "block"
             reason.focus()

@@ -20,7 +20,7 @@ import { router as dashboard } from './routes/dashboard'
 import { router as divisions } from './routes/divisions'
 import { router as players } from './routes/players'
 import { router as teams } from './routes/teams'
-import { router as verify } from './routes/verify'
+import { router as admin } from './routes/admin'
 
 const app = express()
 
@@ -57,7 +57,7 @@ app.use('/account', userAuth, account)
 app.use('/divisions', adminAuth, divisions)
 app.use('/players', userAuth, players)
 app.use('/teams', teams)
-app.use('/verify', adminAuth, verify)
+app.use('/admin', adminAuth, admin)
 
 app.get('/help', async (req, res) => {
   res.render('help', {
