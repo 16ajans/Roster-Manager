@@ -1,0 +1,7 @@
+include team-card
+mixin payment-card(team)
+    +team-card(team)
+        - paid = team.paid === 'ACCEPTED' ? 'PAID' : 'UNPAID'
+        p Paid: #{paid}
+        button(hx-put="/admin/payments/" + team.id + "/UNPAID" hx-target="closest .team-card" hx-swap="outerHTML") Mark UNPAID
+        button(hx-put="/admin/payments/" + team.id + "/PAID" hx-target="closest .team-card" hx-swap="outerHTML") Mark PAID

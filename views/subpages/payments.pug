@@ -1,5 +1,14 @@
 extends ../pages/admin
 
 block subcontent
-    h2 Payment Reports
-    
+    h2 Team Payments
+    form#filter(hx-get="/admin/payments/list" hx-trigger="change, load, submit" hx-target="#payments")
+        fieldset
+            h4 Status
+            input#UNPAID(type="checkbox" name="UNPAID" checked)
+            label(for="UNPAID") UNPAID
+            br
+            input#PAID(type="checkbox" name="PAID")
+            label(for="PAID") PAID
+        input(type="submit" value="Reapply Filter")
+    section#payments
