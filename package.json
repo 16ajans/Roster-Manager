@@ -32,7 +32,7 @@
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "@quixo3/prisma-session-store": "^3.1.13",
-    "axios": "^1.7.4",
+    "axios": "^1.8.2",
     "compression": "^1.8.1",
     "discord.js": "^14.21.0",
     "dotenv": "^16.4.5",
