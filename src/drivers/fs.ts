@@ -1,11 +1,18 @@
 import path from 'path'
 import multer, { FileFilterCallback, StorageEngine } from 'multer'
 import { Request } from 'express'
+import { mkdir } from 'fs'
 
 export const dirRoot = path.resolve(__dirname, '../..')
 
 const verifications = path.join(dirRoot as string, 'verifications')
 const logos = path.join(dirRoot as string, 'logos')
+mkdir(verifications, { recursive: true }, (err) => {
+  if (err) console.error(err)
+})
+mkdir(logos, { recursive: true }, (err) => {
+  if (err) console.error(err)
+})
 
 const verifStorage: StorageEngine = multer.diskStorage({
   destination: async function (req, file, cb) {
