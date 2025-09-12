@@ -62,7 +62,7 @@ router
         player_role: req.body.player_role as string,
         admin: {
           connect: {
-            discord: req.body.discord
+            discord: req.session.user?.discord
           }
         }
       },
@@ -113,11 +113,6 @@ router
       min_players?: number;
       max_players?: number;
       open?: boolean
-      admin?: {
-        connect: {
-          discord: string
-        }
-      }
     } = {}
     if (division.name != req.body.name) {
       data.name = req.body.name
@@ -141,13 +136,6 @@ router
       data.open = true
     } else {
       data.open = false
-    }
-    if (division.admin.discord != req.body.discord) {
-      data.admin = {
-        connect: {
-          discord: req.body.discord
-        }
-      }
     }
     await prisma.division.update({
       where: {
