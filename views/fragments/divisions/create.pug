@@ -15,8 +15,8 @@ form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data
     //- input#max_players(type="number" name="max_players")
     //- br
     label(for="discordSearch") Division Admin Discord: *
-    input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createPlayer\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid, unregistered CVRE member.');htmx.find('#createPlayer').reportValidity();}")
-    p(hx-post="/discord/member/search" hx-trigger="keyup from:#discordSearch delay:250ms" hx-target='this' hx-swap="innerHTML")
+    input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createDivision\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid CVRE member.');htmx.find('#createDivision').reportValidity();}")
+    p(hx-post="/discord/admin/search" hx-trigger="keyup from:#discordSearch delay:250ms" hx-target='this' hx-swap="innerHTML")
     //- label(for="manager_role") Manager Role Discord ID:
     //- input#manager_role(type="text" name="manager_role")
     //- br
