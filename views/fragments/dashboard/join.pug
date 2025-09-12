@@ -16,5 +16,8 @@ form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-target="#sel
     label(for="scoresaber") ScoreSaber: (if applicable)
     input#scoresaber(type="text" name="scoresaber")
     br
+    label(for="twitch") Twitch Account Link: (STRONGLY recommended)
+    input#twitch(type="url" name="twitch")
+    br
     input(type="submit")
     input(type="button" value="Cancel" hx-get="/self/team")

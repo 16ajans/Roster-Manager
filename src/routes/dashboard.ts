@@ -177,6 +177,7 @@ router.get('/self/team', renderSelfTeams)
       data: {
         alt_tag: req.body.alt_tag,
         scoresaber: req.body.scoresaber,
+        twitch: req.body.twitch,
         team: {
           connect: {
             id: req.body.teamId

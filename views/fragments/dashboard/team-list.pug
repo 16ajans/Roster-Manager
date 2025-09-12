@@ -5,5 +5,7 @@ each assignment in assignments
         p In-Game Name/Gamertag: #{assignment.alt_tag}
         if (assignment.scoresaber)
             p ScoreSaber: #{assignment.scoresaber}
+        if (assignment.twitch)
+            p Twitch: #{assignment.scoresaber}
         p Status: #{assignment.status}
         button(hx-delete="/self/team/" + assignment.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to leave this team?") Leave

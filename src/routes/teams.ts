@@ -255,6 +255,7 @@ router.get("/:teamID/add-player", async (req, res) => {
         },
         alt_tag: req.body.alt_tag,
         scoresaber: req.body.scoresaber,
+        twitch: req.body.twitch,
         status: State.ACCEPTED
       },
       include: {
