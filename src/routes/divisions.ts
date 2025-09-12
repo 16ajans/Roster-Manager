@@ -62,7 +62,7 @@ router
         player_role: req.body.player_role as string,
         admin: {
           connect: {
-            discord: req.body.admin_discord
+            discord: req.body.discord
           }
         }
       },
@@ -142,10 +142,10 @@ router
     } else {
       data.open = false
     }
-    if (division.admin.discord != req.body.admin_discord) {
+    if (division.admin.discord != req.body.discord) {
       data.admin = {
         connect: {
-          discord: req.body.admin_discord
+          discord: req.body.discord
         }
       }
     }
