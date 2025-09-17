@@ -4,12 +4,9 @@ form#createPlayer(hx-post="/players/create" hx-encoding="multipart/form-data" hx
     p(hx-post="/discord/member/search" hx-trigger="keyup from:#discordSearch delay:250ms" hx-target='this' hx-swap="innerHTML")
     label(for="name") Name: *
     input#name(type="text" name="name" required)
-    br
     label(for="school") School: *
     input#school(type="text" name="school" required)
-    br
     label(for="verification") Verification:
     input#verification(type="file" name="verification" accept="image/*,application/pdf")
-    br
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" onclick="document.getElementById(\'createPlayer\').outerHTML = \'<button hx-get=\"/players/create\" hx-swap=\"outerHTML\">Register New Player</button>\'; htmx.process(document.body)")

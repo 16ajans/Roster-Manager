@@ -1,13 +1,11 @@
 form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swap="outerHTML")
     label(for="name") Name: *
     input#name(type="text" name="name" value=division.name required)
-    br
     //- label(for="description") Description:
     //- input#description(type="text" value=division.description name="description")
     //- br
     label(for="open") Open Registration:
     input#open(type="checkbox" checked=division.open name="open")
-    br
     //- label(for="min_players") Minimum Players per Team:
     //- input#min_players(type="number" value=division.min_players name="min_players")
     //- br
@@ -16,7 +14,6 @@ form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swa
     //- br
     label(for="discord") Division Admin Discord ID: *
     input#discord(type="text" value=division.admin.discord name="discord" required disabled)
-    br
     //- label(for="manager_role") Manager Role Discord ID:
     //- input#manager_role(type="text" value=division.manager_role name="manager_role")
     //- br
