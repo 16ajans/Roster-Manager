@@ -14,8 +14,9 @@ form#addPlayer(hx-post="/teams/" + team.id + "/add-player" hx-encoding="multipar
     input(type="button" value="Cancel" hx-get="/teams/" + team.id)
 
     script.
+        const teamID = team.id
         document.body.addEventListener('htmx:confirm', function(evt) {
-            if (evt.target.matches("[hx-post='/teams/" + {team.id} + "/add-player']") && document.getElementById("twitch").value.trim() === "") {
+            if (evt.target.matches("[hx-post='/teams/" + teamID + "/add-player']") && document.getElementById("twitch").value.trim() === "") {
                 evt.preventDefault();
                 if (confirm("Are you sure you want to add a player without providing a Twitch account link? This is strongly recommended for all players participating in streamed matches.")) {
                     evt.detail.issueRequest();
