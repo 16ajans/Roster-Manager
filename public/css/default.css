@@ -12,7 +12,14 @@ body {
 }
 
 form {
-    line-height: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    align-items: baseline;
+}
+
+#filter,
+#rejReason {
     display: block;
 }
 
@@ -30,6 +37,10 @@ form label {
 #filter>fieldset>h4 {
     margin: 0;
     margin-right: 1rem;
+}
+
+input[type="file"] {
+    grid-column: span 2;
 }
 
 @media only screen and (min-width: 600px) {

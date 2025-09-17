@@ -22,7 +22,7 @@ block content
     #rejModal.modal
         form#rejReason.modal-content(hx-on::after-request="closeModal()" hx-swap="outerHTML")
             label(for="reason") Rejection Reason:
-            input#reason(type="text" name="reason" placeholder="Recommended")
+            input#reason(type="text" name="reason" placeholder="(recommended)")
             br
             input(type="submit" value="Submit")
             input(type="button" value="Cancel" onclick="event.preventDefault();closeModal()")

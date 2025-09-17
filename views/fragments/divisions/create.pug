@@ -1,22 +1,21 @@
 form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
     label(for="name") Name: *
     input#name(type="text" name="name" required)
-    br
     //- label(for="description") Description:
     //- input#description(type="text" name="description")
     //- br
     label(for="open") Open Registration:
     input#open(type="checkbox" name="open")
-    br
+    label(style="grid-column:span 2;") You will be listed as the Division Admin.
     //- label(for="min_players") Minimum Players per Team:
     //- input#min_players(type="number" name="min_players")
     //- br
     //- label(for="max_players") Maximum Players per Team:
     //- input#max_players(type="number" name="max_players")
     //- br
-    label(for="admin_discord") Division Admin Discord ID: *
-    input#admin_discord(type="text" name="admin_discord" required)
-    br
+    //- label(for="discordSearch") Division Admin Discord: *
+    //- input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createDivision\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid CVRE member.');htmx.find('#createDivision').reportValidity();}")
+    //- p(hx-post="/discord/admin/search" hx-trigger="keyup from:#discordSearch delay:250ms" hx-target='this' hx-swap="innerHTML")
     //- label(for="manager_role") Manager Role Discord ID:
     //- input#manager_role(type="text" name="manager_role")
     //- br

@@ -1,15 +1,24 @@
 form#addPlayer(hx-post="/teams/" + team.id + "/add-player" hx-encoding="multipart/form-data" hx-target="closest .team-card" hx-swap="outerHTML")
-    select(name="playerId" required)
+    select(name="playerId" style="grid-column:span 2;" required)
         each player in players 
             option(value=player.id)= player.discord.displayName
         else 
             option(value="") No players available.
-    br
-    label(for="alt_tag") In-Game Name/Gamertag: *
-    input#alt_tag(type="text" name="alt_tag" required)
-    br
-    label(for="scoresaber") ScoreSaber: (if applicable)
-    input#scoresaber(type="text" name="scoresaber")
-    br
+    label(for="alt_tag") In-Game Name: *
+    input#alt_tag(type="text" name="alt_tag" required placeholder="(for score submission)")
+    label(for="scoresaber") ScoreSaber:
+    input#scoresaber(type="text" name="scoresaber" placeholder="(if applicable)")
+    label(for="twitch") Twitch Account Link:
+    input#twitch(type="url" name="twitch" placeholder="(recommended)")
     input(type="submit")
     input(type="button" value="Cancel" hx-get="/teams/" + team.id)
+
+    script.
+        document.body.addEventListener('htmx:confirm', function(evt) {
+            if (evt.target.matches("#addPlayer") && document.getElementById("twitch").value.trim() === "") {
+                evt.preventDefault();
+                if (confirm("Are you sure you want to add a player without providing a Twitch account link? This is strongly recommended for all players participating in streamed matches.")) {
+                    evt.detail.issueRequest();
+                }
+            }
+        })

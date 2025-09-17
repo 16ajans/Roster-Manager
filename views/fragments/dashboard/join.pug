@@ -5,16 +5,24 @@ form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-target="#sel
             option(value=div.id)= div.name
         else
             option(value="") No divisions available. 
-    br
     label(for="teamId") Team: *
     select#teamId(name="teamId" required hx-post="/self/team/options" hx-trigger="load, change from:#divisionId delay:250ms" hx-target="this" hx-swap="innerHTML")
         option(value="") Select a division. 
-    br
-    label(for="alt_tag") In-Game Name/Gamertag: *
-    input#alt_tag(type="text" name="alt_tag" required)
-    br
-    label(for="scoresaber") ScoreSaber: (if applicable)
-    input#scoresaber(type="text" name="scoresaber")
-    br
+    label(for="alt_tag") In-Game Name: *
+    input#alt_tag(type="text" name="alt_tag" required placeholder="(for score submission)")
+    label(for="scoresaber") ScoreSaber:
+    input#scoresaber(type="text" name="scoresaber" placeholder="(if applicable)")
+    label(for="twitch") Twitch Account Link:
+    input#twitch(type="url" name="twitch" placeholder="(recommended)")
     input(type="submit")
     input(type="button" value="Cancel" hx-get="/self/team")
+
+    script.
+        document.body.addEventListener('htmx:confirm', function(evt) {
+            if (evt.target.matches("[hx-post='/self/team/join']") && document.getElementById("twitch").value.trim() === "") {
+                evt.preventDefault();
+                if (confirm("Are you sure you want to join a team without providing a Twitch account link? This is strongly recommended for all players participating in streamed matches.")) {
+                    evt.detail.issueRequest();
+                }
+            }
+        })
