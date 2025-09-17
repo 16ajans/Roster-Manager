@@ -8,11 +8,11 @@ form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-target="#sel
     label(for="teamId") Team: *
     select#teamId(name="teamId" required hx-post="/self/team/options" hx-trigger="load, change from:#divisionId delay:250ms" hx-target="this" hx-swap="innerHTML")
         option(value="") Select a division. 
-    label(for="alt_tag") In-Game Name (for score submission & matches): *
-    input#alt_tag(type="text" name="alt_tag" required)
-    label(for="scoresaber") ScoreSaber (if applicable):
-    input#scoresaber(type="text" name="scoresaber")
-    label(for="twitch") Twitch Account Link (STRONGLY recommended):
-    input#twitch(type="url" name="twitch")
+    label(for="alt_tag") In-Game Name: *
+    input#alt_tag(type="text" name="alt_tag" required placeholder="(for score submission & matches)")
+    label(for="scoresaber") ScoreSaber:
+    input#scoresaber(type="text" name="scoresaber" placeholder="(if applicable)")
+    label(for="twitch") Twitch Account Link:
+    input#twitch(type="url" name="twitch" placeholder="(STRONGLY recommended)")
     input(type="submit")
     input(type="button" value="Cancel" hx-get="/self/team")
