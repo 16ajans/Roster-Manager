@@ -21,7 +21,7 @@ form(hx-post="/self/team/join" hx-encoding="multipart/form-data" hx-target="#sel
         function validateForm() {
             const form = document.querySelector('form');
             const twitchInput = document.getElementById('twitch');
-            if (!twitchPrompt && twitchInput.value.trim() === '') {
+            if (twitchInput.value.trim() === '') {
                 if (confirm("Are you sure you want to proceed without providing a Twitch account link? This is strongly recommended any players participating in streamed matches.")) {
                     form.submit();
                 }
