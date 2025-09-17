@@ -17,6 +17,11 @@ form {
     grid-template-columns: 50% 50%;
 }
 
+form#filter,
+form#rejReason {
+    display: block;
+}
+
 form label {
     margin: 0.5rem
 }

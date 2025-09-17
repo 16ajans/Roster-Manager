@@ -7,10 +7,13 @@ block content
             h4 Filter
             input#REJECTED(type="checkbox" name="REJECTED")
             label(for="REJECTED") REJECTED
+            br
             input#AWAITING(type="checkbox" name="AWAITING")
             label(for="AWAITING") AWAITING
+            br
             input#REVIEW(type="checkbox" name="REVIEW" checked)
             label(for="REVIEW") REVIEW
+            br
             input#ACCEPTED(type="checkbox" name="ACCEPTED")
             label(for="ACCEPTED") ACCEPTED
         input(type="submit" value="Reapply Filter")
@@ -20,6 +23,7 @@ block content
         form#rejReason.modal-content(hx-on::after-request="closeModal()" hx-swap="outerHTML")
             label(for="reason") Rejection Reason:
             input#reason(type="text" name="reason" placeholder="Recommended")
+            br
             input(type="submit" value="Submit")
             input(type="button" value="Cancel" onclick="event.preventDefault();closeModal()")
     script.
