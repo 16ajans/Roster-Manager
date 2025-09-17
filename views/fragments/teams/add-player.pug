@@ -11,5 +11,8 @@ form#addPlayer(hx-post="/teams/" + team.id + "/add-player" hx-encoding="multipar
     label(for="scoresaber") ScoreSaber: (if applicable)
     input#scoresaber(type="text" name="scoresaber")
     br
+    label(for="twitch") Twitch Account Link: (STRONGLY recommended)
+    input#twitch(type="text" name="twitch")
+    br
     input(type="submit")
     input(type="button" value="Cancel" hx-get="/teams/" + team.id)
