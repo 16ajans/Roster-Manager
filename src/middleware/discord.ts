@@ -31,21 +31,6 @@ router.post('/member/search', noUpload, async (req, res) => {
         res.send('<p>Not Found.</p>')
     }
 })
-    .post('/admin/search', noUpload, async (req, res) => {
-        if (!req.body.discordSearch || (req.body.discordSearch as string).length < 1) {
-            res.send()
-            return
-        }
-        const member = await searchUniqueGuildMember(req.body.discordSearch)
-        if (member) {
-            res.render('fragments/discord-member', {
-                member,
-                registered: false
-            })
-        } else {
-            res.send('<p>Not Found.</p>')
-        }
-    })
 
 interface HydratedUser extends Omit<User, 'discord'> {
     discord: string | GuildMember
