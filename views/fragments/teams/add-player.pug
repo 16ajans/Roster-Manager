@@ -5,13 +5,13 @@ form#addPlayer(hx-post="/teams/" + team.id + "/add-player" hx-encoding="multipar
         else 
             option(value="") No players available.
     br
-    label(for="alt_tag") In-Game Name/Gamertag: *
+    label(for="alt_tag") In-Game Name (for score submission & matches): *
     input#alt_tag(type="text" name="alt_tag" required)
     br
-    label(for="scoresaber") ScoreSaber: (if applicable)
+    label(for="scoresaber") ScoreSaber (if applicable):
     input#scoresaber(type="text" name="scoresaber")
     br
-    label(for="twitch") Twitch Account Link: (STRONGLY recommended)
+    label(for="twitch") Twitch Account Link (STRONGLY recommended):
     input#twitch(type="text" name="twitch")
     br
     input(type="submit")

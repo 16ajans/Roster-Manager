@@ -2,7 +2,7 @@ include ../mixins/team-card
 button(hx-get="/self/team/join" hx-swap="outerHTML") Join a Team
 each assignment in assignments
     +team-card(assignment.team)
-        p In-Game Name/Gamertag: #{assignment.alt_tag}
+        p In-Game Name: #{assignment.alt_tag}
         if (assignment.scoresaber)
             p ScoreSaber: #{assignment.scoresaber}
         if (assignment.twitch)
