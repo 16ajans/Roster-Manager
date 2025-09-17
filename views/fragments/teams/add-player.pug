@@ -1,5 +1,5 @@
 form#addPlayer(hx-post="/teams/" + team.id + "/add-player" hx-encoding="multipart/form-data" hx-target="closest .team-card" hx-swap="outerHTML")
-    select(name="playerId" required)
+    select(name="playerId" style="grid-column:span 2;" required)
         each player in players 
             option(value=player.id)= player.discord.displayName
         else 
