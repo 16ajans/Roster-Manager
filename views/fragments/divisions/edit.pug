@@ -1,5 +1,5 @@
 form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swap="outerHTML")
-    label(for="name") Name: *
+    label(for="name") Division Name: *
     input#name(type="text" name="name" value=division.name required)
     //- label(for="description") Description:
     //- input#description(type="text" value=division.description name="description")

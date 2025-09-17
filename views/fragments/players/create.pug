@@ -2,8 +2,8 @@ form#createPlayer(hx-post="/players/create" hx-encoding="multipart/form-data" hx
     label(for="discordSearch") Discord: *
     input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createPlayer\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid, unregistered CVRE member.');htmx.find('#createPlayer').reportValidity();}")
     p(hx-post="/discord/member/search" hx-trigger="keyup from:#discordSearch delay:250ms" hx-target='this' hx-swap="innerHTML" style="grid-column:span 2;") Type to search for a CVRE member.
-    label(for="name") Name: *
-    input#name(type="text" name="name" required)
+    label(for="name") Student Name: *
+    input#name(type="text" name="name" required placeholder="(should match docs)")
     label(for="school") School: *
     input#school(type="text" name="school" required)
     label(for="verification") Verification:

@@ -1,5 +1,5 @@
 form(hx-put="/teams/" + team.id hx-encoding="multipart/form-data" hx-swap="outerHTML")
-    label(for="name") Name: *
+    label(for="name") Team Name: *
     input#name(type="text" name="name" value=team.name required)
     label(for="locale") School/Region: *
     input#locale(type="text" name="locale" value=team.locale required)

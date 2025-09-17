@@ -1,7 +1,7 @@
 form#registerSelf(hx-post="/self/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
     input(type="hidden" name="discord" value=discord)
-    label(for="name") Name: *
-    input#name(type="text" name="name" required)
+    label(for="name") Student Name: *
+    input#name(type="text" name="name" required placeholder="(should match docs)")
     label(for="school") School: *
     input#school(type="text" name="school" required)
     label(for="verification") Verification:

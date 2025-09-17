@@ -1,6 +1,6 @@
 form(hx-put="/self" hx-encoding="multipart/form-data" hx-swap="outerHTML")
-    label(for="name") Name: *
-    input#name(type="text" name="name" value=player.name required)
+    label(for="name") Student Name: *
+    input#name(type="text" name="name" value=player.name required placeholder="(should match docs)")
     label(for="school") School: *
     input#school(type="text" name="school" value=player.school required)
     label(for="verification") Verification:
