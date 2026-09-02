@@ -116,6 +116,7 @@ form label {
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
 #filter>fieldset>h4 {
@@ -287,6 +288,7 @@ card p {
 }
 
 card .card-title {
+    overflow: hidden;
     font-size: 1.05rem;
     font-weight: 700;
     margin: 0 0 0.6rem;
@@ -299,6 +301,7 @@ card button {
 }
 
 card ul {
+    overflow: hidden;
     list-style: none;
     margin: 0.5rem 0;
     padding: 0;
@@ -422,8 +425,9 @@ card li button {
 .teamWrapper {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
     border-bottom: 1px solid var(--color-border);
-    padding: 0.75rem 0;
+    padding: 0.9rem 0.5rem;
 }
 
 .teamWrapper:last-child {
