@@ -48,5 +48,10 @@
     "qs": "^6.15.2",
     "body-parser": "^1.20.6",
     "ws": "^8.21.0"
+  },
+  "allowScripts": {
+    "@prisma/client@5.19.1": true,
+    "@prisma/engines@5.19.1": true,
+    "prisma@5.19.1": true
   }
 }

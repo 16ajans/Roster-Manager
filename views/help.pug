@@ -8,11 +8,11 @@ html(lang="en")
       script(src='/js/htmx.min.js')
       link(rel='preconnect' href='https://cdn.discordapp.com/')
       link(rel='icon' type='image/x-icon' href='/images/favicon.png')
-      meta(property="og:title" content="CVRE Roster Manager")
+      meta(property="og:title" content=brand.appName)
       meta(property="og:type" content="website")
-      meta(property="og:url" content="https://cvre.app/")
-      meta(property="og:image" content="https://cvre.app/images/CVRE.png")
-      meta(name="theme-color" content="#703893")
+      meta(property="og:url" content=brand.appUrl)
+      meta(property="og:image" content=brand.appLogoUrl)
+      meta(name="theme-color" content=brand.colorHex)
     body(style="display: block;")
         button(onclick="window.close();" style="position:fixed;bottom:1rem;right:1rem;") Close
         h3 CVRE Roster Site Help
@@ -30,8 +30,8 @@ html(lang="en")
             | A person can be both a manager & player at the same time, just a manager, or just a player.
             | Players may self-register and join a Manager's team during the season's registration cycle OR allow their Manager to handle their registration.
             | A Manager may register none, some, or all of the players for their team, including themselves.
-        p Each person managing or competing with the League must be a member of the 
-            a(href="http://discord.gg/JXbmZjp") CVRE League Discord server
+        p Each person managing or competing with the League must be a member of the
+            a(href=brand.discordInviteUrl) CVRE League Discord server
             | .
         h4 Player Verification
         p
