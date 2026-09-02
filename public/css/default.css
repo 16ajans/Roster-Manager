@@ -2,6 +2,37 @@
 @import url('/css/header.css');
 @import url('/css/footer.css');
 
+:root {
+    --color-bg: #f6f4f9;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f1ecf7;
+    --color-border: #ddd5e6;
+    --color-text: #241f2b;
+    --color-text-muted: #6f6779;
+    --color-primary: #703893;
+    --color-primary-hover: #5a2c76;
+    --color-primary-contrast: #ffffff;
+    --color-success: #1f7a45;
+    --color-success-bg: #e2f5e9;
+    --color-danger: #b3261e;
+    --color-danger-bg: #fbe6e4;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 1px 2px rgba(36, 31, 43, 0.06), 0 1px 1px rgba(36, 31, 43, 0.04);
+    --shadow-md: 0 6px 16px rgba(36, 31, 43, 0.1);
+    --color-dev-bg: #f2b705;
+    --color-dev-text: #3a2c00;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--color-bg);
+}
+
 body {
     max-width: 50rem;
     margin: auto;
@@ -9,13 +40,79 @@ body {
     min-height: 100vh;
     display: grid;
     grid-template-rows: auto auto 1fr auto;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+.dev-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--color-dev-bg);
+    color: var(--color-dev-text);
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+body.has-dev-banner {
+    padding-top: 3.25rem;
+}
+
+a {
+    color: var(--color-primary);
+    text-underline-offset: 2px;
+}
+
+a:hover {
+    color: var(--color-primary-hover);
+}
+
+h2,
+h3,
+h4 {
+    line-height: 1.3;
+    color: var(--color-text);
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.25rem;
+}
+
+h3 {
+    font-size: 1.15rem;
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+}
+
+main {
+    margin-top: 1rem;
+}
+
+main>*+* {
+    margin-top: 1rem;
 }
 
 form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    align-items: baseline;
+    gap: 0.6rem 0.75rem;
+    align-items: center;
 }
 
 #filter,
@@ -24,7 +121,10 @@ form {
 }
 
 form label {
-    margin: 0.5rem
+    margin: 0;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
 }
 
 #filter,
@@ -34,79 +134,335 @@ form label {
     border: none;
 }
 
+#filter>fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
 #filter>fieldset>h4 {
+    margin: 0 0.25rem 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.filter-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    font-size: 0.85rem;
+}
+
+.filter-option input {
     margin: 0;
-    margin-right: 1rem;
+}
+
+.filter-option label {
+    margin: 0;
+    font-weight: 500;
+    color: var(--color-text);
 }
 
 input[type="file"] {
     grid-column: span 2;
 }
 
-@media only screen and (min-width: 600px) {
-    #filter>fieldset {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
+/* Inputs & selects */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+select,
+textarea {
+    font: inherit;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.6rem;
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(112, 56, 147, 0.15);
+}
+
+input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Buttons */
+button,
+input[type="submit"],
+input[type="button"] {
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-alt);
+    color: var(--color-primary);
+    padding: 0.45rem 0.9rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background: #e6dbf0;
+}
+
+button:active,
+input[type="submit"]:active,
+input[type="button"]:active {
+    transform: translateY(1px);
+}
+
+button:focus-visible,
+input[type="submit"]:focus-visible,
+input[type="button"]:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+input[type="submit"],
+[hx-get$="/create"],
+[hx-get="/self/team/join"] {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+}
+
+input[type="submit"]:hover,
+[hx-get$="/create"]:hover,
+[hx-get="/self/team/join"]:hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+}
+
+#teams [hx-get$="/create"],
+#players [hx-get$="/create"],
+#divisions [hx-get$="/create"],
+#selfTeam [hx-get="/self/team/join"] {
+    grid-column: 1 / -1;
+    margin-bottom: 0.25rem;
+}
+
+input[type="button"] {
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-text-muted);
+}
+
+input[type="button"]:hover {
+    background: var(--color-surface-alt);
+    color: var(--color-text);
+}
+
+[hx-put$="/ACCEPTED"] {
+    background: var(--color-success-bg);
+    border-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+[hx-put$="/ACCEPTED"]:hover {
+    background: #cdeeda;
+}
+
+[hx-delete],
+[hx-put$="/REJECTED"],
+.btn-reject {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+[hx-delete]:hover,
+[hx-put$="/REJECTED"]:hover,
+.btn-reject:hover {
+    background: #f6d2ce;
+}
+
+/* Cards */
 card {
     display: block;
-    margin: 1rem;
-    padding: 0 0.5rem 0.5rem;
-    border: 1px solid black;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+card p {
+    margin: 0.35rem 0;
+}
+
+card .card-title {
+    overflow: hidden;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+card button {
+    margin: 0.85rem 0.5rem 0 0;
+}
+
+card ul {
+    overflow: hidden;
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+}
+
+card li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+card li button {
+    margin: 0;
 }
 
 .team-logo {
     float: right;
-    border: 1px solid black;
     max-width: 8rem;
     max-height: 8rem;
-    margin: 1rem;
+    margin: 0 0 0.5rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    object-fit: cover;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.65rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+}
+
+.badge-awaiting {
+    background: #fbecc4;
+    color: #8a651a;
+}
+
+.badge-review {
+    background: #dbe8fb;
+    color: #1c4f9c;
+}
+
+.badge-accepted {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.badge-rejected {
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.badge-open {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.badge-closed {
+    background: var(--color-surface-alt);
+    color: var(--color-text-muted);
+}
+
+/* List/grid containers populated over htmx */
+#teams,
+#players,
+#divisions,
+#verify,
+#selfTeam {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    align-items: start;
+    gap: 1rem;
+}
+
+#teams>form,
+#players>form,
+#divisions>form,
+#selfTeam>form {
+    grid-column: 1 / -1;
+}
+
+#selfReg {
+    max-width: 28rem;
 }
 
 .modal {
     display: none;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     z-index: 1;
-    /* Sit on top */
     left: 0;
     top: 0;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
     overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
+    background-color: rgba(36, 31, 43, 0.45);
     margin: 0;
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: var(--color-surface);
     margin: 15% auto;
-    /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    /* Could be more or less, depending on screen size */
-
-    text-align: center;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    width: 90%;
+    max-width: 26rem;
+    text-align: left;
 }
 
 .teamWrapper {
     display: flex;
-    border-bottom: 1px solid black;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.9rem 0.5rem;
+}
+
+.teamWrapper:last-child {
+    border-bottom: none;
 }
 
 .teamWrapper card {
     border: none;
+    box-shadow: none;
+    padding: 0.6rem 0.9rem;
+    flex: 1;
+    min-width: 0;
 }
 
 .teamWrapper card>.locale,
@@ -118,6 +474,8 @@ card {
 .teamWrapper img {
     margin: 0;
     border: none;
+    box-shadow: none;
+    border-radius: var(--radius-sm);
     float: none;
 }
 
@@ -132,4 +490,12 @@ card {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+@media only screen and (max-width: 400px) {
+    .team-logo {
+        float: none;
+        display: block;
+        margin: 0 auto 0.75rem;
+    }
 }

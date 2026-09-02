@@ -15,6 +15,12 @@ if authed
             a(href='/divisions') Divisions
             a(href='/verify') Verify
         a(href='/account') Account
-else 
-    nav 
+else
+    nav
         a(href="/auth/login") Log In
+script.
+    document.querySelectorAll('nav a[href]').forEach(function (link) {
+        if (link.pathname === window.location.pathname) {
+            link.setAttribute('aria-current', 'page')
+        }
+    })

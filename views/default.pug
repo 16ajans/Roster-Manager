@@ -13,7 +13,9 @@ html(lang="en")
       meta(property="og:url" content=brand.appUrl)
       meta(property="og:image" content=brand.appLogoUrl)
       meta(name="theme-color" content=brand.colorHex)
-    body
+    body(class=isDev ? 'has-dev-banner' : undefined)
+      if isDev
+        .dev-banner Development Environment
       include blocks/header
       main
         block content

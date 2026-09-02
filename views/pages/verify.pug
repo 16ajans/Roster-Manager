@@ -5,17 +5,18 @@ block content
     form#filter(hx-get="/verify/list" hx-trigger="change, load, submit" hx-target="#verify")
         fieldset
             h4 Filter
-            input#REJECTED(type="checkbox" name="REJECTED")
-            label(for="REJECTED") REJECTED
-            br
-            input#AWAITING(type="checkbox" name="AWAITING")
-            label(for="AWAITING") AWAITING
-            br
-            input#REVIEW(type="checkbox" name="REVIEW" checked)
-            label(for="REVIEW") REVIEW
-            br
-            input#ACCEPTED(type="checkbox" name="ACCEPTED")
-            label(for="ACCEPTED") ACCEPTED
+            span.filter-option
+                input#REJECTED(type="checkbox" name="REJECTED")
+                label(for="REJECTED") REJECTED
+            span.filter-option
+                input#AWAITING(type="checkbox" name="AWAITING")
+                label(for="AWAITING") AWAITING
+            span.filter-option
+                input#REVIEW(type="checkbox" name="REVIEW" checked)
+                label(for="REVIEW") REVIEW
+            span.filter-option
+                input#ACCEPTED(type="checkbox" name="ACCEPTED")
+                label(for="ACCEPTED") ACCEPTED
         input(type="submit" value="Reapply Filter")
     section#verify
 
