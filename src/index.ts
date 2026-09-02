@@ -32,6 +32,7 @@ app.use(
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week, ms
       secure: true,
+      sameSite: 'lax',
     },
     secret: process.env.SESSION_SECRET as string,
     resave: true,
@@ -82,14 +83,14 @@ app.use('/', async (req, res, next) => {
         }
       }
     })
-    for (const division of divisions) {
-      for (const team of division.Team) {
-        await hydrateOne(team.manager)
-        for (const assignment of team.Assignment) {
-          await hydrateOne(assignment.player)
-        }
-      }
-    }
+    await Promise.all(
+      divisions.flatMap((division) =>
+        division.Team.flatMap((team) => [
+          hydrateOne(team.manager),
+          ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+        ])
+      )
+    )
     res.render("pages/public", {
       divisions,
       title: 'CVRE Roster Manager'

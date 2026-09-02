@@ -153,11 +153,16 @@ router
     }).then(() => {
       res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Division deleted.</p>")
     }).catch((error) => {
-      if (error.code === "y") {
+      if (error.code === "P2025") {  // record not found
         res.sendStatus(404)
-      } else {  // foreign key constraint, etc.
+      } else if (error.code === "P2003") {  // foreign key constraint
         res.setHeader('HX-Retarget', 'body').render('error', {
-          error
+          error: 'This division still has teams assigned to it and cannot be deleted.'
+        })
+      } else {
+        console.error(error)
+        res.setHeader('HX-Retarget', 'body').render('error', {
+          error: 'An unexpected error occurred while deleting the division.'
         })
       }
     })
