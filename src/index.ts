@@ -47,6 +47,11 @@ app.disable("x-powered-by")
 
 app.set('view engine', 'pug')
 
+app.use((req, res, next) => {
+  res.locals.isDev = process.env.NODE_ENV !== 'production' || /^dev[.-]/i.test(req.hostname)
+  next()
+})
+
 app.use(express.static(path.join(dirRoot, 'public'), {
   maxAge: '7d'
 }))

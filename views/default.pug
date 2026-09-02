@@ -13,7 +13,9 @@ html(lang="en")
       meta(property="og:url" content="https://cvre.app/")
       meta(property="og:image" content="https://cvre.app/images/CVRE.png")
       meta(name="theme-color" content="#703893")
-    body
+    body(class=isDev ? 'has-dev-banner' : undefined)
+      if isDev
+        .dev-banner Development Environment
       include blocks/header
       main
         block content
