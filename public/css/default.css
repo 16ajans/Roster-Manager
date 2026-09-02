@@ -437,7 +437,7 @@ card li button {
 .teamWrapper card {
     border: none;
     box-shadow: none;
-    padding: 0;
+    padding: 0.6rem 0.9rem;
     flex: 1;
     min-width: 0;
 }
