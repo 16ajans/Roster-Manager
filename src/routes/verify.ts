@@ -2,7 +2,7 @@ import express from 'express'
 import path from 'path'
 import { dirRoot } from '../drivers/fs'
 import { prisma } from '../drivers/db'
-import { sendVerifDM } from '../drivers/bot'
+import { ChangeAction, sendPlayerChangeDM, sendVerifDM } from '../drivers/bot'
 import { State } from '@prisma/client'
 import { hydrateMany, hydrateOne } from '../middleware/discord'
 
@@ -85,10 +85,11 @@ router
         }
     })
     .delete('/:playerID', async (req, res) => {
-        await prisma.player.delete({
+        const player = await prisma.player.delete({
             where: {
                 id: req.params.playerID
             }
         })
         res.send("<p>Player registration deleted.</p>")
+        sendPlayerChangeDM(player.discord, player.discord, req.session.user?.discord as string, ChangeAction.DELETE)
     })

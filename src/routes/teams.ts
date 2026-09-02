@@ -207,13 +207,35 @@ router
     next()
   }, renderTeam)
   .delete('/:teamID', async (req, res) => {
+    const team = await prisma.team.findUnique({
+      where: {
+        id: req.params.teamID,
+        managerId: req.session.user?.id
+      },
+      include: {
+        Assignment: {
+          include: {
+            player: true
+          }
+        }
+      }
+    })
+    if (!team) {
+      res.sendStatus(404)
+      return
+    }
+    res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Team deleted.</p>")
+    // Assignments are deleted via cascade, so notify players (which looks
+    // the team back up by id) before the team row itself is gone.
+    await Promise.all(team.Assignment.map((assignment) =>
+      sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, team.id, ChangeAction.DELETE)
+    ))
     await prisma.team.delete({
       where: {
         id: req.params.teamID,
         managerId: req.session.user?.id
       }
     })
-    res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Team deleted.</p>")
   })
 
 router.get("/:teamID/add-player", async (req, res) => {
