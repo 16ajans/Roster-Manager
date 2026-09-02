@@ -76,16 +76,19 @@ router.get('/callback', async (req, res) => {
 
 router.get('/logout', async (req, res) => {
   if (req.session.user?.auth) {
-    revokeToken(req.session.user.auth)
-
-    prisma.user.update({
-      where: {
-        id: req.session.user.id
-      },
-      data: {
-        auth: null
-      }
-    })
+    try {
+      await revokeToken(req.session.user.auth)
+      await prisma.user.update({
+        where: {
+          id: req.session.user.id
+        },
+        data: {
+          auth: null
+        }
+      })
+    } catch (err) {
+      console.error('Failed to fully log out user:', err)
+    }
   }
   req.session.destroy(() => {
     res.redirect('/')

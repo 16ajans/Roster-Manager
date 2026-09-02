@@ -32,6 +32,7 @@ app.use(
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week, ms
       secure: true,
+      sameSite: 'lax',
     },
     secret: process.env.SESSION_SECRET as string,
     resave: true,

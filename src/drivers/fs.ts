@@ -50,7 +50,7 @@ async function logoFileFilter(req: Request, file: Express.Multer.File, cb: FileF
   }
 }
 
-export const verifUpload = multer({ storage: verifStorage, fileFilter: verifFileFilter })
-export const logoUpload = multer({ storage: logoStorage, fileFilter: logoFileFilter })
+export const verifUpload = multer({ storage: verifStorage, fileFilter: verifFileFilter, limits: { fileSize: 9000000 } })
+export const logoUpload = multer({ storage: logoStorage, fileFilter: logoFileFilter, limits: { fileSize: 9000000 } })
 
 export const noUpload = multer().none()
