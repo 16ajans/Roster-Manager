@@ -1,7 +1,7 @@
 {
   "name": "roster-manager",
   "version": "1.0.0",
-  "description": "",
+  "description": "Roster management web app for CVRE: divisions, teams, and player registrations with Discord OAuth.",
   "main": "dist/index.js",
   "scripts": {
     "build": "npx tsc",
@@ -11,8 +11,8 @@
     "migrate": "npx prisma migrate dev"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Collegiate VR Esports LLC",
+  "license": "MIT",
   "devDependencies": {
     "@types/compression": "^1.7.5",
     "@types/express": "^4.17.21",
