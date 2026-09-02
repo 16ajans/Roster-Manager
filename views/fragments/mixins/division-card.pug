@@ -1,8 +1,8 @@
 mixin division-card(division)
     card.division-card(id="d" + division.id)
-        p Name: #{division.name}
+        p.card-title Name: #{division.name}
         //- p Description: #{division.description}
-        p Open Registration: #{division.open}
+        p Open Registration: #[span(class="badge " + (division.open ? "badge-open" : "badge-closed")) #{division.open ? "Open" : "Closed"}]
         //- p Minimum Players per Team: #{division.min_players}
         //- p Maximum Players per Team: #{division.max_players}
         p Division Admin Discord ID: #{division.admin.discord} 
