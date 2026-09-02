@@ -2,7 +2,7 @@ import path from 'path';
 import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
-import csrf from 'lusca'
+import lusca from 'lusca'
 import compression from 'compression'
 import morgan from 'morgan'
 
@@ -41,7 +41,7 @@ app.use(
     proxy: true
   })
 )
-app.use(csrf())
+app.use(lusca.csrf())
 app.use(compression())
 app.disable("x-powered-by")
 
