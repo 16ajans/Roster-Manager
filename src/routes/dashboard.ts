@@ -203,6 +203,18 @@ router.get('/self/team', renderSelfTeams)
     sendJoinRequestDM(assignment.team.manager.discord, assignment.player.discord, assignment.team.id)
   }, renderSelfTeams)
   .delete('/self/team/:assignmentID', async (req, res) => {
+    const owned = await prisma.assignment.findFirst({
+      where: {
+        id: req.params.assignmentID,
+        player: {
+          discord: req.session.user?.discord
+        }
+      }
+    })
+    if (!owned) {
+      res.sendStatus(404)
+      return
+    }
     const assignment = await prisma.assignment.delete({
       where: {
         id: req.params.assignmentID

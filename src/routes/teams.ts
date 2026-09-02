@@ -48,10 +48,10 @@ const renderTeam: RequestHandler = async (req, res) => {
     res.sendStatus(404)
     return
   }
-  await hydrateOne(team.manager)
-  for (const assignment of team.Assignment) {
-    await hydrateOne(assignment.player)
-  }
+  await Promise.all([
+    hydrateOne(team.manager),
+    ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+  ])
   res.render('fragments/teams/team', {
     team
   })
@@ -73,12 +73,12 @@ router
         }
       }
     })
-    for (const team of teams) {
-      await hydrateOne(team.manager)
-      for (const assignment of team.Assignment) {
-        await hydrateOne(assignment.player)
-      }
-    }
+    await Promise.all(
+      teams.flatMap((team) => [
+        hydrateOne(team.manager),
+        ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+      ])
+    )
     res.render('fragments/teams/list', {
       teams
     })
@@ -121,10 +121,10 @@ router
         }
       }
     })
-    await hydrateOne(team.manager)
-    for (const assignment of team.Assignment) {
-      await hydrateOne(assignment.player)
-    }
+    await Promise.all([
+      hydrateOne(team.manager),
+      ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+    ])
     res.render('fragments/teams/new-team', {
       team
     })
@@ -151,10 +151,10 @@ router
       res.sendStatus(404)
       return
     }
-    await hydrateOne(team.manager)
-    for (const assignment of team.Assignment) {
-      await hydrateOne(assignment.player)
-    }
+    await Promise.all([
+      hydrateOne(team.manager),
+      ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+    ])
     res.render('fragments/teams/edit', {
       team,
       divisions
@@ -219,9 +219,14 @@ router
 router.get("/:teamID/add-player", async (req, res) => {
   const team = await prisma.team.findUnique({
     where: {
-      id: req.params.teamID
+      id: req.params.teamID,
+      managerId: req.session.user?.id
     }
   })
+  if (!team) {
+    res.sendStatus(404)
+    return
+  }
   const players = await prisma.player.findMany({
     where: {
       managerId: req.session.user?.id,
@@ -241,6 +246,16 @@ router.get("/:teamID/add-player", async (req, res) => {
   })
 })
   .post("/:teamID/add-player", noUpload, async (req, res, next) => {
+    const team = await prisma.team.findUnique({
+      where: {
+        id: req.params.teamID,
+        managerId: req.session.user?.id
+      }
+    })
+    if (!team) {
+      res.sendStatus(404)
+      return
+    }
     const assignment = await prisma.assignment.create({
       data: {
         team: {
@@ -266,6 +281,19 @@ router.get("/:teamID/add-player", async (req, res) => {
     sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.CREATE)
   }, renderTeam)
   .delete("/:teamID/player/:assignmentID", async (req, res, next) => {
+    const owned = await prisma.assignment.findFirst({
+      where: {
+        id: req.params.assignmentID,
+        teamId: req.params.teamID,
+        team: {
+          managerId: req.session.user?.id
+        }
+      }
+    })
+    if (!owned) {
+      res.sendStatus(404)
+      return
+    }
     const assignment = await prisma.assignment.delete({
       where: {
         id: req.params.assignmentID
@@ -278,6 +306,19 @@ router.get("/:teamID/add-player", async (req, res) => {
     sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.DELETE)
   }, renderTeam)
   .put('/:teamID/player/:assignmentID/:newState', async (req, res, next) => {
+    const owned = await prisma.assignment.findFirst({
+      where: {
+        id: req.params.assignmentID,
+        teamId: req.params.teamID,
+        team: {
+          managerId: req.session.user?.id
+        }
+      }
+    })
+    if (!owned) {
+      res.sendStatus(404)
+      return
+    }
     if (req.params.newState === "ACCEPTED") {
       const assignment = await prisma.assignment.update({
         where: {

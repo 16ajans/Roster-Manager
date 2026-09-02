@@ -82,14 +82,14 @@ app.use('/', async (req, res, next) => {
         }
       }
     })
-    for (const division of divisions) {
-      for (const team of division.Team) {
-        await hydrateOne(team.manager)
-        for (const assignment of team.Assignment) {
-          await hydrateOne(assignment.player)
-        }
-      }
-    }
+    await Promise.all(
+      divisions.flatMap((division) =>
+        division.Team.flatMap((team) => [
+          hydrateOne(team.manager),
+          ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+        ])
+      )
+    )
     res.render("pages/public", {
       divisions,
       title: 'CVRE Roster Manager'
