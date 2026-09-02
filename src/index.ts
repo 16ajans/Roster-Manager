@@ -2,7 +2,7 @@ import path from 'path';
 import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
-import csrf from 'lusca'
+import lusca from 'lusca'
 import compression from 'compression'
 import morgan from 'morgan'
 
@@ -27,6 +27,9 @@ const app = express()
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'))
 }
+app.use(express.static(path.join(dirRoot, 'public'), {
+  maxAge: '7d'
+}))
 app.use(
   session({
     cookie: {
@@ -41,15 +44,11 @@ app.use(
     proxy: true
   })
 )
-app.use(csrf())
+app.use(lusca.csrf())
 app.use(compression())
 app.disable("x-powered-by")
 
 app.set('view engine', 'pug')
-
-app.use(express.static(path.join(dirRoot, 'public'), {
-  maxAge: '7d'
-}))
 
 app.use('/auth', auth)
 app.use('/discord', userAuth, discord)
@@ -99,6 +98,17 @@ app.use('/', async (req, res, next) => {
     next()
   }
 }, userAuth, dashboard)
+
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err.message?.startsWith('CSRF token')) {
+    // Stale/expired session: tell htmx to do a full reload, which
+    // re-renders the layout and picks up a fresh token.
+    res.set('HX-Refresh', 'true')
+    res.sendStatus(403)
+    return
+  }
+  next(err)
+})
 
 bot.once(Events.ClientReady, () => {
   app.listen(process.env.PORT)
