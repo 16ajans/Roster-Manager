@@ -15,6 +15,8 @@ import { client as bot } from './drivers/bot';
 import { adminAuth, router as auth, userAuth } from './middleware/auth'
 import { router as discord, hydrateOne } from './middleware/discord'
 
+import { APP_LOGO_URL, APP_NAME, APP_URL, BRAND_COLOR_HEX, DISCORD_INVITE_URL, LEAGUE_URL, SESSION_MAX_AGE_MS, STATIC_ASSET_CACHE_MAX_AGE } from './constants'
+
 import { router as account } from './routes/account'
 import { router as dashboard } from './routes/dashboard'
 import { router as divisions } from './routes/divisions'
@@ -30,8 +32,8 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(
   session({
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week, ms
-      secure: true,
+      maxAge: SESSION_MAX_AGE_MS,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
     },
     secret: process.env.SESSION_SECRET as string,
@@ -46,9 +48,17 @@ app.use(compression())
 app.disable("x-powered-by")
 
 app.set('view engine', 'pug')
+app.locals.brand = {
+  appName: APP_NAME,
+  appUrl: APP_URL,
+  appLogoUrl: APP_LOGO_URL,
+  colorHex: BRAND_COLOR_HEX,
+  leagueUrl: LEAGUE_URL,
+  discordInviteUrl: DISCORD_INVITE_URL,
+}
 
 app.use(express.static(path.join(dirRoot, 'public'), {
-  maxAge: '7d'
+  maxAge: STATIC_ASSET_CACHE_MAX_AGE
 }))
 
 app.use('/auth', auth)
@@ -62,7 +72,7 @@ app.use('/verify', adminAuth, verify)
 
 app.get('/help', async (req, res) => {
   res.render('help', {
-    title: 'CVRE Roster Manager | Help'
+    title: `${APP_NAME} | Help`
   })
 })
 
@@ -93,7 +103,7 @@ app.use('/', async (req, res, next) => {
     )
     res.render("pages/public", {
       divisions,
-      title: 'CVRE Roster Manager'
+      title: APP_NAME
     })
   } else {
     next()
