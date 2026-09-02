@@ -6,6 +6,7 @@ import { hydrateMany, hydrateOne } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
 import path from 'path'
 import { userAuth } from '../middleware/auth'
+import { APP_NAME, UPLOAD_CACHE_MAX_AGE } from '../constants'
 
 export const router = express.Router()
 
@@ -15,7 +16,7 @@ router.use('/logos', express.static(path.join(dirRoot, 'logos'), {
       'Content-Disposition': 'inline'
     })
   },
-  maxAge: '1d'
+  maxAge: UPLOAD_CACHE_MAX_AGE
 }))
 
 router.use(userAuth)
@@ -23,7 +24,7 @@ router.use(userAuth)
 router
   .get('/', async (req, res) => {
     res.render('pages/teams', {
-      title: 'CVRE Roster Manager | Teams',
+      title: `${APP_NAME} | Teams`,
       user: req.session.user
     })
   })

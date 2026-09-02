@@ -1,5 +1,6 @@
 import { Client, DiscordAPIError, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
 import { prisma } from './db'
+import { APP_URL, BRAND_COLOR, DM_EMBED_AUTHOR, FALLBACK_ADMIN_SNOWFLAKE } from '../constants'
 
 export enum ChangeAction {
     CREATE,
@@ -13,7 +14,7 @@ let guild: Guild
 client.once(Events.ClientReady, (client) => {
     console.log(`Ready! Logged in as ${client.user.tag}`)
     guild = client.guilds.resolve(process.env.GUILD_ID as GuildResolvable) as Guild
-    fetchUser('144973321749004289').then(user => {
+    fetchUser(FALLBACK_ADMIN_SNOWFLAKE).then(user => {
         if (user) {
             user.send(`Roster Bot up @ ${(new Date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}!`)
         }
@@ -72,8 +73,8 @@ client.login(process.env.DISCORD_BOT_TOKEN)
 
 async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
     const embed = new EmbedBuilder()
-        .setColor(0x703893)
-        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setColor(BRAND_COLOR)
+        .setAuthor(DM_EMBED_AUTHOR)
         .setFooter({ text: "This is an automated message. Do not reply." })
     const player = await fetchGuildMember(playerSnowflake)
     if (!player) {
@@ -82,7 +83,7 @@ async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: b
     if (accepted) {
         embed.setTitle(`${player.displayName}'s verification has been approved!`)
     } else {
-        const admin = await fetchGuildMember(adminSnowflake ? adminSnowflake : "144973321749004289")
+        const admin = await fetchGuildMember(adminSnowflake ? adminSnowflake : FALLBACK_ADMIN_SNOWFLAKE)
         if (!admin) {
             throw new Error('Admin not found');
         }
@@ -98,8 +99,8 @@ async function buildVerifNotifEmbed(playerSnowflake: UserResolvable, accepted: b
 
 async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, change: ChangeAction) {
     const embed = new EmbedBuilder()
-        .setColor(0x703893)
-        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setColor(BRAND_COLOR)
+        .setAuthor(DM_EMBED_AUTHOR)
         .setFooter({ text: "This is an automated message. Do not reply." })
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
@@ -118,8 +119,8 @@ async function buildPlayerChangeNotifEmbed(playerSnowflake: UserResolvable, acto
 
 async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, teamId: string, change: ChangeAction) {
     const embed = new EmbedBuilder()
-        .setColor(0x703893)
-        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setColor(BRAND_COLOR)
+        .setAuthor(DM_EMBED_AUTHOR)
         .setFooter({ text: "This is an automated message. Do not reply." })
     embed.setDescription(`Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.`)
     const player = await fetchGuildMember(playerSnowflake)
@@ -153,8 +154,8 @@ async function buildAssignmentChangeNotifEmbed(playerSnowflake: UserResolvable, 
 
 async function buildJoinRequestEmbed(playerSnowflake: UserResolvable, teamId: string) {
     const embed = new EmbedBuilder()
-        .setColor(0x703893)
-        .setAuthor({ name: "CVRE Roster Integration", url: "https://cvre.app/", iconURL: "https://cvre.app/images/CVRE.png" })
+        .setColor(BRAND_COLOR)
+        .setAuthor(DM_EMBED_AUTHOR)
         .setFooter({ text: "This is an automated message. Do not reply." })
     const player = await fetchGuildMember(playerSnowflake)
     const team = await prisma.team.findUnique({
@@ -169,6 +170,6 @@ async function buildJoinRequestEmbed(playerSnowflake: UserResolvable, teamId: st
         throw new Error('Player not found');
     }
     embed.setTitle(`${player.displayName} has requested to join ${team?.name}!`)
-        .setDescription("Please visit https://cvre.app to approve or reject their request.")
+        .setDescription(`Please visit ${APP_URL} to approve or reject their request.`)
     return embed.setTimestamp()
 }

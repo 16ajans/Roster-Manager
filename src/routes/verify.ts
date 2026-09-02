@@ -5,12 +5,13 @@ import { prisma } from '../drivers/db'
 import { ChangeAction, sendPlayerChangeDM, sendVerifDM } from '../drivers/bot'
 import { State } from '@prisma/client'
 import { hydrateMany, hydrateOne } from '../middleware/discord'
+import { APP_NAME, UPLOAD_CACHE_MAX_AGE } from '../constants'
 
 export const router = express.Router()
 
 router.get('/', async (req, res) => {
     res.render('pages/verify', {
-        title: 'CVRE Roster Manager | Verify',
+        title: `${APP_NAME} | Verify`,
         user: req.session.user
     })
 })
@@ -21,7 +22,7 @@ router.use('/docs', express.static(path.join(dirRoot, 'verifications'), {
             'Content-Disposition': 'inline'
         })
     },
-    maxAge: '1d'
+    maxAge: UPLOAD_CACHE_MAX_AGE
 }))
 
 router

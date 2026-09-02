@@ -4,12 +4,13 @@ import { noUpload, verifUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
 import { hydrateOne } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM, sendJoinRequestDM, sendPlayerChangeDM } from '../drivers/bot'
+import { APP_NAME } from '../constants'
 
 export const router = express.Router()
 
 router.get('/', async (req, res) => {
   res.render('pages/dashboard', {
-    title: 'CVRE Roster Manager | Dashboard',
+    title: `${APP_NAME} | Dashboard`,
     user: req.session.user
   })
 })

@@ -8,11 +8,11 @@ html(lang="en")
       script(src='/js/htmx.min.js')
       link(rel='preconnect' href='https://cdn.discordapp.com/')
       link(rel='icon' type='image/x-icon' href='/images/favicon.png')
-      meta(property="og:title" content="CVRE Roster Manager")
+      meta(property="og:title" content=brand.appName)
       meta(property="og:type" content="website")
-      meta(property="og:url" content="https://cvre.app/")
-      meta(property="og:image" content="https://cvre.app/images/CVRE.png")
-      meta(name="theme-color" content="#703893")
+      meta(property="og:url" content=brand.appUrl)
+      meta(property="og:image" content=brand.appLogoUrl)
+      meta(name="theme-color" content=brand.colorHex)
     body
       include blocks/header
       main
