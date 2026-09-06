@@ -8,7 +8,10 @@
     "serve": "node dist/index.js",
     "lint": "npx eslint src --ext .ts",
     "initmigrate": "npx prisma migrate dev --name init",
-    "migrate": "npx prisma migrate dev"
+    "migrate": "npx prisma migrate dev",
+    "migrate:deploy": "npx prisma migrate deploy",
+    "deploy:dev": "npm run migrate && npm run build && npm run serve",
+    "deploy:prod": "npm run migrate:deploy && npx prisma generate && npm run build && npm run serve"
   },
   "keywords": [],
   "author": "Collegiate VR Esports LLC",

@@ -80,7 +80,10 @@ and build via GitHub Actions (`.github/workflows/ci.yml`).
 | `npm run serve` | Run the compiled app from `dist/index.js` |
 | `npm run lint` | Run ESLint |
 | `npm run initmigrate` | Create and apply the initial Prisma migration |
-| `npm run migrate` | Create and apply a new Prisma migration |
+| `npm run migrate` | Create and apply a new Prisma migration (dev) |
+| `npm run migrate:deploy` | Apply pending migrations without generating new ones (prod/staging) |
+| `npm run deploy:dev` | One-shot dev deploy: migrate, build, then serve |
+| `npm run deploy:prod` | One-shot production deploy: apply pending migrations, regenerate the Prisma client, build, then serve |
 
 ## Environment variables
 
