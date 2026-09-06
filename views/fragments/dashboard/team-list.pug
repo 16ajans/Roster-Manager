@@ -9,5 +9,5 @@ each assignment in assignments
             p
                 | Twitch: 
                 a(href=assignment.twitch) #{assignment.twitch}
-        p Status: #{assignment.status}
+        p Status: #[span(class="badge badge-" + assignment.status.toLowerCase()) #{assignment.status}]
         button(hx-delete="/self/team/" + assignment.id hx-target="closest .team-card" hx-swap="outerHTML" hx-confirm="Are you sure you want to leave this team?") Leave

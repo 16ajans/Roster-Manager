@@ -1,8 +1,8 @@
 mixin player-card(player)
     card.player-card(id="p" + player.id)
-        p #{player.discord.displayName}
+        p.card-title #{player.discord.displayName}
         p Name: #{player.name}
         p School: #{player.school}
-        p Status: #{player.status}
+        p Status: #[span(class="badge badge-" + player.status.toLowerCase()) #{player.status}]
         if block
             block
