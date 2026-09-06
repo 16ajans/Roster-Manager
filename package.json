@@ -19,7 +19,7 @@
     "@types/express-session": "^1.18.0",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.9",
-    "@types/multer": "^1.4.11",
+    "@types/multer": "^2.2.0",
     "@types/node": "^20.14.9",
     "@types/pug": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
