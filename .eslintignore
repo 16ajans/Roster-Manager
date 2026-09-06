@@ -4,3 +4,5 @@ node_modules
 verifications
 # Don't lint compiled js
 dist
+# Vendored third-party scripts, not our source
+public

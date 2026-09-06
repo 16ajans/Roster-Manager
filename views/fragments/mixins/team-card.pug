@@ -2,8 +2,8 @@ mixin team-card(team)
     card.team-card(id="t" + team.id)
         if team.logo 
             img.team-logo(src="/teams/logos/" + team.logo alt=team.name + " Logo")
+        p.card-title Name: #{team.name}
         p Division: #{team.division.name}
-        p Name: #{team.name}
         p School/Region: #{team.locale}
         p Manager: #{team.manager.discord.displayName}
         if block

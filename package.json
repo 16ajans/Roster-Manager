@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "serve": "node dist/index.js",
-    "lint": "npx eslint",
+    "lint": "npx eslint src --ext .ts",
     "initmigrate": "npx prisma migrate dev --name init",
     "migrate": "npx prisma migrate dev"
   },

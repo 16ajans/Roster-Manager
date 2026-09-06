@@ -5,6 +5,8 @@ import { mkdir } from 'fs'
 
 export const dirRoot = path.resolve(__dirname, '../..')
 
+const MAX_UPLOAD_BYTES = 9_000_000
+
 const verifications = path.join(dirRoot as string, 'verifications')
 const logos = path.join(dirRoot as string, 'logos')
 mkdir(verifications, { recursive: true }, (err) => {
@@ -23,7 +25,7 @@ const verifStorage: StorageEngine = multer.diskStorage({
   }
 })
 async function verifFileFilter(req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
-  if (req.get('content-length') as unknown as number > 9000000) {
+  if (req.get('content-length') as unknown as number > MAX_UPLOAD_BYTES) {
     cb(null, false)
   } else if (!file.mimetype.startsWith('image') && file.mimetype !== 'application/pdf') {
     cb(null, false)
@@ -41,7 +43,7 @@ const logoStorage: StorageEngine = multer.diskStorage({
   }
 })
 async function logoFileFilter(req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
-  if (req.get('content-length') as unknown as number > 9000000) {
+  if (req.get('content-length') as unknown as number > MAX_UPLOAD_BYTES) {
     cb(null, false)
   } else if (!file.mimetype.startsWith('image')) {
     cb(null, false)
@@ -50,7 +52,7 @@ async function logoFileFilter(req: Request, file: Express.Multer.File, cb: FileF
   }
 }
 
-export const verifUpload = multer({ storage: verifStorage, fileFilter: verifFileFilter, limits: { fileSize: 9000000 } })
-export const logoUpload = multer({ storage: logoStorage, fileFilter: logoFileFilter, limits: { fileSize: 9000000 } })
+export const verifUpload = multer({ storage: verifStorage, fileFilter: verifFileFilter, limits: { fileSize: MAX_UPLOAD_BYTES } })
+export const logoUpload = multer({ storage: logoStorage, fileFilter: logoFileFilter, limits: { fileSize: MAX_UPLOAD_BYTES } })
 
 export const noUpload = multer().none()

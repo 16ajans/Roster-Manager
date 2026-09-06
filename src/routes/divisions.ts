@@ -1,13 +1,14 @@
 import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
 import { noUpload } from '../drivers/fs'
+import { APP_NAME } from '../constants'
 
 export const router = express.Router()
 
 router
   .get('/', async (req, res) => {
     res.render('pages/divisions', {
-      title: 'CVRE Roster Manager | Divisions',
+      title: `${APP_NAME} | Divisions`,
       user: req.session.user
     })
   })

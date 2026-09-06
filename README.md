@@ -67,6 +67,11 @@ sync. Built with Express, Pug, Prisma (PostgreSQL), and discord.js.
    The app starts once the Discord bot client is ready, then listens on
    `PORT` (default `3000`).
 
+## Continuous integration
+
+Every push and pull request against `main` runs `prisma generate`, lint,
+and build via GitHub Actions (`.github/workflows/ci.yml`).
+
 ## Available scripts
 
 | Script | Description |
@@ -98,6 +103,7 @@ See `example.env` for a template. Key variables:
 
 ```
 src/
+  constants.ts # Shared app/branding config (name, URL, colors, links, etc.)
   drivers/     # Prisma client, Discord bot client, filesystem helpers
   middleware/  # Auth (session/role guards) and Discord identity hydration
   routes/      # Express routers: account, dashboard, divisions, players, teams, verify

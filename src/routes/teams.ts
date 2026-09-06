@@ -6,6 +6,7 @@ import { hydrateMany, hydrateOne } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
 import path from 'path'
 import { userAuth } from '../middleware/auth'
+import { APP_NAME, UPLOAD_CACHE_MAX_AGE } from '../constants'
 
 export const router = express.Router()
 
@@ -15,7 +16,7 @@ router.use('/logos', express.static(path.join(dirRoot, 'logos'), {
       'Content-Disposition': 'inline'
     })
   },
-  maxAge: '1d'
+  maxAge: UPLOAD_CACHE_MAX_AGE
 }))
 
 router.use(userAuth)
@@ -23,7 +24,7 @@ router.use(userAuth)
 router
   .get('/', async (req, res) => {
     res.render('pages/teams', {
-      title: 'CVRE Roster Manager | Teams',
+      title: `${APP_NAME} | Teams`,
       user: req.session.user
     })
   })
@@ -207,13 +208,35 @@ router
     next()
   }, renderTeam)
   .delete('/:teamID', async (req, res) => {
+    const team = await prisma.team.findUnique({
+      where: {
+        id: req.params.teamID,
+        managerId: req.session.user?.id
+      },
+      include: {
+        Assignment: {
+          include: {
+            player: true
+          }
+        }
+      }
+    })
+    if (!team) {
+      res.sendStatus(404)
+      return
+    }
+    res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Team deleted.</p>")
+    // Assignments are deleted via cascade, so notify players (which looks
+    // the team back up by id) before the team row itself is gone.
+    await Promise.all(team.Assignment.map((assignment) =>
+      sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, team.id, ChangeAction.DELETE)
+    ))
     await prisma.team.delete({
       where: {
         id: req.params.teamID,
         managerId: req.session.user?.id
       }
     })
-    res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Team deleted.</p>")
   })
 
 router.get("/:teamID/add-player", async (req, res) => {

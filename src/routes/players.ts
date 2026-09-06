@@ -4,13 +4,14 @@ import { prisma } from '../drivers/db'
 import { hydrateOne, hydrateMany } from '../middleware/discord'
 import { State } from '@prisma/client'
 import { ChangeAction, sendPlayerChangeDM } from '../drivers/bot'
+import { APP_NAME } from '../constants'
 
 export const router = express.Router()
 
 router
   .get('/', async (req, res) => {
     res.render('pages/players', {
-      title: 'CVRE Roster Manager | Players',
+      title: `${APP_NAME} | Players`,
       user: req.session.user
     })
   })
