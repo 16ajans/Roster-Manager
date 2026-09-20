@@ -43,7 +43,7 @@ router.get('/callback', async (req, res) => {
 
   try {
     await fetchGuildMember(discordUser.id)
-  } catch (err) {
+  } catch {
     res.redirect('/auth/not-joined')
     return
   }
