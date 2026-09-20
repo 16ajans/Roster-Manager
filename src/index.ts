@@ -1,6 +1,6 @@
 import path from 'path';
 import 'dotenv/config'
-import express from 'express'
+import express, { RequestHandler } from 'express'
 import session from 'express-session'
 import lusca from 'lusca'
 import compression from 'compression'
@@ -80,35 +80,42 @@ app.get('/help', async (req, res) => {
   })
 })
 
-app.use('/', async (req, res, next) => {
-  if (!req.session.user?.auth) {
-    const divisions = await prisma.division.findMany({
-      include: {
-        Team: {
-          include: {
-            division: true,
-            manager: true,
-            Assignment: {
-              include: {
-                player: true
-              }
+const renderPublicListing: RequestHandler = async (req, res) => {
+  const divisions = await prisma.division.findMany({
+    include: {
+      Team: {
+        include: {
+          division: true,
+          manager: true,
+          Assignment: {
+            include: {
+              player: true
             }
           }
         }
       }
-    })
-    await Promise.all(
-      divisions.flatMap((division) =>
-        division.Team.flatMap((team) => [
-          hydrateOne(team.manager),
-          ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
-        ])
-      )
+    }
+  })
+  await Promise.all(
+    divisions.flatMap((division) =>
+      division.Team.flatMap((team) => [
+        hydrateOne(team.manager),
+        ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+      ])
     )
-    res.render("pages/public", {
-      divisions,
-      title: APP_NAME
-    })
+  )
+  res.render("pages/public", {
+    divisions,
+    title: APP_NAME,
+    user: req.session.user
+  })
+}
+
+app.get('/public', renderPublicListing)
+
+app.use('/', async (req, res, next) => {
+  if (!req.session.user?.auth) {
+    await renderPublicListing(req, res, next)
   } else {
     next()
   }
