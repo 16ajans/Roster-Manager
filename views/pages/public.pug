@@ -2,8 +2,9 @@ extends ../default
 
 include ../fragments/mixins/team-card
 block content
-    p Log in above to assemble your team for the upcoming season!
-    
+    if !authed
+        p Log in above to assemble your team for the upcoming season!
+
     each division in divisions
         section 
             h3= division.name
