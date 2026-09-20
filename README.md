@@ -17,6 +17,13 @@ sync. Built with Express, Pug, Prisma (PostgreSQL), and discord.js.
   approval.
 - **Admin controls** — division admins manage their division's teams,
   players, and pending verifications.
+- **Public team listing** — a read-only roster overview at `/public`,
+  viewable with or without logging in.
+- **CSRF protection** — session-bound CSRF tokens (via `lusca`) guard every
+  mutating request, wired into htmx requests automatically.
+- **Environment banner** — a "Development Environment" banner shows
+  automatically outside production, or on any hostname starting with
+  `dev.`/`dev-` (handy for staging subdomains).
 
 ## Prerequisites
 
