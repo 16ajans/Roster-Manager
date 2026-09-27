@@ -23,7 +23,7 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^26.6.1",
     "@types/pug": "^2.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.70.0",
     "eslint": "^10.11.0",
     "prisma": "^5.19.1",
