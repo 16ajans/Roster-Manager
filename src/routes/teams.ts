@@ -2,7 +2,7 @@ import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
 import { dirRoot, logoUpload, noUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
-import { hydrateMany, hydrateOne } from '../middleware/discord'
+import { hydrateMany } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
 import path from 'path'
 import { userAuth } from '../middleware/auth'
@@ -49,10 +49,7 @@ const renderTeam: RequestHandler = async (req, res) => {
     res.sendStatus(404)
     return
   }
-  await Promise.all([
-    hydrateOne(team.manager),
-    ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
-  ])
+  await hydrateMany([team.manager, ...team.Assignment.map((assignment) => assignment.player)])
   res.render('fragments/teams/team', {
     team
   })
@@ -74,11 +71,8 @@ router
         }
       }
     })
-    await Promise.all(
-      teams.flatMap((team) => [
-        hydrateOne(team.manager),
-        ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
-      ])
+    await hydrateMany(
+      teams.flatMap((team) => [team.manager, ...team.Assignment.map((assignment) => assignment.player)])
     )
     res.render('fragments/teams/list', {
       teams
@@ -122,10 +116,7 @@ router
         }
       }
     })
-    await Promise.all([
-      hydrateOne(team.manager),
-      ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
-    ])
+    await hydrateMany([team.manager, ...team.Assignment.map((assignment) => assignment.player)])
     res.render('fragments/teams/new-team', {
       team
     })
@@ -152,10 +143,7 @@ router
       res.sendStatus(404)
       return
     }
-    await Promise.all([
-      hydrateOne(team.manager),
-      ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
-    ])
+    await hydrateMany([team.manager, ...team.Assignment.map((assignment) => assignment.player)])
     res.render('fragments/teams/edit', {
       team,
       divisions

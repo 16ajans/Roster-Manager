@@ -1,6 +1,6 @@
-import { Client, DiscordAPIError, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
+import { Client, Collection, DiscordAPIError, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildMember, GuildResolvable, UserResolvable } from 'discord.js'
 import { prisma } from './db'
-import { APP_URL, BRAND_COLOR, DM_EMBED_AUTHOR, FALLBACK_ADMIN_SNOWFLAKE } from '../constants'
+import { APP_URL, BRAND_COLOR, DM_EMBED_AUTHOR, FALLBACK_ADMIN_SNOWFLAKE, MEMBER_FETCH_BATCH_SIZE } from '../constants'
 
 export enum ChangeAction {
     CREATE,
@@ -36,6 +36,46 @@ export async function fetchGuildMember(userSnowflake: UserResolvable) {
         }
         throw error; // Re-throw unexpected errors
     }
+}
+
+// Batches member lookups into Discord's gateway "Request Guild Members"
+// opcode by explicit user ID, instead of one REST call per member. Members
+// already in discord.js's guild member cache are served from there for
+// free; this just lets a page with many distinct members fetch all the
+// missing ones in a handful of round trips instead of one each.
+export async function fetchGuildMembers(userSnowflakes: UserResolvable[]) {
+    const ids = [...new Set(
+        userSnowflakes
+            .map((snowflake) => client.users.resolveId(snowflake))
+            .filter((id): id is string => id !== null)
+    )]
+    const members = new Collection<string, GuildMember>()
+    // Fetching by explicit user_ids always hits the gateway, bypassing the
+    // cache check that a single-member `.fetch()` does for us - so do that
+    // check ourselves and only batch-fetch what's actually missing.
+    const toFetch: string[] = []
+    for (const id of ids) {
+        const cached = guild.members.cache.get(id)
+        if (cached && !cached.partial) {
+            members.set(id, cached)
+        } else {
+            toFetch.push(id)
+        }
+    }
+    if (toFetch.length === 0) {
+        return members
+    }
+    const batches: string[][] = []
+    for (let i = 0; i < toFetch.length; i += MEMBER_FETCH_BATCH_SIZE) {
+        batches.push(toFetch.slice(i, i + MEMBER_FETCH_BATCH_SIZE))
+    }
+    const results = await Promise.all(batches.map((batch) => guild.members.fetch({ user: batch })))
+    for (const result of results) {
+        for (const member of result.values()) {
+            members.set(member.id, member)
+        }
+    }
+    return members
 }
 
 export async function fetchUser(userSnowflake: UserResolvable) {

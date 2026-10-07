@@ -13,7 +13,7 @@ import { dirRoot } from './drivers/fs';
 import { client as bot } from './drivers/bot';
 
 import { adminAuth, router as auth, userAuth } from './middleware/auth'
-import { router as discord, hydrateOne } from './middleware/discord'
+import { router as discord, hydrateMany } from './middleware/discord'
 
 import { APP_LOGO_URL, APP_NAME, APP_URL, BRAND_COLOR_HEX, DISCORD_INVITE_URL, LEAGUE_URL, SESSION_MAX_AGE_MS, STATIC_ASSET_CACHE_MAX_AGE } from './constants'
 
@@ -96,11 +96,11 @@ const renderPublicListing: RequestHandler = async (req, res) => {
       }
     }
   })
-  await Promise.all(
+  await hydrateMany(
     divisions.flatMap((division) =>
       division.Team.flatMap((team) => [
-        hydrateOne(team.manager),
-        ...team.Assignment.map((assignment) => hydrateOne(assignment.player))
+        team.manager,
+        ...team.Assignment.map((assignment) => assignment.player)
       ])
     )
   )

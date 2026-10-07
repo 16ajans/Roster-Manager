@@ -20,3 +20,8 @@ export const DM_EMBED_AUTHOR = {
 export const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000 // 1 week
 export const STATIC_ASSET_CACHE_MAX_AGE = '7d'
 export const UPLOAD_CACHE_MAX_AGE = '1d'
+
+// Discord's cap on explicit user_ids per gateway "Request Guild Members" call.
+// Lookups by explicit ID (unlike a full-guild or query-based request) don't
+// require the privileged GuildMembers intent.
+export const MEMBER_FETCH_BATCH_SIZE = 100

@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchGuildMember, searchUniqueGuildMember } from "../drivers/bot";
+import { fetchGuildMember, fetchGuildMembers, searchUniqueGuildMember } from "../drivers/bot";
 import { noUpload } from "../drivers/fs";
 import { Player, User } from "@prisma/client";
 import { GuildMember } from "discord.js";
@@ -46,6 +46,15 @@ export const hydrateOne = async function (one: HydratedPlayer | HydratedUser) {
     return one
 }
 
-export const hydrateMany = async function (many: HydratedPlayer[] | HydratedUser[]) {
-    return await Promise.all(many.map(one => hydrateOne(one)))
-} 
+export const hydrateMany = async function (many: (HydratedPlayer | HydratedUser)[]) {
+    const ids = many
+        .map(one => one.discord)
+        .filter((discord): discord is string => typeof discord === 'string')
+    const members = await fetchGuildMembers(ids)
+    for (const one of many) {
+        if (typeof one.discord === 'string') {
+            one.discord = members.get(one.discord) ?? one.discord
+        }
+    }
+    return many
+}

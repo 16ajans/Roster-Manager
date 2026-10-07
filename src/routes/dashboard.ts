@@ -2,7 +2,7 @@ import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
 import { noUpload, verifUpload } from '../drivers/fs'
 import { State } from '@prisma/client'
-import { hydrateOne } from '../middleware/discord'
+import { hydrateMany } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM, sendJoinRequestDM, sendPlayerChangeDM } from '../drivers/bot'
 import { APP_NAME } from '../constants'
 
@@ -157,9 +157,7 @@ const renderSelfTeams: RequestHandler = async (req, res) => {
     res.send("<p hx-get='/self/team' hx-trigger='htmx:afterRequest from:#selfReg' hx-target='#selfTeam'>Not registered.<br>Please use the above button to register yourself before trying to join a team.</p>")
   } else {
     const assignments = player.Assignment
-    for (const assignment of assignments) {
-      await hydrateOne(assignment.team.manager)
-    }
+    await hydrateMany(assignments.map((assignment) => assignment.team.manager))
     res.render("fragments/dashboard/team-list", {
       assignments
     })

@@ -4,7 +4,7 @@ import { dirRoot } from '../drivers/fs'
 import { prisma } from '../drivers/db'
 import { ChangeAction, sendPlayerChangeDM, sendVerifDM } from '../drivers/bot'
 import { State } from '@prisma/client'
-import { hydrateMany, hydrateOne } from '../middleware/discord'
+import { hydrateMany } from '../middleware/discord'
 import { APP_NAME, UPLOAD_CACHE_MAX_AGE } from '../constants'
 
 export const router = express.Router()
@@ -50,10 +50,7 @@ router
                 manager: true
             }
         })
-        await hydrateMany(players)
-        for (const player of players) {
-            await hydrateOne(player.manager)
-        }
+        await hydrateMany([...players, ...players.map((player) => player.manager)])
         res.render('fragments/verify/list', {
             players
         })
@@ -74,8 +71,7 @@ router
                 manager: true
             }
         })
-        await hydrateOne(player)
-        await hydrateOne(player.manager)
+        await hydrateMany([player, player.manager])
         res.render('fragments/verify/changed', {
             player
         })
