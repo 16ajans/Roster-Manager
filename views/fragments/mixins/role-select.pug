@@ -1,0 +1,9 @@
+mixin role-select(name, label, roles, selected)
+    label(for=name)= label
+    select(id=name name=name)
+        option(value="" selected=!selected) None
+        if selected && !roles.some((role) => role.id === selected)
+            option(value=selected selected)= roleName(selected)
+        each role in roles
+            //- Roles above the bot's own can't be assigned; keep the current one selectable so saving doesn't clear it.
+            option(value=role.id selected=role.id === selected disabled=!role.editable && role.id !== selected)= role.editable ? role.name : `${role.name} (bot can't assign)`

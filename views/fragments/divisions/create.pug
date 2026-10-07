@@ -1,3 +1,4 @@
+include ../mixins/role-select
 form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data" hx-swap="outerHTML")
     label(for="name") Division Name: *
     input#name(type="text" name="name" required)
@@ -16,11 +17,7 @@ form#createDivision(hx-post="/divisions/create" hx-encoding="multipart/form-data
     //- label(for="discordSearch") Division Admin Discord: *
     //- input#discordSearch(type="text" name='discordSearch' onkeydown="this.setCustomValidity('')" hx-on:htmx:validation:validate="if(!document.getElementById(\"createDivision\").elements[\"discord\"]?.value){this.setCustomValidity('Please enter a valid CVRE member.');htmx.find('#createDivision').reportValidity();}")
     //- p(hx-post="/discord/admin/search" hx-trigger="keyup from:#discordSearch delay:250ms" hx-target='this' hx-swap="innerHTML")
-    //- label(for="manager_role") Manager Role Discord ID:
-    //- input#manager_role(type="text" name="manager_role")
-    //- br
-    //- label(for="player_role") Player Role Discord ID:
-    //- input#player_role(type="text" name="player_role")
-    //- br
+    +role-select("manager_role", "Manager Role:", roles)
+    +role-select("player_role", "Player Role:", roles)
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" onclick="document.getElementById(\'createDivision\').outerHTML = \'<button hx-get=\"/divisions/create\" hx-swap=\"outerHTML\">Create New Division</button>'; htmx.process(document.body)")

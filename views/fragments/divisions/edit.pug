@@ -1,3 +1,4 @@
+include ../mixins/role-select
 form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swap="outerHTML")
     label(for="name") Division Name: *
     input#name(type="text" name="name" value=division.name required)
@@ -14,11 +15,7 @@ form(hx-put="/divisions/" + division.id hx-encoding="multipart/form-data" hx-swa
     //- br
     label(for="discord") Division Admin Discord ID: *
     input#discord(type="text" value=division.admin.discord name="discord" required disabled)
-    //- label(for="manager_role") Manager Role Discord ID:
-    //- input#manager_role(type="text" value=division.manager_role name="manager_role")
-    //- br
-    //- label(for="player_role") Player Role Discord ID:
-    //- input#player_role(type="text" value=division.player_role name="player_role")
-    //- br
+    +role-select("manager_role", "Manager Role:", roles, division.manager_role)
+    +role-select("player_role", "Player Role:", roles, division.player_role)
     input(type="submit" value="Submit")
     input(type="button" value="Cancel" hx-get="/divisions/" + division.id hx-target="closest form" hx-swap="outerHTML")

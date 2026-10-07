@@ -7,6 +7,7 @@ import { ChangeAction, sendAssignmentChangeDM } from '../drivers/bot'
 import path from 'path'
 import { userAuth } from '../middleware/auth'
 import { APP_NAME, UPLOAD_CACHE_MAX_AGE } from '../constants'
+import { applyRoleDelta, relatedToPlayer, relatedToTeams, snapshotRoles } from '../drivers/roles'
 
 export const router = express.Router()
 
@@ -198,6 +199,8 @@ router
     if (req.file) {
       data.logo = req.file.filename
     }
+    // Moving divisions swaps the division roles of the manager and roster.
+    const roles = await snapshotRoles(data.division ? await relatedToTeams({ id: team.id }) : [])
     await prisma.team.update({
       where: {
         id: req.params.teamID,
@@ -205,6 +208,7 @@ router
       },
       data
     })
+    applyRoleDelta(roles)
     next()
   }, renderTeam)
   .delete('/:teamID', async (req, res) => {
@@ -225,6 +229,7 @@ router
       res.sendStatus(404)
       return
     }
+    const roles = await snapshotRoles(await relatedToTeams({ id: team.id }))
     res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Team deleted.</p>")
     // Assignments are deleted via cascade, so notify players (which looks
     // the team back up by id) before the team row itself is gone.
@@ -237,6 +242,7 @@ router
         managerId: req.session.user?.id
       }
     })
+    applyRoleDelta(roles)
   })
 
 router.get("/:teamID/add-player", async (req, res) => {
@@ -279,6 +285,7 @@ router.get("/:teamID/add-player", async (req, res) => {
       res.sendStatus(404)
       return
     }
+    const roles = await snapshotRoles([...await relatedToPlayer({ id: req.body.playerId }), req.session.user?.discord])
     const assignment = await prisma.assignment.create({
       data: {
         team: {
@@ -300,6 +307,7 @@ router.get("/:teamID/add-player", async (req, res) => {
         player: true
       }
     })
+    applyRoleDelta(roles)
     next()
     sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.CREATE)
   }, renderTeam)
@@ -317,6 +325,7 @@ router.get("/:teamID/add-player", async (req, res) => {
       res.sendStatus(404)
       return
     }
+    const roles = await snapshotRoles(await relatedToPlayer({ id: owned.playerId }))
     const assignment = await prisma.assignment.delete({
       where: {
         id: req.params.assignmentID
@@ -325,6 +334,7 @@ router.get("/:teamID/add-player", async (req, res) => {
         player: true
       }
     })
+    applyRoleDelta(roles)
     next()
     sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.DELETE)
   }, renderTeam)
@@ -342,6 +352,7 @@ router.get("/:teamID/add-player", async (req, res) => {
       res.sendStatus(404)
       return
     }
+    const roles = await snapshotRoles(await relatedToPlayer({ id: owned.playerId }))
     if (req.params.newState === "ACCEPTED") {
       const assignment = await prisma.assignment.update({
         where: {
@@ -366,5 +377,6 @@ router.get("/:teamID/add-player", async (req, res) => {
       })
       sendAssignmentChangeDM(assignment.player.discord, assignment.player.discord, req.session.user?.discord as string, req.params.teamID, ChangeAction.REJECT)
     }
+    applyRoleDelta(roles)
     next()
   }, renderTeam)

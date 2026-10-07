@@ -2,4 +2,8 @@ extends ../default
 
 block content
     h2 League Divisions
+    section#roleResync
+        p Grants every role the roster says members should have. Roles are only added, never removed, and no DMs are sent.
+        button(hx-post="/divisions/roles/resync" hx-target="#resyncResult" hx-disabled-elt="this" hx-confirm="Resync Discord roles for every registered player and manager?") Resync Discord Roles
+        p#resyncResult
     #divisions(hx-get='/divisions/list' hx-trigger='load')

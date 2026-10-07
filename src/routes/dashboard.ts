@@ -5,6 +5,7 @@ import { State } from '@prisma/client'
 import { hydrateOne } from '../middleware/discord'
 import { ChangeAction, sendAssignmentChangeDM, sendJoinRequestDM, sendPlayerChangeDM } from '../drivers/bot'
 import { APP_NAME } from '../constants'
+import { applyRoleDelta, relatedToPlayer, snapshotRoles } from '../drivers/roles'
 
 export const router = express.Router()
 
@@ -98,15 +99,18 @@ router.get('/self', renderSelf)
       data.doc = req.file.filename
       data.status = State.REVIEW
     }
+    const roles = await snapshotRoles(await relatedToPlayer({ id: player.id }))
     await prisma.player.update({
       where: {
         discord: req.session.user?.discord
       },
       data
     })
+    applyRoleDelta(roles)
     next()
   }, renderSelf)
   .delete('/self', async (req, res) => {
+    const roles = await snapshotRoles(await relatedToPlayer({ discord: req.session.user?.discord }))
     const player = await prisma.player.delete({
       where: {
         discord: req.session.user?.discord
@@ -124,6 +128,7 @@ router.get('/self', renderSelf)
         }
       }
     })
+    applyRoleDelta(roles)
     res.send("<p hx-get='/self' hx-trigger='load delay:5s'>Registration deleted.</p>")
     for (const assignment of player.Assignment) {
       if (assignment.team.manager.discord != player.discord) {
@@ -216,6 +221,7 @@ router.get('/self/team', renderSelfTeams)
       res.sendStatus(404)
       return
     }
+    const roles = await snapshotRoles(await relatedToPlayer({ id: owned.playerId }))
     const assignment = await prisma.assignment.delete({
       where: {
         id: req.params.assignmentID
@@ -229,6 +235,7 @@ router.get('/self/team', renderSelfTeams)
         }
       }
     })
+    applyRoleDelta(roles)
     res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Left team.</p>")
     if (assignment.team.manager.discord != assignment.player.discord && assignment.status === State.ACCEPTED) {
       sendAssignmentChangeDM(assignment.team.manager.discord, assignment.player.discord, assignment.player.discord, assignment.team.id, ChangeAction.DELETE)

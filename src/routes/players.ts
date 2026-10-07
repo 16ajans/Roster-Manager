@@ -5,6 +5,7 @@ import { hydrateOne, hydrateMany } from '../middleware/discord'
 import { State } from '@prisma/client'
 import { ChangeAction, sendPlayerChangeDM } from '../drivers/bot'
 import { APP_NAME } from '../constants'
+import { applyRoleDelta, relatedToPlayer, snapshotRoles } from '../drivers/roles'
 
 export const router = express.Router()
 
@@ -134,6 +135,7 @@ router
       data.doc = req.file.filename
       data.status = State.REVIEW
     }
+    const roles = await snapshotRoles(await relatedToPlayer({ id: player.id }))
     await prisma.player.update({
       where: {
         id: req.params.playerID,
@@ -144,9 +146,11 @@ router
       },
       data
     })
+    applyRoleDelta(roles)
     next()
   }, renderPlayer)
   .delete('/:playerID', async (req, res) => {
+    const roles = await snapshotRoles(await relatedToPlayer({ id: req.params.playerID }))
     const player = await prisma.player.delete({
       where: {
         id: req.params.playerID,
@@ -156,6 +160,7 @@ router
         ]
       }
     })
+    applyRoleDelta(roles)
     res.send("<p hx-on::after-settle=\"setTimeout(() => { this.remove() }, 5000)\">Player registration deleted.</p>")
     sendPlayerChangeDM(player.discord, player.discord, req.session.user?.discord as string, ChangeAction.DELETE)
   })

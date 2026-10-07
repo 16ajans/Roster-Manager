@@ -2,8 +2,15 @@ import express, { RequestHandler } from 'express'
 import { prisma } from '../drivers/db'
 import { noUpload } from '../drivers/fs'
 import { APP_NAME } from '../constants'
+import { listGuildRoles, roleName } from '../drivers/bot'
+import { applyRoleDelta, relatedToTeams, resyncAllRoles, snapshotRoles } from '../drivers/roles'
 
 export const router = express.Router()
+
+router.use((req, res, next) => {
+  res.locals.roleName = roleName
+  next()
+})
 
 router
   .get('/', async (req, res) => {
@@ -44,7 +51,17 @@ router
     })
   })
   .get('/create', async (req, res) => {
-    res.render('fragments/divisions/create')
+    res.render('fragments/divisions/create', {
+      roles: listGuildRoles()
+    })
+  })
+  .post('/roles/resync', async (req, res) => {
+    const summary = await resyncAllRoles()
+    let message = `Checked ${summary.checked} members; added ${summary.rolesAdded} roles across ${summary.updated} members.`
+    if (summary.failed > 0) {
+      message += ` ${summary.failed} members failed to update (see server logs).`
+    }
+    res.send(message)
   })
   .post('/create', noUpload, async (req, res) => {
     if (req.body.open) {
@@ -59,8 +76,8 @@ router
         open: req.body.open as boolean,
         min_players: parseInt(req.body.min_players),
         max_players: parseInt(req.body.max_players),
-        manager_role: req.body.manager_role as string,
-        player_role: req.body.player_role as string,
+        manager_role: (req.body.manager_role as string) || null,
+        player_role: (req.body.player_role as string) || null,
         admin: {
           connect: {
             discord: req.session.user?.discord
@@ -91,6 +108,7 @@ router
     }
     res.render('fragments/divisions/edit', {
       division,
+      roles: listGuildRoles()
     })
   })
   .put('/:divisionID', noUpload, async (req, res, next) => {
@@ -109,8 +127,8 @@ router
     const data: {
       name?: string;
       description?: string;
-      manager_role?: string;
-      player_role?: string;
+      manager_role?: string | null;
+      player_role?: string | null;
       min_players?: number;
       max_players?: number;
       open?: boolean
@@ -121,11 +139,13 @@ router
     if (division.description != req.body.description) {
       data.description = req.body.description
     }
-    if (division.manager_role != req.body.manager_role) {
-      data.manager_role = req.body.manager_role
+    const managerRole = (req.body.manager_role as string) || null
+    const playerRole = (req.body.player_role as string) || null
+    if (division.manager_role != managerRole) {
+      data.manager_role = managerRole
     }
-    if (division.player_role != req.body.player_role) {
-      data.player_role = req.body.player_role
+    if (division.player_role != playerRole) {
+      data.player_role = playerRole
     }
     if (division.min_players != req.body.min_players) {
       data.min_players = parseInt(req.body.min_players)
@@ -138,12 +158,17 @@ router
     } else {
       data.open = false
     }
+    // Changing a division's roles moves its managers and players from the
+    // old role to the new one.
+    const rolesChanged = 'manager_role' in data || 'player_role' in data
+    const roles = await snapshotRoles(rolesChanged ? await relatedToTeams({ divisionId: division.id }) : [])
     await prisma.division.update({
       where: {
         id: req.params.divisionID
       },
       data
     })
+    applyRoleDelta(roles)
     next()
   }, renderDivision)
   .delete('/:divisionID', async (req, res) => {

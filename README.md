@@ -17,6 +17,9 @@ sync. Built with Express, Pug, Prisma (PostgreSQL), and discord.js.
   approval.
 - **Admin controls** — division admins manage their division's teams,
   players, and pending verifications.
+- **Discord role sync** — the bot grants and revokes roles as roster status
+  changes, and DMs members a summary of what changed (see
+  [Discord roles](#discord-roles)).
 - **Public team listing** — a read-only roster overview at `/public`,
   viewable with or without logging in.
 - **CSRF protection** — session-bound CSRF tokens (via `lusca`) guard every
@@ -105,6 +108,28 @@ See `example.env` for a template. Key variables:
 | `DISCORD_BOT_TOKEN` | Bot token for the same Discord application |
 | `GUILD_ID` | Discord server (guild) ID the bot operates in |
 | `ADMIN_ROLE_ID` | Discord role ID granted admin access in the app |
+| `VERIFIED_ROLE_ID` | Optional Discord role ID granted to verified players |
+
+## Discord roles
+
+| Role | Configured in | Held while |
+| --- | --- | --- |
+| Verified | `VERIFIED_ROLE_ID` | the player's verification is `ACCEPTED` |
+| Division player role | division settings | verified **and** on an accepted roster spot in that division |
+| Division manager role | division settings | managing a team in that division with at least one such player |
+
+Roles are applied as deltas: each change computes what the affected members
+should hold before and after, and only adds or removes the difference. Roles
+assigned by hand are left alone unless an app criterion for that same role
+stops being met. Editing a player's name, school, or verification document
+resets their verification, so their roles come off until re-approved.
+
+Admins can use **Resync Discord Roles** on the Divisions page to backfill or
+repair drift. It only adds roles and sends no DMs.
+
+The bot needs the **Manage Roles** permission, and its highest role must sit
+above every role it manages. Roles it can't assign are marked in the division
+role pickers.
 
 ## Project structure
 

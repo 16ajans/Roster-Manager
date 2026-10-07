@@ -6,7 +6,7 @@ mixin division-card(division)
         //- p Minimum Players per Team: #{division.min_players}
         //- p Maximum Players per Team: #{division.max_players}
         p Division Admin Discord ID: #{division.admin.discord} 
-        //- p Manager Role Discord ID: #{division.manager_role}
-        //- p Player Role Discord ID: #{division.player_role}
+        p Manager Role: #{division.manager_role ? roleName(division.manager_role) : 'None'}
+        p Player Role: #{division.player_role ? roleName(division.player_role) : 'None'}
         if block
             block

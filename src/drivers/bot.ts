@@ -21,15 +21,11 @@ client.once(Events.ClientReady, (client) => {
     })
 })
 
-export function fetchMemberRoles(userSnowflake: UserResolvable) {
-    fetchGuildMember(userSnowflake).then((member) => {
-        return member ? member.roles : null
-    })
-}
-
-export async function fetchGuildMember(userSnowflake: UserResolvable) {
+export async function fetchGuildMember(userSnowflake: UserResolvable, force = false) {
     try {
-        return await guild.members.fetch(userSnowflake);
+        // Without the GuildMembers intent the member cache never sees role
+        // updates, so callers that diff roles pass force to hit the API.
+        return await guild.members.fetch({ user: userSnowflake, force });
     } catch (error) {
         if ((error as DiscordAPIError).code === 10007) { // Unknown Member
             return null;
@@ -49,20 +45,53 @@ export async function fetchUser(userSnowflake: UserResolvable) {
     }
 }
 
+// DMs are best-effort: closed DMs or departed members shouldn't surface as
+// unhandled rejections in the routes that fire these off.
+function logDMFailure(error: unknown) {
+    console.error('Failed to send DM:', error)
+}
+
 export async function sendVerifDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, accepted: boolean, adminSnowflake?: UserResolvable, reason?: string) {
-    return client.users.send(userSnowflake, { embeds: [await buildVerifNotifEmbed(playerSnowflake, accepted, adminSnowflake, reason)] })
+    return buildVerifNotifEmbed(playerSnowflake, accepted, adminSnowflake, reason)
+        .then((embed) => client.users.send(userSnowflake, { embeds: [embed] }))
+        .catch(logDMFailure)
 }
 
 export async function sendPlayerChangeDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, change: ChangeAction) {
-    return client.users.send(userSnowflake, { embeds: [await buildPlayerChangeNotifEmbed(playerSnowflake, actorSnowflake, change)] })
+    return buildPlayerChangeNotifEmbed(playerSnowflake, actorSnowflake, change)
+        .then((embed) => client.users.send(userSnowflake, { embeds: [embed] }))
+        .catch(logDMFailure)
 }
 
 export async function sendAssignmentChangeDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, actorSnowflake: UserResolvable, teamId: string, change: ChangeAction) {
-    return client.users.send(userSnowflake, { embeds: [await buildAssignmentChangeNotifEmbed(playerSnowflake, actorSnowflake, teamId, change)] })
+    return buildAssignmentChangeNotifEmbed(playerSnowflake, actorSnowflake, teamId, change)
+        .then((embed) => client.users.send(userSnowflake, { embeds: [embed] }))
+        .catch(logDMFailure)
 }
 
 export async function sendJoinRequestDM(userSnowflake: UserResolvable, playerSnowflake: UserResolvable, teamId: string) {
-    return client.users.send(userSnowflake, { embeds: [await buildJoinRequestEmbed(playerSnowflake, teamId)] })
+    return buildJoinRequestEmbed(playerSnowflake, teamId)
+        .then((embed) => client.users.send(userSnowflake, { embeds: [embed] }))
+        .catch(logDMFailure)
+}
+
+export async function sendRoleChangeDM(userSnowflake: UserResolvable, added: string[], removed: string[]) {
+    return client.users.send(userSnowflake, { embeds: [buildRoleChangeEmbed(added, removed)] })
+        .catch(logDMFailure)
+}
+
+// Guild roles an admin could pick for a division, highest first. `editable`
+// is false when the bot can't assign the role (above its own, or no Manage
+// Roles permission).
+export function listGuildRoles() {
+    return guild.roles.cache
+        .filter((role) => role.id !== guild.id && !role.managed)
+        .sort((a, b) => b.position - a.position)
+        .map((role) => ({ id: role.id, name: role.name, editable: role.editable }))
+}
+
+export function roleName(roleId: string) {
+    return guild.roles.cache.get(roleId)?.name ?? `Unknown role (${roleId})`
 }
 
 export async function searchUniqueGuildMember(query: string) {
@@ -171,5 +200,23 @@ async function buildJoinRequestEmbed(playerSnowflake: UserResolvable, teamId: st
     }
     embed.setTitle(`${player.displayName} has requested to join ${team?.name}!`)
         .setDescription(`Please visit ${APP_URL} to approve or reject their request.`)
+    return embed.setTimestamp()
+}
+
+function buildRoleChangeEmbed(added: string[], removed: string[]) {
+    // Role mentions render as @unknown-role outside the guild, so DMs use
+    // plain role names.
+    const embed = new EmbedBuilder()
+        .setColor(BRAND_COLOR)
+        .setAuthor(DM_EMBED_AUTHOR)
+        .setFooter({ text: "This is an automated message. Do not reply." })
+        .setTitle('Your CVRE Discord roles have been updated.')
+        .setDescription('Roles follow your verification and team status. Please reach out to your captain/manager or a CVRE admin if you did not expect to receive this message.')
+    if (added.length > 0) {
+        embed.addFields({ name: 'Added:', value: added.map(roleName).join('\n') })
+    }
+    if (removed.length > 0) {
+        embed.addFields({ name: 'Removed:', value: removed.map(roleName).join('\n') })
+    }
     return embed.setTimestamp()
 }

@@ -6,6 +6,7 @@ import { ChangeAction, sendPlayerChangeDM, sendVerifDM } from '../drivers/bot'
 import { State } from '@prisma/client'
 import { hydrateMany, hydrateOne } from '../middleware/discord'
 import { APP_NAME, UPLOAD_CACHE_MAX_AGE } from '../constants'
+import { applyRoleDelta, relatedToPlayer, snapshotRoles } from '../drivers/roles'
 
 export const router = express.Router()
 
@@ -63,6 +64,7 @@ router
         if (req.params.newState === "ACCEPTED") {
             param = State.ACCEPTED
         }
+        const roles = await snapshotRoles(await relatedToPlayer({ id: req.params.playerID }))
         const player = await prisma.player.update({
             where: {
                 id: req.params.playerID
@@ -74,6 +76,7 @@ router
                 manager: true
             }
         })
+        applyRoleDelta(roles)
         await hydrateOne(player)
         await hydrateOne(player.manager)
         res.render('fragments/verify/changed', {
@@ -86,11 +89,13 @@ router
         }
     })
     .delete('/:playerID', async (req, res) => {
+        const roles = await snapshotRoles(await relatedToPlayer({ id: req.params.playerID }))
         const player = await prisma.player.delete({
             where: {
                 id: req.params.playerID
             }
         })
+        applyRoleDelta(roles)
         res.send("<p>Player registration deleted.</p>")
         sendPlayerChangeDM(player.discord, player.discord, req.session.user?.discord as string, ChangeAction.DELETE)
     })
