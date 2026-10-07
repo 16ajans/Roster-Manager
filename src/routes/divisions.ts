@@ -56,12 +56,22 @@ router
     })
   })
   .post('/roles/resync', async (req, res) => {
-    const summary = await resyncAllRoles()
-    let message = `Checked ${summary.checked} members; added ${summary.rolesAdded} roles across ${summary.updated} members.`
+    let summary
+    try {
+      summary = await resyncAllRoles()
+    } catch (error) {
+      console.error('Role resync failed:', error)
+      res.render('fragments/divisions/resync-result', { message: 'Resync failed: could not list server members. Make sure the Server Members Intent is enabled for the bot in the Discord Developer Portal (see server logs).' })
+      return
+    }
+    let message = `Checked ${summary.members} server members; updated ${summary.updated} (${summary.rolesAdded} roles added, ${summary.rolesRemoved} removed).`
     if (summary.failed > 0) {
       message += ` ${summary.failed} members failed to update (see server logs).`
     }
-    res.send(message)
+    if (summary.skippedRoles.length > 0) {
+      message += ` Skipped roles the bot can't assign: ${summary.skippedRoles.map(roleName).join(', ')}.`
+    }
+    res.render('fragments/divisions/resync-result', { message })
   })
   .post('/create', noUpload, async (req, res) => {
     if (req.body.open) {

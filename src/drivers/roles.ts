@@ -1,13 +1,14 @@
 import { Prisma, State } from '@prisma/client'
-import { DiscordAPIError } from 'discord.js'
+import { DiscordAPIError, GuildMember } from 'discord.js'
 import { prisma } from './db'
-import { fetchGuildMember, sendRoleChangeDM } from './bot'
+import { fetchAllGuildMembers, fetchGuildMember, roleEditable, sendRoleChangeDM } from './bot'
 
 // Discord roles are managed as deltas: routes snapshot the roles their
 // affected members *should* have before a write, then applyRoleDelta()
 // recomputes after the write and only adds/removes the difference. Roles a
 // mod assigned by hand are never touched unless the app's own criteria for
-// that role flip from met to unmet.
+// that role flip from met to unmet. The admin resync is the exception: it
+// aligns everyone to the database outright.
 //
 // Criteria:
 //   VERIFIED_ROLE_ID (global)  player status is ACCEPTED
@@ -92,29 +93,35 @@ export async function applyRoleDelta(before: RoleSnapshot) {
 async function applyToMember(discordId: string, added: string[], removed: string[], notify: boolean) {
     try {
         const member = await fetchGuildMember(discordId, true)
-        if (!member) {
-            return { added: [], removed: [] }
+        if (member) {
+            await updateMember(member, added, removed, notify)
         }
-        // Only act on (and report) roles whose state actually changes.
-        const toAdd = added.filter((role) => !member.roles.cache.has(role))
-        const toRemove = removed.filter((role) => member.roles.cache.has(role))
-        if (toAdd.length > 0) {
-            await member.roles.add(toAdd)
-        }
-        if (toRemove.length > 0) {
-            await member.roles.remove(toRemove)
-        }
-        if (notify && (toAdd.length > 0 || toRemove.length > 0)) {
-            await sendRoleChangeDM(discordId, toAdd, toRemove)
-        }
-        return { added: toAdd, removed: toRemove }
     } catch (error) {
-        if ((error as DiscordAPIError).code === 50013) { // Missing Permissions
-            console.error(`Missing permissions to update roles for ${discordId}; check the bot has Manage Roles and sits above the managed roles.`)
-        } else {
-            console.error(`Failed to update roles for ${discordId}:`, error)
-        }
-        return null
+        logRoleFailure(discordId, error)
+    }
+}
+
+// Only acts on (and reports) roles whose state actually changes.
+async function updateMember(member: GuildMember, added: string[], removed: string[], notify: boolean) {
+    const toAdd = added.filter((role) => !member.roles.cache.has(role))
+    const toRemove = removed.filter((role) => member.roles.cache.has(role))
+    if (toAdd.length > 0) {
+        await member.roles.add(toAdd)
+    }
+    if (toRemove.length > 0) {
+        await member.roles.remove(toRemove)
+    }
+    if (notify && (toAdd.length > 0 || toRemove.length > 0)) {
+        await sendRoleChangeDM(member.id, toAdd, toRemove)
+    }
+    return { added: toAdd.length, removed: toRemove.length }
+}
+
+function logRoleFailure(discordId: string, error: unknown) {
+    if ((error as DiscordAPIError).code === 50013) { // Missing Permissions
+        console.error(`Missing permissions to update roles for ${discordId}; check the bot has Manage Roles and sits above the managed roles.`)
+    } else {
+        console.error(`Failed to update roles for ${discordId}:`, error)
     }
 }
 
@@ -142,27 +149,44 @@ export async function relatedToTeams(where: Prisma.TeamWhereInput) {
     ])
 }
 
-// Admin repair tool: grant every role the database says each member should
-// have. Add-only, so manually assigned roles are never removed, and silent,
-// so a backfill doesn't DM the whole league.
+// Admin repair tool: make every guild member's managed roles (Verified plus
+// all division roles) match the database exactly, including stripping them
+// from members the app doesn't know about. Silent, so a backfill doesn't DM
+// the whole league.
 export async function resyncAllRoles() {
-    const [players, managers] = await Promise.all([
+    const [divisions, players, managers] = await Promise.all([
+        prisma.division.findMany({ select: { player_role: true, manager_role: true } }),
         prisma.player.findMany({ select: { discord: true } }),
         prisma.user.findMany({ where: { Team: { some: {} } }, select: { discord: true } })
     ])
+    const configured = new Set([verifiedRoleId, ...divisions.flatMap((division) => [division.player_role, division.manager_role])]
+        .filter((role): role is string => !!role))
+    // Roles the bot can't assign would fail for every member; skip and report them.
+    const managed = new Set([...configured].filter(roleEditable))
     const desired = await snapshotRoles([...players, ...managers].map((row) => row.discord))
-    const summary = { checked: 0, updated: 0, rolesAdded: 0, failed: 0 }
-    for (const [discordId, roles] of desired) {
-        if (roles.size === 0) {
-            continue
-        }
-        summary.checked++
-        const result = await applyToMember(discordId, [...roles], [], false)
-        if (!result) {
+    const members = await fetchAllGuildMembers()
+
+    const summary = {
+        members: members.length,
+        updated: 0,
+        rolesAdded: 0,
+        rolesRemoved: 0,
+        failed: 0,
+        skippedRoles: [...configured].filter((role) => !managed.has(role))
+    }
+    for (const member of members) {
+        const want = [...desired.get(member.id) ?? []].filter((role) => managed.has(role))
+        const unwanted = [...managed].filter((role) => !want.includes(role))
+        try {
+            const result = await updateMember(member, want, unwanted, false)
+            if (result.added > 0 || result.removed > 0) {
+                summary.updated++
+                summary.rolesAdded += result.added
+                summary.rolesRemoved += result.removed
+            }
+        } catch (error) {
             summary.failed++
-        } else if (result.added.length > 0) {
-            summary.updated++
-            summary.rolesAdded += result.added.length
+            logRoleFailure(member.id, error)
         }
     }
     return summary

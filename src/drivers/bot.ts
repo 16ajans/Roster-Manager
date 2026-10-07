@@ -1,4 +1,4 @@
-import { Client, DiscordAPIError, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildResolvable, UserResolvable } from 'discord.js'
+import { Client, DiscordAPIError, EmbedBuilder, Events, GatewayIntentBits, Guild, GuildMember, GuildResolvable, UserResolvable } from 'discord.js'
 import { prisma } from './db'
 import { APP_URL, BRAND_COLOR, DM_EMBED_AUTHOR, FALLBACK_ADMIN_SNOWFLAKE } from '../constants'
 
@@ -31,6 +31,21 @@ export async function fetchGuildMember(userSnowflake: UserResolvable, force = fa
             return null;
         }
         throw error; // Re-throw unexpected errors
+    }
+}
+
+// Every member of the guild, with current roles. Listing members requires the
+// Server Members Intent to be enabled for the bot in the Developer Portal.
+export async function fetchAllGuildMembers() {
+    const members: GuildMember[] = []
+    let after: string | undefined
+    for (;;) {
+        const page = await guild.members.list({ limit: 1000, after, cache: false })
+        members.push(...page.values())
+        if (page.size < 1000) {
+            return members
+        }
+        after = page.lastKey()
     }
 }
 
@@ -88,6 +103,10 @@ export function listGuildRoles() {
         .filter((role) => role.id !== guild.id && !role.managed)
         .sort((a, b) => b.position - a.position)
         .map((role) => ({ id: role.id, name: role.name, editable: role.editable }))
+}
+
+export function roleEditable(roleId: string) {
+    return guild.roles.cache.get(roleId)?.editable ?? false
 }
 
 export function roleName(roleId: string) {

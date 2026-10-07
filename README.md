@@ -67,6 +67,13 @@ sync. Built with Express, Pug, Prisma (PostgreSQL), and discord.js.
    npm run migrate
    ```
 
+   To apply committed migrations to an existing (e.g. production) database
+   without generating new ones, use:
+
+   ```bash
+   npx prisma migrate deploy
+   ```
+
 4. **Build and run**
 
    ```bash
@@ -125,11 +132,16 @@ stops being met. Editing a player's name, school, or verification document
 resets their verification, so their roles come off until re-approved.
 
 Admins can use **Resync Discord Roles** on the Divisions page to backfill or
-repair drift. It only adds roles and sends no DMs.
+repair drift. Unlike day-to-day updates, it aligns every server member to the
+roster outright: managed roles (Verified and all division roles) are added
+where missing and removed wherever they aren't earned, including hand-assigned
+ones. It sends no DMs.
 
 The bot needs the **Manage Roles** permission, and its highest role must sit
 above every role it manages. Roles it can't assign are marked in the division
-role pickers.
+role pickers and skipped by resync. Resync also needs the **Server Members
+Intent** enabled for the bot in the Discord Developer Portal (Bot → Privileged
+Gateway Intents) so it can list every member.
 
 ## Project structure
 

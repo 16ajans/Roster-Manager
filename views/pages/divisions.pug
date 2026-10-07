@@ -3,7 +3,7 @@ extends ../default
 block content
     h2 League Divisions
     section#roleResync
-        p Grants every role the roster says members should have. Roles are only added, never removed, and no DMs are sent.
-        button(hx-post="/divisions/roles/resync" hx-target="#resyncResult" hx-disabled-elt="this" hx-confirm="Resync Discord roles for every registered player and manager?") Resync Discord Roles
+        p Aligns the Verified role and every division's player/manager roles with the roster for all server members: missing roles are added, and these roles are removed from anyone who doesn't qualify (including hand-assigned ones). No DMs are sent.
+        button(hx-post="/divisions/roles/resync" hx-target="#resyncResult" hx-swap="outerHTML" hx-disabled-elt="this" hx-confirm="Resync Discord roles for the whole server? Verified and division roles will be added and REMOVED to match the roster.") Resync Discord Roles
         p#resyncResult
     #divisions(hx-get='/divisions/list' hx-trigger='load')
