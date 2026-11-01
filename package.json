@@ -20,12 +20,12 @@
     "@types/express-session": "^1.19.0",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
-    "@types/multer": "^1.4.11",
-    "@types/node": "^26.6.1",
+    "@types/multer": "^2.3.0",
+    "@types/node": "^26.6.6",
     "@types/pug": "^2.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/eslint-plugin": "^8.72.1",
     "@typescript-eslint/parser": "^8.70.0",
-    "eslint": "^10.11.0",
+    "eslint": "^10.13.0",
     "prisma": "^5.19.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2"
@@ -33,7 +33,7 @@
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "@quixo3/prisma-session-store": "^3.1.21",
-    "axios": "^1.8.2",
+    "axios": "^1.21.0",
     "compression": "^1.8.1",
     "discord.js": "^14.21.0",
     "dotenv": "^17.4.2",
@@ -41,7 +41,7 @@
     "express-session": "^1.19.0",
     "lusca": "^1.7.0",
     "morgan": "^1.10.1",
-    "multer": "^2.0.2",
+    "multer": "^2.5.0",
     "pug": "^3.0.4"
   },
   "overrides": {
